@@ -18,7 +18,7 @@ import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.integration.recipe_viewer.FuelUpgradeRecipe;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -44,7 +44,7 @@ public class CollectorRecipeCategory implements IRecipeCategory<FuelUpgradeRecip
 	}
 
 	@Override
-	public ResourceLocation getRegistryName(FuelUpgradeRecipe recipe) {
+	public Identifier getRegistryName(FuelUpgradeRecipe recipe) {
 		return recipe.syntheticId();
 	}
 

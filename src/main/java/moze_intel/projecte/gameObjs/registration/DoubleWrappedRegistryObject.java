@@ -1,6 +1,6 @@
 package moze_intel.projecte.gameObjs.registration;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,7 +25,7 @@ public class DoubleWrappedRegistryObject<PRIMARY_REGISTRY, PRIMARY extends PRIMA
 	}
 
 	@Override
-	public ResourceLocation getId() {
+	public Identifier getId() {
 		return primaryRO.getId();
 	}
 

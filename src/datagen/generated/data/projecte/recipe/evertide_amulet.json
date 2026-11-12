@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "D": {
-      "item": "projecte:dark_matter"
-    },
-    "W": {
-      "item": "minecraft:water_bucket"
-    }
+    "D": "projecte:dark_matter",
+    "W": "minecraft:water_bucket"
   },
   "pattern": [
     "WWW",
@@ -15,7 +11,6 @@
     "WWW"
   ],
   "result": {
-    "count": 1,
     "id": "projecte:evertide_amulet"
   }
 }

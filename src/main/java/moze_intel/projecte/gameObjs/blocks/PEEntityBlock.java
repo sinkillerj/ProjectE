@@ -29,7 +29,7 @@ public interface PEEntityBlock<BLOCK_ENTITY extends BlockEntity> extends EntityB
 	default <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level, @NotNull BlockState state, @NotNull BlockEntityType<T> blockEntityType) {
 		BlockEntityTypeRegistryObject<? extends BLOCK_ENTITY> type = getType();
 		if (type != null && blockEntityType == type.get()) {
-			return (BlockEntityTicker<T>) type.getTicker(level.isClientSide);
+			return (BlockEntityTicker<T>) type.getTicker(level.isClientSide());
 		}
 		return null;
 	}

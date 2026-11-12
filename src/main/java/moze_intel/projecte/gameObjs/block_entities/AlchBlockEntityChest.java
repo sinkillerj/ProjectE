@@ -8,8 +8,8 @@ import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.utils.text.TextComponentUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -19,19 +19,20 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.ICapabilityProvider;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class AlchBlockEntityChest extends EmcChestBlockEntity {
 
-	public static final ICapabilityProvider<AlchBlockEntityChest, @Nullable Direction, IItemHandler> INVENTORY_PROVIDER = (chest, side) -> chest.inventory;
+	public static final ICapabilityProvider<AlchBlockEntityChest, @Nullable Direction, ResourceHandler<ItemResource>> INVENTORY_PROVIDER = (chest, side) -> chest.inventory;
 
 	private final StackHandler inventory = new StackHandler(104) {
 		@Override
 		public void onContentsChanged(int slot) {
 			super.onContentsChanged(slot);
-			if (level != null && !level.isClientSide) {
+			if (level != null && !level.isClientSide()) {
 				inventoryChanged = true;
 			}
 		}
@@ -43,15 +44,15 @@ public class AlchBlockEntityChest extends EmcChestBlockEntity {
 	}
 
 	@Override
-	public void loadAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider registries) {
-		super.loadAdditional(tag, registries);
-		inventory.deserializeNBT(registries, tag);
+	public void loadAdditional(@NotNull ValueInput input) {
+		super.loadAdditional(input);
+		inventory.deserialize(input);
 	}
 
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider registries) {
-		super.saveAdditional(tag, registries);
-		tag.merge(inventory.serializeNBT(registries));
+	protected void saveAdditional(@NotNull ValueOutput output) {
+		super.saveAdditional(output);
+		inventory.serialize(output);
 	}
 
 	public static void tickClient(Level level, BlockPos pos, BlockState state, AlchBlockEntityChest alchChest) {
@@ -82,7 +83,7 @@ public class AlchBlockEntityChest extends EmcChestBlockEntity {
 		alchChest.updateComparators(level, pos);
 	}
 
-	public IItemHandler getInventory() {
+	public ResourceHandler<ItemResource> getInventory() {
 		return inventory;
 	}
 

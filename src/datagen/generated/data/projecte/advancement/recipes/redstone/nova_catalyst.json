@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:nova_catalyst"
+        "recipes": "projecte:nova_catalyst"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

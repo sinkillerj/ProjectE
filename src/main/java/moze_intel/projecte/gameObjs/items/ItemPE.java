@@ -4,16 +4,44 @@ import java.util.Objects;
 import moze_intel.projecte.api.capabilities.item.IModeChanger;
 import moze_intel.projecte.gameObjs.registries.PEDataComponentTypes;
 import moze_intel.projecte.utils.EMCHelper;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 public class ItemPE extends Item {
 
 	public ItemPE(Properties props) {
 		super(props);
+	}
+
+	@Nullable
+	protected static ItemStackTemplate copyAsCraftingRemainder(ItemInstance instance) {
+		if (instance instanceof ItemStack stack && !stack.isEmpty()) {
+			ItemStack copy = stack.copy();
+			copy.setCount(1);
+			return ItemStackTemplate.fromNonEmptyStack(copy);
+		}
+		return null;
+	}
+
+	@Override
+	public ItemStackTemplate getCraftingRemainder(@NotNull ItemInstance instance) {
+		if (this instanceof ISelfCraftingRemainder) {
+			return copyAsCraftingRemainder(instance);
+		}
+		ItemStackTemplate configured = super.getCraftingRemainder();
+		if (configured == null) {
+			return null;
+		}
+		ItemStackTemplate stackAware = copyAsCraftingRemainder(instance);
+		return stackAware != null ? stackAware : configured;
 	}
 
 	@Override
@@ -98,5 +126,9 @@ public class ItemPE extends Item {
 
 	public static boolean hotBarOrOffHand(int slot) {
 		return slot < Inventory.getSelectionSize() || slot == Inventory.SLOT_OFFHAND;
+	}
+
+	public static boolean hotBarOrOffHand(@Nullable EquipmentSlot slot) {
+		return slot == null || slot == EquipmentSlot.MAINHAND || slot == EquipmentSlot.OFFHAND;
 	}
 }

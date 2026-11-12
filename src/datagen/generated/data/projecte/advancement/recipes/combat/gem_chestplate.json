@@ -21,7 +21,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:gem_chestplate"
+        "recipes": "projecte:gem_chestplate"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:swiftwolf_rending_gale"
+        "recipes": "projecte:swiftwolf_rending_gale"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

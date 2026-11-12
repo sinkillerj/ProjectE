@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "A": {
-      "item": "projecte:dm_axe"
-    },
-    "M": {
-      "item": "projecte:dark_matter"
-    },
-    "R": {
-      "item": "projecte:red_matter"
-    }
+    "A": "projecte:dm_axe",
+    "M": "projecte:dark_matter",
+    "R": "projecte:red_matter"
   },
   "pattern": [
     "RR",
@@ -18,7 +12,6 @@
     " M"
   ],
   "result": {
-    "count": 1,
     "id": "projecte:rm_axe"
   }
 }

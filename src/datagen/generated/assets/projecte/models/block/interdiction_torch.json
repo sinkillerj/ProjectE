@@ -1,6 +1,5 @@
 {
   "parent": "minecraft:block/template_torch",
-  "render_type": "minecraft:cutout",
   "textures": {
     "torch": "projecte:block/interdiction_torch"
   }

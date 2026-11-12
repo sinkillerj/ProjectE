@@ -43,6 +43,6 @@ public class CommonConfig extends BasePEConfig {
 
 	@Override
 	public ModConfig.Type getConfigType() {
-		return ModConfig.Type.COMMON;
+		return ModConfig.Type.LOCAL;
 	}
 }

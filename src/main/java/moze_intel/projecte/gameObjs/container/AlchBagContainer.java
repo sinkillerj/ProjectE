@@ -8,11 +8,10 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
-import net.neoforged.neoforge.items.ItemStackHandler;
+import moze_intel.projecte.api.inventory.PEItemStacksHandler;
 import org.jetbrains.annotations.NotNull;
 
 public class AlchBagContainer extends PEHandContainer {
@@ -20,10 +19,10 @@ public class AlchBagContainer extends PEHandContainer {
 	private final boolean immutable;
 
 	public static AlchBagContainer fromNetwork(int windowId, Inventory playerInv, FriendlyByteBuf buf) {
-		return new AlchBagContainer(windowId, playerInv, buf.readEnum(InteractionHand.class), new ItemStackHandler(104), buf.readByte(), buf.readBoolean());
+		return new AlchBagContainer(windowId, playerInv, buf.readEnum(InteractionHand.class), new PEItemStacksHandler(104), buf.readByte(), buf.readBoolean());
 	}
 
-	public AlchBagContainer(int windowId, Inventory playerInv, InteractionHand hand, IItemHandlerModifiable invBag, int selected, boolean immutable) {
+	public AlchBagContainer(int windowId, Inventory playerInv, InteractionHand hand, PEItemStacksHandler invBag, int selected, boolean immutable) {
 		super(PEContainerTypes.ALCH_BAG_CONTAINER, windowId, playerInv, hand, selected);
 		this.immutable = immutable;
 		//Bag Inventory
@@ -35,7 +34,7 @@ public class AlchBagContainer extends PEHandContainer {
 		addPlayerInventory(48, 152);
 	}
 
-	private InventoryContainerSlot createContainerSlot(IItemHandlerModifiable inv, int index, int x, int y) {
+	private InventoryContainerSlot createContainerSlot(PEItemStacksHandler inv, int index, int x, int y) {
 		if (immutable) {
 			return new InventoryContainerSlot(inv, index, x, y) {
 				@Override
@@ -105,7 +104,7 @@ public class AlchBagContainer extends PEHandContainer {
 	}
 
 	@Override
-	public void clicked(int slotId, int dragType, @NotNull ClickType clickType, @NotNull Player player) {
+	public void clicked(int slotId, int dragType, @NotNull ContainerInput clickType, @NotNull Player player) {
 		if (!immutable) {
 			super.clicked(slotId, dragType, clickType, player);
 		}

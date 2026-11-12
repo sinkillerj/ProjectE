@@ -6,7 +6,7 @@ import moze_intel.projecte.gameObjs.registration.PEDeferredRegister;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import org.jetbrains.annotations.NotNull;
 
@@ -23,7 +23,7 @@ public class SoundEventDeferredRegister extends PEDeferredRegister<SoundEvent> {
 	@NotNull
 	@Override
 	@SuppressWarnings("unchecked")
-	public <SOUND extends SoundEvent> SoundEventRegistryObject<SOUND> register(@NotNull String name, @NotNull Function<ResourceLocation, ? extends SOUND> func) {
+	public <SOUND extends SoundEvent> SoundEventRegistryObject<SOUND> register(@NotNull String name, @NotNull Function<Identifier, ? extends SOUND> func) {
 		return (SoundEventRegistryObject<SOUND>) super.register(name, func);
 	}
 
@@ -36,7 +36,7 @@ public class SoundEventDeferredRegister extends PEDeferredRegister<SoundEvent> {
 
 	@NotNull
 	@Override
-	protected <SOUND extends SoundEvent> SoundEventRegistryObject<SOUND> createHolder(@NotNull ResourceKey<? extends Registry<SoundEvent>> registryKey, @NotNull ResourceLocation key) {
+	protected <SOUND extends SoundEvent> SoundEventRegistryObject<SOUND> createHolder(@NotNull ResourceKey<? extends Registry<SoundEvent>> registryKey, @NotNull Identifier key) {
 		return new SoundEventRegistryObject<>(ResourceKey.create(registryKey, key));
 	}
 }

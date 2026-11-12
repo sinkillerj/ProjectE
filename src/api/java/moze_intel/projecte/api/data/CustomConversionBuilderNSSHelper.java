@@ -5,7 +5,6 @@ import moze_intel.projecte.api.nss.NSSFake;
 import moze_intel.projecte.api.nss.NSSFluid;
 import moze_intel.projecte.api.nss.NSSItem;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -19,7 +18,6 @@ import net.neoforged.neoforge.fluids.FluidStack;
  * @implNote The reason this is an interface is to keep the main {@link CustomConversionBuilder} file cleaner to read.
  */
 @ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 interface CustomConversionBuilderNSSHelper extends CustomConversionNSSHelper<ConversionBuilder<CustomConversionBuilder>> {
 
 	/**

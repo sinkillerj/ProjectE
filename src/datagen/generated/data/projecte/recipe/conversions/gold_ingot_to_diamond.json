@@ -1,25 +1,13 @@
 {
   "type": "minecraft:crafting_shapeless",
-  "category": "misc",
   "ingredients": [
-    {
-      "item": "projecte:philosophers_stone"
-    },
-    {
-      "tag": "c:ingots/gold"
-    },
-    {
-      "tag": "c:ingots/gold"
-    },
-    {
-      "tag": "c:ingots/gold"
-    },
-    {
-      "tag": "c:ingots/gold"
-    }
+    "projecte:philosophers_stone",
+    "#c:ingots/gold",
+    "#c:ingots/gold",
+    "#c:ingots/gold",
+    "#c:ingots/gold"
   ],
   "result": {
-    "count": 1,
     "id": "minecraft:diamond"
   }
 }

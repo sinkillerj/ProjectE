@@ -9,11 +9,13 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
-import net.neoforged.neoforge.items.IItemHandler;
+import moze_intel.projecte.utils.ItemCapabilityHelper;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 
 public class MercurialEyeContainer extends PEHandContainer {
@@ -26,7 +28,7 @@ public class MercurialEyeContainer extends PEHandContainer {
 
 	public MercurialEyeContainer(int windowId, Inventory playerInv, InteractionHand hand, int selected) {
 		super(PEContainerTypes.MERCURIAL_EYE_CONTAINER, windowId, playerInv, hand, selected);
-		IItemHandler handler = Objects.requireNonNull(this.stack.getCapability(ItemHandler.ITEM));
+		ResourceHandler<ItemResource> handler = Objects.requireNonNull(ItemCapabilityHelper.of(this.stack));
 		//Klein Star
 		this.addSlot(new InventoryContainerCopySlot(handler, 0, 50, 26));
 		//Target
@@ -35,7 +37,7 @@ public class MercurialEyeContainer extends PEHandContainer {
 	}
 
 	@Override
-	public void clickPostValidate(int slotId, int button, @NotNull ClickType flag, @NotNull Player player) {
+	public void clickPostValidate(int slotId, int button, @NotNull ContainerInput flag, @NotNull Player player) {
 		Slot slot = tryGetSlot(slotId);
 		if (!(slot instanceof ISlotGhost ghost) || !ghost.tryClear()) {
 			super.clickPostValidate(slotId, button, flag, player);

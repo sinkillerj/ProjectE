@@ -16,7 +16,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:rm_boots"
+        "recipes": "projecte:rm_boots"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

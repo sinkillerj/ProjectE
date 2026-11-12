@@ -1,6 +1,8 @@
 {
-  "parent": "projecte:block/dm_furnace",
+  "parent": "minecraft:block/orientable",
   "textures": {
-    "front": "projecte:block/matter_furnace/dm_on"
+    "front": "projecte:block/dm_furnace_front_on",
+    "side": "projecte:block/dark_matter_block",
+    "top": "projecte:block/dark_matter_block"
   }
 }

@@ -1,16 +1,17 @@
 package moze_intel.projecte.world_transmutation;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import com.mojang.serialization.DataResult;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
@@ -24,10 +25,12 @@ import moze_intel.projecte.api.world_transmutation.SimpleWorldTransmutation;
 import moze_intel.projecte.api.world_transmutation.WorldTransmutation;
 import moze_intel.projecte.api.world_transmutation.WorldTransmutationFile;
 import moze_intel.projecte.network.packets.to_client.SyncWorldTransmutations;
+import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.RegistryOps;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
+import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -36,10 +39,9 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class WorldTransmutationManager extends SimpleJsonResourceReloadListener {
+public class WorldTransmutationManager extends SimplePreparableReloadListener<Map<Identifier, JsonElement>> {
 
-	//Copy of gson settings from RecipeManager's gson instance
-	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+	private static final FileToIdConverter FINDER = FileToIdConverter.json("pe_world_transmutations");
 	public static final WorldTransmutationManager INSTANCE = new WorldTransmutationManager();
 	//Note: Assume we will only have one element for it, but allow it to grow if need be
 	private static final Function<Block, SequencedSet<IWorldTransmutation>> SET_BUILDER = origin -> new LinkedHashSet<>(1);
@@ -49,7 +51,6 @@ public class WorldTransmutationManager extends SimpleJsonResourceReloadListener 
 	private Reference2ObjectMap<Block, SequencedSet<IWorldTransmutation>> modifiedEntries = null;
 
 	private WorldTransmutationManager() {
-		super(GSON, "pe_world_transmutations");
 	}
 
 	public static SyncWorldTransmutations getSyncPacket() {
@@ -63,14 +64,30 @@ public class WorldTransmutationManager extends SimpleJsonResourceReloadListener 
 	}
 
 	@Override
-	protected void apply(@NotNull Map<ResourceLocation, JsonElement> object, @NotNull ResourceManager resourceManager, @NotNull ProfilerFiller profiler) {
-		//Ensure we are interacting with the condition context
+	protected @NotNull Map<Identifier, JsonElement> prepare(@NotNull ResourceManager resourceManager, @NotNull ProfilerFiller profiler) {
+		Map<Identifier, JsonElement> loaded = new HashMap<>();
+		for (Entry<Identifier, List<Resource>> entry : FINDER.listMatchingResourceStacks(resourceManager).entrySet()) {
+			Identifier file = entry.getKey();
+			Identifier transmutationId = FINDER.fileToId(file);
+			for (Resource resource : entry.getValue()) {
+				try (var reader = resource.openAsReader()) {
+					JsonElement element = JsonParser.parseReader(reader);
+					loaded.put(transmutationId, element);
+				} catch (Exception e) {
+					PECore.LOGGER.error("Failed to load world transmutation file {}", file, e);
+				}
+			}
+		}
+		return loaded;
+	}
+
+	@Override
+	protected void apply(@NotNull Map<Identifier, JsonElement> object, @NotNull ResourceManager resourceManager, @NotNull ProfilerFiller profiler) {
 		RegistryOps<JsonElement> registryOps = makeConditionalOps();
 		Reference2ObjectMap<Block, SequencedSet<IWorldTransmutation>> builder = new Reference2ObjectLinkedOpenHashMap<>();
 
-		// Find all data/<domain>/pe_world_transmutations/foo/bar.json
-		for (Entry<ResourceLocation, JsonElement> entry : object.entrySet()) {
-			ResourceLocation file = entry.getKey();//<domain>:foo/bar
+		for (Entry<Identifier, JsonElement> entry : object.entrySet()) {
+			Identifier file = entry.getKey();
 			DataResult<Optional<WithConditions<WorldTransmutationFile>>> result = WorldTransmutationFile.CONDITIONAL_CODEC.parse(registryOps, entry.getValue());
 			if (result.isSuccess()) {
 				Optional<WithConditions<WorldTransmutationFile>> decoded = result.getOrThrow();
@@ -109,9 +126,6 @@ public class WorldTransmutationManager extends SimpleJsonResourceReloadListener 
 						hasSimple = true;
 					}
 				}
-				//Add any simple transmutations after the exact ones
-				//Note: We only need to update the value if we have transmutations of different types
-				// otherwise the read order is the best one to use
 				if (hasSimple && hasComplex) {
 					for (IWorldTransmutation transmutation : entry.getValue()) {
 						if (transmutation instanceof SimpleWorldTransmutation) {
@@ -147,20 +161,17 @@ public class WorldTransmutationManager extends SimpleJsonResourceReloadListener 
 		for (IWorldTransmutation entry : transmutations) {
 			if (entry.canTransmute(current)) {
 				if (findAny) {
-					//Note: If we just want to validate to make sure some valid transmutation exists, we can short circuit checking more exact state versions
 					return entry;
 				}
 				if (hasComplex && entry instanceof SimpleWorldTransmutation) {
 					Map<BlockState, IWorldTransmutation> exactStates = new Reference2ObjectOpenHashMap<>();
 					for (IWorldTransmutation transmutation : transmutations) {
 						if (transmutation instanceof WorldTransmutation worldTransmutation) {
-							//TODO: Figure out how do we want to resolve conflicts when the input is exactly the same, be it states or blocks
 							exactStates.putIfAbsent(worldTransmutation.originState(), transmutation);
 						} else {
 							break;
 						}
 					}
-					//Note: exactStates should never be empty here
 					return (input, isSneaking) -> Objects.requireNonNullElse(exactStates.get(input), entry).result(input, isSneaking);
 				}
 				return entry;
@@ -175,7 +186,6 @@ public class WorldTransmutationManager extends SimpleJsonResourceReloadListener 
 
 	@ApiStatus.Internal
 	public void clearTransmutations() {
-		//Explicitly mark that the modified version is empty
 		this.modifiedEntries = Reference2ObjectMaps.emptyMap();
 	}
 
@@ -189,10 +199,8 @@ public class WorldTransmutationManager extends SimpleJsonResourceReloadListener 
 		if (modifiedEntries == null) {
 			makeEntriesMutable();
 		} else if (modifiedEntries == Reference2ObjectMaps.<Block, SequencedSet<IWorldTransmutation>>emptyMap()) {
-			//If we have no entries and the set we used was immutable, we need to switch to using a mutable one
 			modifiedEntries = new Reference2ObjectLinkedOpenHashMap<>();
 		}
-		//Try to add the transmutation
 		modifiedEntries.computeIfAbsent(transmutation.origin().value(), origin -> new LinkedHashSet<>()).add(transmutation);
 	}
 
@@ -203,7 +211,6 @@ public class WorldTransmutationManager extends SimpleJsonResourceReloadListener 
 		if (!remove) {
 			SequencedSet<IWorldTransmutation> transmutations = entries.get(origin);
 			if (transmutations != null && transmutations.contains(transmutation)) {
-				//Only bother instantiating the modified one if we actually have the transmutation
 				makeEntriesMutable();
 				remove = true;
 			}

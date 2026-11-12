@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:klein_star_vier"
+        "recipes": "projecte:klein_star_vier"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

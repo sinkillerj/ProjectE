@@ -5,16 +5,12 @@ import com.mojang.serialization.DataResult;
 import java.util.function.UnaryOperator;
 import moze_intel.projecte.gameObjs.registration.PEDeferredHolder;
 import moze_intel.projecte.gameObjs.registration.PEDeferredRegister;
-import net.minecraft.FieldsAreNonnullByDefault;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponentType.Builder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.util.ExtraCodecs;
 
-@FieldsAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class DataComponentTypeDeferredRegister extends PEDeferredRegister<DataComponentType<?>> {
 
 	private static final Codec<Long> POSITIVE_LONG = Codec.LONG.validate(val -> val > 0 ? DataResult.success(val) : DataResult.error(() -> "Value must be positive: " + val));

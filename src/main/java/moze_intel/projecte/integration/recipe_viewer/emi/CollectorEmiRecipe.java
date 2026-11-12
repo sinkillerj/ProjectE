@@ -13,7 +13,7 @@ import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.Nullable;
@@ -21,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 public class CollectorEmiRecipe implements EmiRecipe {
 
 	public static final EmiRecipeCategory CATEGORY = new PEEmiCategory("collector", PEBlocks.COLLECTOR, PELang.JEI_COLLECTOR);
-	private final ResourceLocation recipeId;
+	private final Identifier recipeId;
 	private final List<EmiIngredient> input;
 	private final List<EmiStack> output;
 	private final long upgradeEMC;
@@ -40,7 +40,7 @@ public class CollectorEmiRecipe implements EmiRecipe {
 
 	@Nullable
 	@Override
-	public ResourceLocation getId() {
+	public Identifier getId() {
 		return recipeId;
 	}
 

@@ -7,7 +7,8 @@ import moze_intel.projecte.gameObjs.registries.PEItems;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -37,7 +38,7 @@ public class EntityFireProjectile extends NoGravityThrowableProjectile {
 	@Override
 	protected void onHitBlock(@NotNull BlockHitResult result) {
 		super.onHitBlock(result);
-		if (!level().isClientSide && getOwner() instanceof Player player) {
+		if (!level().isClientSide() && getOwner() instanceof Player player) {
 			BlockPos pos = result.getBlockPos();
 			BlockState state = level().getBlockState(pos);
 			if (state.is(Blocks.OBSIDIAN)) {
@@ -62,26 +63,25 @@ public class EntityFireProjectile extends NoGravityThrowableProjectile {
 	@Override
 	protected void onHitEntity(@NotNull EntityHitResult result) {
 		super.onHitEntity(result);
-		if (!level().isClientSide && getOwner() instanceof Player player) {
+		if (!level().isClientSide() && getOwner() instanceof Player player) {
 			ItemStack found = PlayerHelper.findFirstItem(player, fromArcana ? PEItems.ARCANA_RING : PEItems.IGNITION_RING);
 			if (!found.isEmpty() && ItemPE.consumeFuel(player, found, 32, true)) {
 				Entity ent = result.getEntity();
-				if (ent.hurt(level().damageSources().inFire(), 5)) {
-					ent.igniteForSeconds(5);
-				}
+				ent.hurt(level().damageSources().inFire(), 5);
+				ent.igniteForSeconds(5);
 			}
 		}
 	}
 
 	@Override
-	public void readAdditionalSaveData(@NotNull CompoundTag compound) {
-		super.readAdditionalSaveData(compound);
-		fromArcana = compound.getBoolean("fromArcana");
+	protected void readAdditionalSaveData(@NotNull ValueInput input) {
+		super.readAdditionalSaveData(input);
+		fromArcana = input.getBooleanOr("fromArcana", false);
 	}
 
 	@Override
-	public void addAdditionalSaveData(@NotNull CompoundTag compound) {
-		super.addAdditionalSaveData(compound);
-		compound.putBoolean("fromArcana", fromArcana);
+	protected void addAdditionalSaveData(@NotNull ValueOutput output) {
+		super.addAdditionalSaveData(output);
+		output.putBoolean("fromArcana", fromArcana);
 	}
 }

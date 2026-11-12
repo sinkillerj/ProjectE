@@ -6,6 +6,7 @@ import moze_intel.projecte.gameObjs.entity.EntityNovaPrimed;
 import moze_intel.projecte.gameObjs.entity.NoGravityThrowableProjectile;
 import moze_intel.projecte.gameObjs.registration.PEDeferredRegister;
 import moze_intel.projecte.utils.Constants;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -19,7 +20,7 @@ public class EntityTypeDeferredRegister extends PEDeferredRegister<EntityType<?>
 
 	public <ENTITY extends Entity> EntityTypeRegistryObject<ENTITY> registerBuilder(String name, Supplier<EntityType.Builder<ENTITY>> builder,
 			UnaryOperator<EntityType.Builder<ENTITY>> modifier) {
-		return (EntityTypeRegistryObject<ENTITY>) register(name, rl -> modifier.apply(builder.get()).build(rl.getPath()));
+		return (EntityTypeRegistryObject<ENTITY>) register(name, rl -> modifier.apply(builder.get()).build(ResourceKey.create(Registries.ENTITY_TYPE, rl)));
 	}
 
 	public <ENTITY extends Entity> EntityTypeRegistryObject<ENTITY> registerMisc(String name, EntityType.EntityFactory<ENTITY> factory,

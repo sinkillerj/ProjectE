@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:ignition_ring"
+        "recipes": "projecte:ignition_ring"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

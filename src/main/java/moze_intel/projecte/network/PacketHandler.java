@@ -26,11 +26,12 @@ import moze_intel.projecte.network.packets.to_server.UpdateGemModePKT;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.handling.IPayloadHandler;
@@ -117,12 +118,12 @@ public final class PacketHandler {
 	}
 
 	public void activateArchangel() {
-		PacketDistributor.sendToServer(activateArchangel);
+		ClientPacketDistributor.sendToServer(activateArchangel);
 	}
 
 	protected record SimplePacketPayLoad(CustomPacketPayload.Type<CustomPacketPayload> type) implements CustomPacketPayload {
 
-		private SimplePacketPayLoad(ResourceLocation id) {
+		private SimplePacketPayLoad(Identifier id) {
 			this(new CustomPacketPayload.Type<>(id));
 		}
 	}
@@ -137,7 +138,7 @@ public final class PacketHandler {
 			}
 		}
 
-		public SimplePacketPayLoad playInstanced(ResourceLocation id, IPayloadHandler<CustomPacketPayload> handler) {
+		public SimplePacketPayLoad playInstanced(Identifier id, IPayloadHandler<CustomPacketPayload> handler) {
 			SimplePacketPayLoad payload = new SimplePacketPayLoad(id);
 			if (toServer) {
 				registrar.playToServer(payload.type(), StreamCodec.unit(payload), handler);

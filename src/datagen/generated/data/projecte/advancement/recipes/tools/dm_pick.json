@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:dm_pick"
+        "recipes": "projecte:dm_pick"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

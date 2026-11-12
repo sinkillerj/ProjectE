@@ -37,7 +37,7 @@ public class DestructionCatalyst extends ItemPE implements IItemCharge, IBarHelp
 			return InteractionResult.FAIL;
 		}
 		Level level = ctx.getLevel();
-		if (level.isClientSide) {
+		if (level.isClientSide()) {
 			return InteractionResult.SUCCESS;
 		}
 		ItemStack stack = ctx.getItemInHand();
@@ -63,8 +63,8 @@ public class DestructionCatalyst extends ItemPE implements IItemCharge, IBarHelp
 				List<ItemStack> list = Block.getDrops(state, (ServerLevel) level, pos, WorldHelper.getBlockEntity(level, pos), player, stack);
 				drops.addAll(list);
 				level.removeBlock(pos, false);
-				if (level.random.nextInt(8) == 0) {
-					((ServerLevel) level).sendParticles(level.random.nextBoolean() ? ParticleTypes.POOF : ParticleTypes.LARGE_SMOKE, pos.getX(), pos.getY(), pos.getZ(), 2, 0, 0, 0, 0.05);
+				if (level.getRandom().nextInt(8) == 0) {
+					((ServerLevel) level).sendParticles(level.getRandom().nextBoolean() ? ParticleTypes.POOF : ParticleTypes.LARGE_SMOKE, pos.getX(), pos.getY(), pos.getZ(), 2, 0, 0, 0, 0.05);
 				}
 			}
 		}

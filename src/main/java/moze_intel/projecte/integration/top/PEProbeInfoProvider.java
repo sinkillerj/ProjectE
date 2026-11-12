@@ -10,7 +10,7 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.proxy.IEMCProxy;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.utils.EMCHelper;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -30,7 +30,7 @@ public class PEProbeInfoProvider implements IProbeInfoProvider, Function<ITheOne
 	}
 
 	@Override
-	public ResourceLocation getID() {
+	public Identifier getID() {
 		return PECore.rl("emc");
 	}
 

@@ -158,7 +158,7 @@ public class MappingConfig extends BasePEConfig {
 
 	@Override
 	public Type getConfigType() {
-		return Type.SERVER;
+		return Type.SYNCED;
 	}
 
 	private static class ProcessorConfig {

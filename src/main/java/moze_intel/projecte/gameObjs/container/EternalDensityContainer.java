@@ -11,10 +11,10 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
+import moze_intel.projecte.api.inventory.PEItemStacksHandler;
 import org.jetbrains.annotations.NotNull;
 
 public class EternalDensityContainer extends PEHandContainer {
@@ -50,14 +50,14 @@ public class EternalDensityContainer extends PEHandContainer {
 		if (slotIndex > 8) {
 			Slot slot = tryGetSlot(slotIndex);
 			if (slot != null) {
-				ItemHandlerHelper.insertItem(inventory, slot.getItem().copyWithCount(1), false);
+				PEItemStacksHandler.insertStackedRemainder(inventory, slot.getItem().copyWithCount(1), false);
 			}
 		}
 		return ItemStack.EMPTY;
 	}
 
 	@Override
-	public void clickPostValidate(int slotIndex, int button, @NotNull ClickType flag, @NotNull Player player) {
+	public void clickPostValidate(int slotIndex, int button, @NotNull ContainerInput flag, @NotNull Player player) {
 		Slot slot = tryGetSlot(slotIndex);
 		if (!(slot instanceof ISlotGhost ghost) || !ghost.tryClear()) {
 			super.clickPostValidate(slotIndex, button, flag, player);

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:black_hole_band"
+        "recipes": "projecte:black_hole_band"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

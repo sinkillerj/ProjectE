@@ -7,18 +7,18 @@ import moze_intel.projecte.gameObjs.registries.PEBlockEntityTypes;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.utils.text.TextComponentUtil;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
-import net.neoforged.neoforge.items.ItemStackHandler;
-import net.neoforged.neoforge.items.wrapper.CombinedInvWrapper;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import moze_intel.projecte.api.inventory.PEItemStacksHandler;
+import moze_intel.projecte.utils.PECombinedItemStacks;
 import org.jetbrains.annotations.NotNull;
 
 public class CondenserMK2BlockEntity extends CondenserBlockEntity {
@@ -29,25 +29,24 @@ public class CondenserMK2BlockEntity extends CondenserBlockEntity {
 
 	@NotNull
 	@Override
-	protected IItemHandler createAutomationInventory() {
-		IItemHandlerModifiable automationInput = new WrappedItemHandler(getInput(), WrappedItemHandler.WriteMode.IN) {
-			@NotNull
+	protected ResourceHandler<ItemResource> createAutomationInventory() {
+		ResourceHandler<ItemResource> input = new WrappedItemHandler(getInput(), WrappedItemHandler.WriteMode.IN) {
 			@Override
-			public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
-				return SlotPredicates.HAS_EMC.test(stack) && !isStackEqualToLock(stack) ? super.insertItem(slot, stack, simulate) : stack;
+			public int insert(int slot, ItemResource resource, int amount, net.neoforged.neoforge.transfer.transaction.TransactionContext transaction) {
+				ItemStack stack = resource.toStack();
+				return SlotPredicates.HAS_EMC.test(stack) && !isStackEqualToLock(stack) ? super.insert(slot, resource, amount, transaction) : 0;
 			}
 		};
-		IItemHandlerModifiable automationOutput = new WrappedItemHandler(getOutput(), WrappedItemHandler.WriteMode.OUT);
-		return new CombinedInvWrapper(automationInput, automationOutput);
+		return new PECombinedItemStacks(input, new WrappedItemHandler(getOutput(), WrappedItemHandler.WriteMode.OUT));
 	}
 
 	@Override
-	protected ItemStackHandler createInput() {
+	protected PEItemStacksHandler createInput() {
 		return new StackHandler(42);
 	}
 
 	@Override
-	protected ItemStackHandler createOutput() {
+	protected PEItemStacksHandler createOutput() {
 		return new StackHandler(42);
 	}
 
@@ -70,15 +69,15 @@ public class CondenserMK2BlockEntity extends CondenserBlockEntity {
 	}
 
 	@Override
-	public void loadAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider registries) {
-		super.loadAdditional(tag, registries);
-		getOutput().deserializeNBT(registries, tag.getCompound("output"));
+	public void loadAdditional(@NotNull ValueInput input) {
+		super.loadAdditional(input);
+		getOutput().deserialize(input.childOrEmpty("output"));
 	}
 
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider registries) {
-		super.saveAdditional(tag, registries);
-		tag.put("output", getOutput().serializeNBT(registries));
+	protected void saveAdditional(@NotNull ValueOutput output) {
+		super.saveAdditional(output);
+		getOutput().serialize(output.child("output"));
 	}
 
 	@Override

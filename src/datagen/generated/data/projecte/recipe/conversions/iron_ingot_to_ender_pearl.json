@@ -1,25 +1,13 @@
 {
   "type": "minecraft:crafting_shapeless",
-  "category": "misc",
   "ingredients": [
-    {
-      "item": "projecte:philosophers_stone"
-    },
-    {
-      "tag": "c:ingots/iron"
-    },
-    {
-      "tag": "c:ingots/iron"
-    },
-    {
-      "tag": "c:ingots/iron"
-    },
-    {
-      "tag": "c:ingots/iron"
-    }
+    "projecte:philosophers_stone",
+    "#c:ingots/iron",
+    "#c:ingots/iron",
+    "#c:ingots/iron",
+    "#c:ingots/iron"
   ],
   "result": {
-    "count": 1,
     "id": "minecraft:ender_pearl"
   }
 }

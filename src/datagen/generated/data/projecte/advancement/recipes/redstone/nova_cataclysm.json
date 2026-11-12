@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:nova_cataclysm"
+        "recipes": "projecte:nova_cataclysm"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

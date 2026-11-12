@@ -34,7 +34,7 @@ import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.PackOutput.PathProvider;
 import net.minecraft.data.PackOutput.Target;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Item;
@@ -81,7 +81,7 @@ public class EmiAliasProvider implements DataProvider, RVAliasHelper<EmiIngredie
 		return this.registries.thenCompose(lookupProvider -> {
 			IAliasMapping mapping = mappings.get();
 			mapping.addAliases(this);
-			Path path = pathProvider.json(ResourceLocation.fromNamespaceAndPath(IntegrationHelper.EMI_MODID, modid));
+			Path path = pathProvider.json(Identifier.fromNamespaceAndPath(IntegrationHelper.EMI_MODID, modid));
 			return DataProvider.saveStable(cachedOutput, lookupProvider, AliasInfo.SEQUENCED_SET_CODEC, data, path);
 		});
 	}

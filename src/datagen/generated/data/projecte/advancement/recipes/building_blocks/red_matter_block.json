@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:red_matter_block"
+        "recipes": "projecte:red_matter_block"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

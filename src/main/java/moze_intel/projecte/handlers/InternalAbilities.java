@@ -46,14 +46,14 @@ public class InternalAbilities {
 				}
 				applyWaterSpeed = waterWalkOnType.applySpeed(water);
 				applyLavaSpeed = lavaWalkOnType.applySpeed(lava);
-			} else if (!player.level().isClientSide) {
+			} else if (!player.level().isClientSide()) {
 				if (waterWalkOnType.canWalk() && player.isInWater()) {
 					//Things that apply water walking also refresh air supply when in water
 					player.setAirSupply(player.getMaxAirSupply());
 				}
 			}
 		}
-		if (!player.level().isClientSide) {
+		if (!player.level().isClientSide()) {
 			updateAttribute(player, Attributes.MOVEMENT_SPEED, WATER_SPEED_BOOST, applyWaterSpeed);
 			updateAttribute(player, Attributes.MOVEMENT_SPEED, LAVA_SPEED_BOOST, applyLavaSpeed);
 			updateAttribute(player, NeoForgeMod.CREATIVE_FLIGHT, FLIGHT, InternalAbilities::shouldPlayerFly);

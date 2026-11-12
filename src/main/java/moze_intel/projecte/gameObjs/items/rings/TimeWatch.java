@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.items.rings;
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
+import java.util.function.Consumer;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.IntFunction;
@@ -15,6 +16,7 @@ import moze_intel.projecte.gameObjs.PETags.BlockEntities;
 import moze_intel.projecte.gameObjs.PETags.Blocks;
 import moze_intel.projecte.gameObjs.items.IBarHelper;
 import moze_intel.projecte.gameObjs.registries.PEDataComponentTypes;
+import moze_intel.projecte.utils.LevelHelper;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.RegistryUtils;
 import moze_intel.projecte.utils.WorldHelper;
@@ -28,17 +30,18 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
-import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -48,6 +51,7 @@ import net.minecraft.world.level.chunk.LevelChunk.RebindableTickingBlockEntityWr
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharge, IBarHelper {
 
@@ -62,38 +66,37 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 
 	@NotNull
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level level, Player player, @NotNull InteractionHand hand) {
+	public InteractionResult use(Level level, Player player, @NotNull InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
-		if (!level.isClientSide) {
+		if (!level.isClientSide()) {
 			if (!ProjectEConfig.server.items.enableTimeWatch.get()) {
 				player.sendSystemMessage(PELang.TIME_WATCH_DISABLED.translate());
-				return InteractionResultHolder.fail(stack);
+				return InteractionResult.FAIL;
 			}
 			stack.update(PEDataComponentTypes.TIME_WATCH_MODE, TimeWatchMode.OFF, TimeWatchMode::next);
 			player.sendSystemMessage(PELang.TIME_WATCH_MODE_SWITCH.translate(getTimeName(stack)));
 		}
-		return InteractionResultHolder.success(stack);
+		return InteractionResult.SUCCESS.heldItemTransformedTo(stack);
 	}
 
 	@Override
-	public void inventoryTick(@NotNull ItemStack stack, @NotNull Level level, @NotNull Entity entity, int slot, boolean isHeld) {
-		super.inventoryTick(stack, level, entity, slot, isHeld);
+	public void inventoryTick(@NotNull ItemStack stack, @NotNull ServerLevel level, @NotNull Entity entity, @Nullable EquipmentSlot slot) {
+		super.inventoryTick(stack, level, entity, slot);
 		if (!(entity instanceof Player player) || !hotBarOrOffHand(slot) || !ProjectEConfig.server.items.enableTimeWatch.get()) {
 			return;
 		}
 		TimeWatchMode timeControl = stack.getOrDefault(PEDataComponentTypes.TIME_WATCH_MODE, TimeWatchMode.OFF);
-		if (timeControl != TimeWatchMode.OFF && !level.isClientSide && level.getGameRules().getBoolean(GameRules.RULE_DAYLIGHT)) {
-			ServerLevel serverWorld = (ServerLevel) level;
+		if (timeControl != TimeWatchMode.OFF && level.getGameRules().get(GameRules.ADVANCE_TIME)) {
 			long scaledCharge = 4L * (getCharge(stack) + 1);
 			if (timeControl == TimeWatchMode.REWIND) {//rewind
-				serverWorld.setDayTime(Math.max(level.getDayTime() - scaledCharge, 0));
-			} else if (level.getDayTime() > Long.MAX_VALUE - scaledCharge) {//Fast forward (would go past max long)
-				serverWorld.setDayTime(Long.MAX_VALUE);
+				LevelHelper.setDefaultClockTime(level, Math.max(LevelHelper.getDefaultClockTime(level) - scaledCharge, 0));
+			} else if (LevelHelper.getDefaultClockTime(level) > Long.MAX_VALUE - scaledCharge) {//Fast forward (would go past max long)
+				LevelHelper.setDefaultClockTime(level, Long.MAX_VALUE);
 			} else {//Fast forward
-				serverWorld.setDayTime(level.getDayTime() + scaledCharge);
+				LevelHelper.addDefaultClockTicks(level, scaledCharge);
 			}
 		}
-		if (level.isClientSide || !stack.getOrDefault(PEDataComponentTypes.ACTIVE, false)) {
+		if (!stack.getOrDefault(PEDataComponentTypes.ACTIVE, false)) {
 			return;
 		}
 		int charge = getCharge(stack);
@@ -136,7 +139,7 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 	private void speedUpBlockEntities(Level level, int bonusTicks, AABB effectBounds) {
 		for (BlockEntity blockEntity : WorldHelper.getBlockEntitiesWithinAABB(level, effectBounds, VALID_TARGET)) {
 			BlockPos pos = blockEntity.getBlockPos();
-			if (level.shouldTickBlocksAt(ChunkPos.asLong(pos))) {
+			if (level.shouldTickBlocksAt(ChunkPos.pack(pos))) {
 				LevelChunk chunk = level.getChunkAt(pos);
 				RebindableTickingBlockEntityWrapper tickingWrapper = chunk.tickersInLevel.get(pos);
 				if (tickingWrapper != null && !tickingWrapper.isRemoved()) {
@@ -144,13 +147,8 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 						//In general this should always be the case, so we inline some of the logic
 						// to optimize the calls to try and make extra ticks as cheap as possible
 						if (chunk.isTicking(pos)) {
-							ProfilerFiller profiler = level.getProfiler();
-							//Note: We intentionally don't start tracking with the TimeTracker that neo patches in
-							// because we don't want to override tracking for the pedestal
-							profiler.push(tickingWrapper::getType);
 							BlockState state = chunk.getBlockState(pos);
 							provideBonusTicks(level, pos, state, blockEntity, tickingBE, bonusTicks);
-							profiler.pop();
 						}
 					} else {
 						//Fallback to just trying to make it tick extra
@@ -187,7 +185,7 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 						if (!WorldHelper.isCrop(state)) {// All plants should be sped using Harvest Goddess
 							pos = pos.immutable();
 							for (int i = 0; i < bonusTicks; i++) {
-								state.randomTick(serverLevel, pos, level.random);
+								state.randomTick(serverLevel, pos, level.getRandom());
 							}
 						}
 					}
@@ -205,18 +203,18 @@ public class TimeWatch extends PEToggleItem implements IPedestalItem, IItemCharg
 	}
 
 	@Override
-	public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flags) {
-		super.appendHoverText(stack, context, tooltip, flags);
-		tooltip.add(PELang.TOOLTIP_TIME_WATCH_1.translate());
-		tooltip.add(PELang.TOOLTIP_TIME_WATCH_2.translate(Component.keybind("key.use")));
-		tooltip.add(PELang.TIME_WATCH_MODE.translate(getTimeName(stack)));
+	public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay display, @NotNull Consumer<Component> tooltip, @NotNull TooltipFlag flags) {
+		super.appendHoverText(stack, context, display, tooltip, flags);
+		tooltip.accept(PELang.TOOLTIP_TIME_WATCH_1.translate());
+		tooltip.accept(PELang.TOOLTIP_TIME_WATCH_2.translate(Component.keybind("key.use")));
+		tooltip.accept(PELang.TIME_WATCH_MODE.translate(getTimeName(stack)));
 	}
 
 	@Override
 	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@NotNull ItemStack stack, @NotNull Level level, @NotNull BlockPos pos,
 			@NotNull PEDESTAL pedestal) {
 		// Change from old EE2 behaviour (universally increased tickrate) for safety and impl reasons.
-		if (!level.isClientSide && ProjectEConfig.server.items.enableTimeWatch.get()) {
+		if (!level.isClientSide() && ProjectEConfig.server.items.enableTimeWatch.get()) {
 			AABB effectBounds = pedestal.getEffectBounds();
 			speedUpBlocks(level, ProjectEConfig.server.effects.timePedBonus.get(), effectBounds);
 			slowMobs(level, effectBounds, ProjectEConfig.server.effects.timePedMobSlowness.get());

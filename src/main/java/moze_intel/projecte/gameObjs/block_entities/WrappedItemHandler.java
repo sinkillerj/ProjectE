@@ -1,36 +1,82 @@
 package moze_intel.projecte.gameObjs.block_entities;
 
+import moze_intel.projecte.api.inventory.PEItemStacksHandler;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.transfer.IndexModifier;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * IItemHandler implementation for exposure to the public Useful when you want the IItemHandler itself to have full in/out access internally but restricted access in
- * public
+ * Restricts insert/extract on a {@link PEItemStacksHandler} for automation exposure.
  */
-public class WrappedItemHandler implements IItemHandlerModifiable {
+public class WrappedItemHandler implements ResourceHandler<ItemResource>, IndexModifier<ItemResource> {
 
-	private final IItemHandlerModifiable compose;
+	private final PEItemStacksHandler compose;
 	private final WriteMode mode;
 
-	public WrappedItemHandler(IItemHandlerModifiable compose, WriteMode mode) {
+	public WrappedItemHandler(PEItemStacksHandler compose, WriteMode mode) {
 		this.compose = compose;
 		this.mode = mode;
 	}
 
-	@Override
 	public int getSlots() {
 		return compose.getSlots();
 	}
 
 	@NotNull
-	@Override
 	public ItemStack getStackInSlot(int slot) {
 		return compose.getStackInSlot(slot);
 	}
 
-	@NotNull
 	@Override
+	public void set(int index, ItemResource resource, int amount) {
+		compose.set(index, resource, amount);
+	}
+
+	@Override
+	public int size() {
+		return compose.size();
+	}
+
+	@Override
+	public ItemResource getResource(int index) {
+		return compose.getResource(index);
+	}
+
+	@Override
+	public long getAmountAsLong(int index) {
+		return compose.getAmountAsLong(index);
+	}
+
+	@Override
+	public long getCapacityAsLong(int index, ItemResource resource) {
+		return compose.getCapacityAsLong(index, resource);
+	}
+
+	@Override
+	public boolean isValid(int index, ItemResource resource) {
+		return compose.isValid(index, resource);
+	}
+
+	@Override
+	public int insert(int index, ItemResource resource, int amount, TransactionContext transaction) {
+		if (mode != WriteMode.IN && mode != WriteMode.IN_OUT) {
+			return 0;
+		}
+		return compose.insert(index, resource, amount, transaction);
+	}
+
+	@Override
+	public int extract(int index, ItemResource resource, int amount, TransactionContext transaction) {
+		if (mode != WriteMode.OUT && mode != WriteMode.IN_OUT) {
+			return 0;
+		}
+		return compose.extract(index, resource, amount, transaction);
+	}
+
+	@NotNull
 	public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
 		if (mode == WriteMode.IN || mode == WriteMode.IN_OUT) {
 			return compose.insertItem(slot, stack, simulate);
@@ -39,7 +85,6 @@ public class WrappedItemHandler implements IItemHandlerModifiable {
 	}
 
 	@NotNull
-	@Override
 	public ItemStack extractItem(int slot, int amount, boolean simulate) {
 		if (mode == WriteMode.OUT || mode == WriteMode.IN_OUT) {
 			return compose.extractItem(slot, amount, simulate);
@@ -47,19 +92,8 @@ public class WrappedItemHandler implements IItemHandlerModifiable {
 		return ItemStack.EMPTY;
 	}
 
-	@Override
-	public int getSlotLimit(int slot) {
-		return compose.getSlotLimit(slot);
-	}
-
-	@Override
-	public boolean isItemValid(int slot, @NotNull ItemStack stack) {
-		return compose.isItemValid(slot, stack);
-	}
-
-	@Override
-	public void setStackInSlot(int slot, @NotNull ItemStack stack) {
-		compose.setStackInSlot(slot, stack);
+	public PEItemStacksHandler getCompose() {
+		return compose;
 	}
 
 	public enum WriteMode {

@@ -95,7 +95,7 @@ public class KnowledgeCMD {
 			source.sendFailure(PELang.COMMAND_PROVIDER_FAIL.translate(player.getDisplayName()));
 			return 0;
 		}
-		ItemStack item = ItemArgument.getItem(ctx, "item").createItemStack(1, false);
+		ItemStack item = ItemArgument.getItem(ctx, "item").createItemStack(1);
 		Component displayName = item.getDisplayName();
 		if (item.isEmpty()) {
 			source.sendFailure(PELang.COMMAND_KNOWLEDGE_INVALID.translate(displayName));

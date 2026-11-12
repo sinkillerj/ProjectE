@@ -37,3 +37,6 @@ $RECYCLE.BIN/
 
 # Mac crap
 .DS_Store
+
+# Local data-generator state
+src/datagen/generated/.cache/

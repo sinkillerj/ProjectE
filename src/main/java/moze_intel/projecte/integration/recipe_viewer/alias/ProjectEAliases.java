@@ -1,7 +1,7 @@
 package moze_intel.projecte.integration.recipe_viewer.alias;
 
 import moze_intel.projecte.PECore;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 
 public enum ProjectEAliases implements IAliasedTranslation {
 	AUTO_FEEDER("auto.feeder", "Auto-Feeder"),

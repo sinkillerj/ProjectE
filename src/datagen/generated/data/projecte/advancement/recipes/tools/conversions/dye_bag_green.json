@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:conversions/dye_bag_green"
+        "recipes": "projecte:conversions/dye_bag_green"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

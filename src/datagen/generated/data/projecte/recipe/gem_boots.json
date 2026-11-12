@@ -10,21 +10,12 @@
   "type": "minecraft:crafting_shapeless",
   "category": "equipment",
   "ingredients": [
-    {
-      "item": "projecte:rm_boots"
-    },
-    {
-      "item": "projecte:swiftwolf_rending_gale"
-    },
-    {
-      "item": "projecte:swiftwolf_rending_gale"
-    },
-    {
-      "item": "projecte:klein_star_omega"
-    }
+    "projecte:rm_boots",
+    "projecte:swiftwolf_rending_gale",
+    "projecte:swiftwolf_rending_gale",
+    "projecte:klein_star_omega"
   ],
   "result": {
-    "count": 1,
     "id": "projecte:gem_boots"
   }
 }

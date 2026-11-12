@@ -9,14 +9,13 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import javax.annotation.ParametersAreNonnullByDefault;
 import moze_intel.projecte.api.world_transmutation.WorldTransmutationFile;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.PackOutput.PathProvider;
 import net.minecraft.data.PackOutput.Target;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.conditions.ICondition;
@@ -26,10 +25,9 @@ import net.neoforged.neoforge.common.conditions.WithConditions;
  * Base Data Generator Provider class for use in creating world transmutations json data files that ProjectE will read from the data pack.
  */
 @ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public abstract class WorldTransmutationProvider implements DataProvider {
 
-	private final Map<ResourceLocation, ConditionalBuilder> worldTransmutations = new LinkedHashMap<>();
+	private final Map<Identifier, ConditionalBuilder> worldTransmutations = new LinkedHashMap<>();
 	private final CompletableFuture<HolderLookup.Provider> lookupProvider;
 	private final PathProvider outputProvider;
 	private final String modid;
@@ -76,7 +74,7 @@ public abstract class WorldTransmutationProvider implements DataProvider {
 	 *
 	 * @return Builder
 	 */
-	protected WorldTransmutationBuilder createTransmutationBuilder(ResourceLocation id, ICondition... conditions) {
+	protected WorldTransmutationBuilder createTransmutationBuilder(Identifier id, ICondition... conditions) {
 		Objects.requireNonNull(id, "World Transmutation Builder ID cannot be null.");
 		if (worldTransmutations.containsKey(id)) {
 			throw new RuntimeException("World transmutation file '" + id + "' has already been registered.");

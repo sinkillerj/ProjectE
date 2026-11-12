@@ -2,15 +2,13 @@
   "type": "minecraft:block",
   "pools": [
     {
-      "bonus_rolls": 0.0,
       "entries": [
         {
           "type": "minecraft:item",
           "name": "projecte:relay_mk1"
         }
       ],
-      "name": "main",
-      "rolls": 1.0
+      "rolls": 1
     }
   ],
   "random_sequence": "projecte:blocks/relay_mk1"

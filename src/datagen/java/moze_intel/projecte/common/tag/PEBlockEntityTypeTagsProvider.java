@@ -10,21 +10,18 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class PEBlockEntityTypeTagsProvider extends TagsProvider<BlockEntityType<?>> {
 
-	public PEBlockEntityTypeTagsProvider(PackOutput output, CompletableFuture<Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
-		super(output, Registries.BLOCK_ENTITY_TYPE, lookupProvider, PECore.MODID, existingFileHelper);
+	public PEBlockEntityTypeTagsProvider(PackOutput output, CompletableFuture<Provider> lookupProvider) {
+		super(output, Registries.BLOCK_ENTITY_TYPE, lookupProvider, PECore.MODID);
 	}
 
 	@Override
 	protected void addTags(@NotNull HolderLookup.Provider provider) {
-		tag(BlockEntities.BLACKLIST_TIME_WATCH).add(
-				PEBlockEntityTypes.DARK_MATTER_PEDESTAL.getKey()
-		);
+		getOrCreateRawBuilder(BlockEntities.BLACKLIST_TIME_WATCH)
+				.addElement(PEBlockEntityTypes.DARK_MATTER_PEDESTAL.getKey().identifier());
 	}
 
 	@NotNull

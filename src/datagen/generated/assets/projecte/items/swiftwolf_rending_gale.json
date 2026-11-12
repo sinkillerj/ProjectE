@@ -1,0 +1,41 @@
+{
+  "model": {
+    "type": "minecraft:select",
+    "cases": [
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "projecte:item/swiftwolf_rending_gale_mode_0"
+        },
+        "when": "off"
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "projecte:item/swiftwolf_rending_gale_mode_1"
+        },
+        "when": "flight"
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "projecte:item/swiftwolf_rending_gale_mode_2"
+        },
+        "when": "shield"
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "projecte:item/swiftwolf_rending_gale_mode_3"
+        },
+        "when": "shielded_flight"
+      }
+    ],
+    "component": "projecte:swrg_mode",
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "projecte:item/swiftwolf_rending_gale_mode_0"
+    },
+    "property": "minecraft:component"
+  }
+}

@@ -27,7 +27,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:full_star_tome_alt"
+        "recipes": "projecte:full_star_tome_alt"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

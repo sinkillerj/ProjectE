@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:dm_shears"
+        "recipes": "projecte:dm_shears"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

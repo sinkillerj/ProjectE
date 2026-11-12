@@ -2,15 +2,10 @@
   "type": "minecraft:crafting_shapeless",
   "category": "equipment",
   "ingredients": [
-    {
-      "tag": "projecte:alchemical_bags"
-    },
-    {
-      "tag": "c:dyes/brown"
-    }
+    "#projecte:alchemical_bags",
+    "#c:dyes/brown"
   ],
   "result": {
-    "count": 1,
     "id": "projecte:brown_alchemical_bag"
   }
 }

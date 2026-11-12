@@ -7,35 +7,18 @@
   "type": "minecraft:crafting_shapeless",
   "category": "equipment",
   "ingredients": [
+    "projecte:rm_boots",
+    "projecte:swiftwolf_rending_gale",
+    "projecte:swiftwolf_rending_gale",
     {
-      "item": "projecte:rm_boots"
-    },
-    {
-      "item": "projecte:swiftwolf_rending_gale"
-    },
-    {
-      "item": "projecte:swiftwolf_rending_gale"
-    },
-    {
-      "type": "neoforge:components",
+      "neoforge:ingredient_type": "neoforge:components",
       "components": {
-        "minecraft:attribute_modifiers": {
-          "modifiers": []
-        },
-        "minecraft:enchantments": {
-          "levels": {}
-        },
-        "minecraft:lore": [],
-        "minecraft:max_stack_size": 1,
-        "minecraft:rarity": "epic",
-        "minecraft:repair_cost": 0,
         "projecte:stored_emc": 51200000
       },
       "items": "projecte:klein_star_omega"
     }
   ],
   "result": {
-    "count": 1,
     "id": "projecte:gem_boots"
   }
 }

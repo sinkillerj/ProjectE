@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:alchemical_coal_block"
+        "recipes": "projecte:alchemical_coal_block"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

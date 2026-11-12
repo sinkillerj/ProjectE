@@ -44,7 +44,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.storage.LevelResource;
 import net.neoforged.neoforge.attachment.AttachmentHolder;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import moze_intel.projecte.api.inventory.PEItemStacksHandler;
 import net.neoforged.neoforge.server.command.EnumArgument;
 import org.jetbrains.annotations.NotNull;
 
@@ -81,24 +81,24 @@ public class ShowBagCMD {
 	}
 
 	private static MenuProvider createContainer(ServerPlayer sender, ServerPlayer target, DyeColor color) {
-		IItemHandlerModifiable inv = (IItemHandlerModifiable) Objects.requireNonNull(target.getCapability(PECapabilities.ALCH_BAG_CAPABILITY)).getBag(color);
+		PEItemStacksHandler inv = (PEItemStacksHandler) Objects.requireNonNull(target.getCapability(PECapabilities.ALCH_BAG_CAPABILITY)).getBag(color);
 		Component name = PELang.SHOWBAG_NAMED.translate(PEItems.getBag(color), target.getDisplayName());
 		return getContainer(sender, name, inv, false, () -> target.isAlive() && !target.hasDisconnected());
 	}
 
 	private static MenuProvider createContainer(MinecraftServer server, ServerPlayer sender, UUID target, DyeColor color) throws CommandSyntaxException {
 		//Try to get the bag
-		IItemHandlerModifiable inv = loadOfflineBag(server, target, color);
-		Component name = PEItems.getBag(color).getDescription();
-		Optional<GameProfile> profileByUUID = server.getProfileCache() == null ? Optional.empty() : server.getProfileCache().get(target);
+		PEItemStacksHandler inv = loadOfflineBag(server, target, color);
+		Component name = Component.translatable(PEItems.getBag(color).getDescriptionId());
+		Optional<GameProfile> profileByUUID = server.services().profileResolver().fetchById(target);
 		if (profileByUUID.isPresent()) {
 			//If we have a cache of the player, include their last known name in the name of the bag
-			name = PELang.SHOWBAG_NAMED.translate(name, profileByUUID.get().getName());
+			name = PELang.SHOWBAG_NAMED.translate(name, profileByUUID.get().name());
 		}
 		return getContainer(sender, name, inv, true, () -> true);
 	}
 
-	private static MenuProvider getContainer(ServerPlayer sender, Component name, IItemHandlerModifiable inv, boolean immutable,
+	private static MenuProvider getContainer(ServerPlayer sender, Component name, PEItemStacksHandler inv, boolean immutable,
 			BooleanSupplier canInteractWith) {
 		return new MenuProvider() {
 			@NotNull
@@ -120,14 +120,14 @@ public class ShowBagCMD {
 		};
 	}
 
-	private static IItemHandlerModifiable loadOfflineBag(MinecraftServer server, UUID playerUUID, DyeColor color) throws CommandSyntaxException {
+	private static PEItemStacksHandler loadOfflineBag(MinecraftServer server, UUID playerUUID, DyeColor color) throws CommandSyntaxException {
 		Path player = server.getWorldPath(LevelResource.PLAYER_DATA_DIR).resolve(playerUUID.toString() + ".dat");
 		if (Files.exists(player) && Files.isRegularFile(player)) {
 			try (InputStream in = Files.newInputStream(player)) {
 				CompoundTag playerDat = NbtIo.readCompressed(in, NbtAccounter.unlimitedHeap());
-				if (playerDat.contains(AttachmentHolder.ATTACHMENTS_NBT_KEY, Tag.TAG_COMPOUND)) {
-					CompoundTag attachmentData = playerDat.getCompound(AttachmentHolder.ATTACHMENTS_NBT_KEY);
-					CompoundTag bagData = attachmentData.getCompound(PEAttachmentTypes.ALCHEMICAL_BAGS.getId().toString());
+				if (playerDat.contains(AttachmentHolder.ATTACHMENTS_NBT_KEY)) {
+					CompoundTag attachmentData = playerDat.getCompound(AttachmentHolder.ATTACHMENTS_NBT_KEY).orElseThrow();
+					CompoundTag bagData = attachmentData.getCompound(PEAttachmentTypes.ALCHEMICAL_BAGS.getId().toString()).orElseThrow();
 					RegistryOps<Tag> serializationContext = server.registryAccess().createSerializationContext(NbtOps.INSTANCE);
 					DataResult<AlchemicalBagAttachment> result = AlchemicalBagAttachment.CODEC.parse(serializationContext, bagData);
 					if (result.isSuccess()) {

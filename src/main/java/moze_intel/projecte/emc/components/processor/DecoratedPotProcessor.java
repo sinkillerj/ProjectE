@@ -9,7 +9,9 @@ import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
+import java.util.Optional;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.PotDecorations;
 import org.jetbrains.annotations.NotNull;
@@ -44,7 +46,7 @@ public class DecoratedPotProcessor extends PersistentComponentProcessor<PotDecor
 	@Range(from = 0, to = Long.MAX_VALUE)
 	protected long recalculateEMC(@NotNull ItemInfo info, @Range(from = 1, to = Long.MAX_VALUE) long currentEMC, @NotNull PotDecorations decorations) throws ArithmeticException {
 		long totalDecorationEmc = 0;
-		for (Item decoration : decorations.ordered()) {
+		for (Item decoration : sherds(decorations)) {
 			long decorationEmc = IEMCProxy.INSTANCE.getValue(decoration);
 			if (decorationEmc == 0) {
 				//At least one sherd doesn't have an EMC value, so we can't calculate the value of the pot as a whole
@@ -80,5 +82,13 @@ public class DecoratedPotProcessor extends PersistentComponentProcessor<PotDecor
 	@Override
 	protected boolean shouldPersist(@NotNull ItemInfo info, @NotNull PotDecorations component) {
 		return !component.equals(PotDecorations.EMPTY);
+	}
+
+	private static Iterable<Item> sherds(PotDecorations decorations) {
+		java.util.List<Item> items = new java.util.ArrayList<>(4);
+		for (Optional<ItemStackTemplate> side : java.util.List.of(decorations.back(), decorations.left(), decorations.right(), decorations.front())) {
+			side.map(template -> template.item().value()).ifPresent(items::add);
+		}
+		return items;
 	}
 }

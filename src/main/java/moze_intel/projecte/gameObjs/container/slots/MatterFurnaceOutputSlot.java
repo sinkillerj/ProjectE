@@ -5,7 +5,9 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.event.EventHooks;
-import net.neoforged.neoforge.items.IItemHandler;
+import moze_intel.projecte.api.inventory.PEItemStacksHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 
 //[VanillaCopy] Adapted from FurnaceResultSlot
@@ -15,8 +17,8 @@ public class MatterFurnaceOutputSlot extends InventoryContainerSlot {
 	private final Player player;
 	private int removeCount;
 
-	public MatterFurnaceOutputSlot(Player player, DMFurnaceBlockEntity furnace, IItemHandler itemHandler, int index, int xPosition, int yPosition) {
-		super(itemHandler, index, xPosition, yPosition);
+	public MatterFurnaceOutputSlot(Player player, DMFurnaceBlockEntity furnace, ResourceHandler<ItemResource> itemHandler, int index, int xPosition, int yPosition) {
+		super(itemHandler, PEItemStacksHandler.requireModifier(itemHandler), index, xPosition, yPosition);
 		this.furnace = furnace;
 		this.player = player;
 	}
@@ -49,12 +51,12 @@ public class MatterFurnaceOutputSlot extends InventoryContainerSlot {
 
 	@Override
 	protected void checkTakeAchievements(ItemStack stack) {
-		stack.onCraftedBy(player.level(), player, removeCount);
+		stack.onCraftedBy(player, removeCount);
 		if (player instanceof ServerPlayer serverPlayer) {
 			furnace.awardUsedRecipesAndPopExperience(serverPlayer);
 		}
 
 		removeCount = 0;
-		EventHooks.firePlayerSmeltedEvent(player, stack);
+		EventHooks.firePlayerSmeltedEvent(player, stack, removeCount);
 	}
 }

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:klein_star_omega"
+        "recipes": "projecte:klein_star_omega"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

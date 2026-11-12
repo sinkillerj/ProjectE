@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "A": {
-      "item": "projecte:alchemical_chest"
-    },
-    "C": {
-      "item": "projecte:high_covalence_dust"
-    },
-    "W": {
-      "item": "minecraft:yellow_wool"
-    }
+    "A": "projecte:alchemical_chest",
+    "C": "projecte:high_covalence_dust",
+    "W": "minecraft:yellow_wool"
   },
   "pattern": [
     "CCC",
@@ -18,7 +12,6 @@
     "WWW"
   ],
   "result": {
-    "count": 1,
     "id": "projecte:yellow_alchemical_bag"
   }
 }

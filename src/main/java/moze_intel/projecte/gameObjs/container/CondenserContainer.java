@@ -13,9 +13,10 @@ import moze_intel.projecte.network.packets.to_client.container.UpdateCondenserLo
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -42,7 +43,7 @@ public class CondenserContainer extends EmcChestBlockEntityContainer<CondenserBl
 	protected void initSlots() {
 		this.addSlot(new SlotCondenserLock(blockEntity::getLockInfo, 0, 12, 6));
 		Predicate<ItemStack> validator = s -> SlotPredicates.HAS_EMC.test(s) && !blockEntity.isStackEqualToLock(s);
-		IItemHandler handler = blockEntity.getInput();
+		ResourceHandler<ItemResource> handler = blockEntity.getInput();
 		for (int i = 0; i < 7; i++) {
 			for (int j = 0; j < 13; j++) {
 				this.addSlot(new ValidatedSlot(handler,  j + i * 13, 12 + j * 18, 26 + i * 18, validator));
@@ -69,7 +70,7 @@ public class CondenserContainer extends EmcChestBlockEntityContainer<CondenserBl
 	}
 
 	@Override
-	public void clicked(int slot, int button, @NotNull ClickType flag, @NotNull Player player) {
+	public void clicked(int slot, int button, @NotNull ContainerInput flag, @NotNull Player player) {
 		if (slot == 0) {
 			if (blockEntity.attemptCondenserSet(player)) {
 				this.broadcastChanges();

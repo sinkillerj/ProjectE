@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:mercurial_eye"
+        "recipes": "projecte:mercurial_eye"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

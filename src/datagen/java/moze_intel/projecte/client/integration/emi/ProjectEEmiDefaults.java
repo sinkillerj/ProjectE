@@ -6,12 +6,11 @@ import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEItems;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 public class ProjectEEmiDefaults extends BaseEmiDefaults {
 
-	public ProjectEEmiDefaults(PackOutput output, ExistingFileHelper existingFileHelper, CompletableFuture<HolderLookup.Provider> registries) {
-		super(output, existingFileHelper, registries, PECore.MODID);
+	public ProjectEEmiDefaults(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
+		super(output, registries, PECore.MODID);
 	}
 
 	@Override

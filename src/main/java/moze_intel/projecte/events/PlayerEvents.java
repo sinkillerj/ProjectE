@@ -13,6 +13,7 @@ import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.tags.DamageTypeTags;
@@ -26,14 +27,16 @@ import net.neoforged.fml.util.thread.EffectiveSide;
 import net.neoforged.neoforge.common.damagesource.DamageContainer;
 import net.neoforged.neoforge.common.damagesource.DamageContainer.Reduction;
 import net.neoforged.neoforge.common.util.FakePlayer;
-import net.neoforged.neoforge.common.util.TriState;
+import net.minecraft.util.TriState;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.neoforged.neoforge.event.entity.EntityEvent;
 import net.neoforged.neoforge.event.entity.EntityInvulnerabilityCheckEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.player.ItemEntityPickupEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import moze_intel.projecte.api.inventory.PEItemStacksHandler;
 
 @EventBusSubscriber(modid = PECore.MODID)
 public class PlayerEvents {
@@ -97,8 +100,9 @@ public class PlayerEvents {
 
 	@SubscribeEvent
 	public static void onHighAlchemistJoin(PlayerEvent.PlayerLoggedInEvent evt) {
-		if (PECore.uuids.contains(evt.getEntity().getUUID().toString())) {
-			MinecraftServer server = evt.getEntity().getServer();
+		if (PECore.uuids.contains(evt.getEntity().getUUID().toString()) && evt.getEntity() instanceof ServerPlayer serverPlayer) {
+			ServerLevel serverLevel = serverPlayer.level();
+			MinecraftServer server = serverLevel.getServer();
 			if (server != null) {
 				Component joinMessage = PELang.HIGH_ALCHEMIST.translateColored(ChatFormatting.BLUE, ChatFormatting.GOLD, evt.getEntity().getDisplayName());
 				server.getPlayerList().broadcastSystemMessage(joinMessage, false);
@@ -110,16 +114,16 @@ public class PlayerEvents {
 	public static void pickupItem(ItemEntityPickupEvent.Pre event) {
 		ItemEntity itemEntity = event.getItemEntity();
 		Player player = event.getPlayer();
-		if (itemEntity.level().isClientSide || itemEntity.hasPickUpDelay() || itemEntity.getTarget() != null && !player.getUUID().equals(itemEntity.getTarget())) {
+		if (itemEntity.level().isClientSide() || itemEntity.hasPickUpDelay() || itemEntity.getTarget() != null && !player.getUUID().equals(itemEntity.getTarget())) {
 			return;
 		}
-		ItemStack bag = AlchemicalBag.getFirstBagWithSuctionItem(player, player.getInventory().items);
+		ItemStack bag = AlchemicalBag.getFirstBagWithSuctionItem(player, player.getInventory().getNonEquipmentItems());
 		if (!bag.isEmpty()) {
 			IAlchBagProvider bagProvider = player.getCapability(PECapabilities.ALCH_BAG_CAPABILITY);
 			if (bagProvider != null) {
 				ItemStack stack = itemEntity.getItem();
-				IItemHandler handler = bagProvider.getBag(((AlchemicalBag) bag.getItem()).color);
-				ItemStack remainder = ItemHandlerHelper.insertItemStacked(handler, stack, false);
+				ResourceHandler<ItemResource> handler = bagProvider.getBag(((AlchemicalBag) bag.getItem()).color);
+				ItemStack remainder = PEItemStacksHandler.insertStackedRemainder(handler, stack, false);
 
 				int pickedUpCount = stack.getCount() - remainder.getCount();
 				if (pickedUpCount > 0) {
@@ -150,7 +154,11 @@ public class PlayerEvents {
 		DamageContainer damageContainer = event.getContainer();
 		if (damageContainer.getNewDamage() > 0) {
 			ReductionInfo reductionInfo = ReductionInfo.ZERO;
-			for (ItemStack armorStack : event.getEntity().getArmorSlots()) {
+			for (EquipmentSlot slot : EquipmentSlot.values()) {
+				if (!slot.isArmor()) {
+					continue;
+				}
+				ItemStack armorStack = event.getEntity().getItemBySlot(slot);
 				if (armorStack.getItem() instanceof PEArmor armorItem) {
 					//We return the max of this piece's base reduction (in relation to the full set),
 					// and the max damage an item can absorb for a given source

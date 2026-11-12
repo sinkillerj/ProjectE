@@ -2,6 +2,7 @@ package moze_intel.projecte.gameObjs.container;
 
 import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
+import moze_intel.projecte.api.inventory.PEItemStacksHandler;
 import moze_intel.projecte.gameObjs.block_entities.DMFurnaceBlockEntity;
 import moze_intel.projecte.gameObjs.container.slots.MatterFurnaceOutputSlot;
 import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
@@ -12,7 +13,8 @@ import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.DataSlot;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 
 public class DMFurnaceContainer extends PEContainer {
@@ -48,9 +50,9 @@ public class DMFurnaceContainer extends PEContainer {
 	}
 
 	void initSlots() {
-		IItemHandler fuel = furnace.getFuel();
-		IItemHandler input = furnace.getInput();
-		IItemHandler output = furnace.getOutput();
+		ResourceHandler<ItemResource> fuel = furnace.getFuel();
+		ResourceHandler<ItemResource> input = furnace.getInput();
+		ResourceHandler<ItemResource> output = furnace.getOutput();
 
 		//Fuel Slot
 		this.addSlot(new ValidatedSlot(fuel, 0, 49, 53, SlotPredicates.FURNACE_FUEL));
@@ -66,7 +68,7 @@ public class DMFurnaceContainer extends PEContainer {
 			}
 		}
 
-		counter = output.getSlots() - 1;
+		counter = PEItemStacksHandler.getSlotCount(output) - 1;
 
 		//Output
 		this.addSlot(new MatterFurnaceOutputSlot(playerInv.player, furnace, output, counter--, 109, 35));

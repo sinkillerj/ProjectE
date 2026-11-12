@@ -1,6 +1,5 @@
 package moze_intel.projecte.gameObjs.block_entities;
 
-import com.mojang.serialization.DataResult;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.event.PlayerAttemptCondenserSetEvent;
 import moze_intel.projecte.api.proxy.IEMCProxy;
@@ -13,10 +12,8 @@ import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.utils.text.TextComponentUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.Tag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -26,18 +23,19 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
-import net.neoforged.neoforge.items.ItemStackHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import moze_intel.projecte.api.inventory.PEItemStacksHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class CondenserBlockEntity extends EmcChestBlockEntity {
 
-	public static final ICapabilityProvider<CondenserBlockEntity, @Nullable Direction, IItemHandler> INVENTORY_PROVIDER = (condenser, side) -> condenser.automationInventory;
+	public static final ICapabilityProvider<CondenserBlockEntity, @Nullable Direction, ResourceHandler<ItemResource>> INVENTORY_PROVIDER =
+			(condenser, side) -> condenser.getAutomationHandler(side);
 
-	protected final ItemStackHandler inputInventory = createInput();
-	private final ItemStackHandler outputInventory = createOutput();
+	protected final PEItemStacksHandler inputInventory = createInput();
+	private final PEItemStacksHandler outputInventory = createOutput();
 	@Nullable
 	private ItemInfo lockInfo;
 	private boolean isAcceptingEmc;
@@ -45,7 +43,7 @@ public class CondenserBlockEntity extends EmcChestBlockEntity {
 	public long requiredEmc;
 	//Start at one less than actual just to ensure we run initially after loading
 	private int loadIndex = EMCMappingHandler.getLoadIndex() - 1;
-	private final IItemHandler automationInventory;
+	private final ResourceHandler<ItemResource> automationInventory;
 
 	public CondenserBlockEntity(BlockPos pos, BlockState state) {
 		this(PEBlockEntityTypes.CONDENSER, pos, state);
@@ -54,6 +52,15 @@ public class CondenserBlockEntity extends EmcChestBlockEntity {
 	protected CondenserBlockEntity(BlockEntityTypeRegistryObject<? extends CondenserBlockEntity> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
 		this.automationInventory = createAutomationInventory();
+	}
+
+	/**
+	 * Exposed to hoppers / AE2 / RS. MK1 uses one shared handler on all sides.
+	 * MK2 routes vertical faces to output and horizontal faces to input.
+	 */
+	@NotNull
+	protected ResourceHandler<ItemResource> getAutomationHandler(@Nullable Direction side) {
+		return automationInventory;
 	}
 
 	@Override
@@ -69,7 +76,7 @@ public class CondenserBlockEntity extends EmcChestBlockEntity {
 	@Nullable
 	public final ItemInfo getLockInfo() {
 		if (requiredEmc == 0) {
-			if (level == null || !level.isClientSide) {
+			if (level == null || !level.isClientSide()) {
 				//If the lock doesn't have EMC don't tell the client it is there
 				return null;
 			}
@@ -77,35 +84,34 @@ public class CondenserBlockEntity extends EmcChestBlockEntity {
 		return lockInfo;
 	}
 
-	public ItemStackHandler getInput() {
+	public PEItemStacksHandler getInput() {
 		return inputInventory;
 	}
 
-	public ItemStackHandler getOutput() {
+	public PEItemStacksHandler getOutput() {
 		return outputInventory;
 	}
 
-	protected ItemStackHandler createInput() {
+	protected PEItemStacksHandler createInput() {
 		return new StackHandler(91);
 	}
 
-	protected ItemStackHandler createOutput() {
+	protected PEItemStacksHandler createOutput() {
 		return inputInventory;
 	}
 
 	@NotNull
-	protected IItemHandler createAutomationInventory() {
+	protected ResourceHandler<ItemResource> createAutomationInventory() {
 		return new WrappedItemHandler(inputInventory, WrappedItemHandler.WriteMode.IN_OUT) {
-			@NotNull
 			@Override
-			public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
-				return SlotPredicates.HAS_EMC.test(stack) && !isStackEqualToLock(stack) ? super.insertItem(slot, stack, simulate) : stack;
+			public int insert(int slot, ItemResource resource, int amount, net.neoforged.neoforge.transfer.transaction.TransactionContext transaction) {
+                ItemStack stack = resource.toStack();
+                return SlotPredicates.HAS_EMC.test(stack) && !isStackEqualToLock(stack) ? super.insert(slot, resource, amount, transaction) : 0;
 			}
 
-			@NotNull
 			@Override
-			public ItemStack extractItem(int slot, int max, boolean simulate) {
-				return isStackEqualToLock(getStackInSlot(slot)) ? super.extractItem(slot, max, simulate) : ItemStack.EMPTY;
+			public int extract(int slot, ItemResource resource, int amount, net.neoforged.neoforge.transfer.transaction.TransactionContext transaction) {
+                return isStackEqualToLock(getStackInSlot(slot)) ? super.extract(slot, resource, amount, transaction) : 0;
 			}
 		};
 	}
@@ -160,7 +166,7 @@ public class CondenserBlockEntity extends EmcChestBlockEntity {
 	protected final void pushStack() {
 		ItemInfo lockInfo = getLockInfo();
 		if (lockInfo != null) {
-			ItemHandlerHelper.insertItemStacked(outputInventory, lockInfo.createStack(), false);
+			PEItemStacksHandler.insertStackedRemainder(outputInventory, lockInfo.createStack(), false);
 		}
 	}
 
@@ -195,7 +201,7 @@ public class CondenserBlockEntity extends EmcChestBlockEntity {
 	}
 
 	private boolean attemptCondenserSet(@NotNull Level level, @NotNull BlockPos pos, Player player) {
-		if (level.isClientSide) {
+		if (level.isClientSide()) {
 			return false;
 		}
 		if (getLockInfo() == null) {
@@ -224,25 +230,18 @@ public class CondenserBlockEntity extends EmcChestBlockEntity {
 	}
 
 	@Override
-	public void loadAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider registries) {
-		super.loadAdditional(tag, registries);
-		inputInventory.deserializeNBT(registries, tag.getCompound("input"));
-		if (tag.contains("lock")) {
-			lockInfo = ItemInfo.CODEC.parse(registries.createSerializationContext(NbtOps.INSTANCE), tag.get("lock")).result().orElse(null);
-		} else {
-			lockInfo = null;
-		}
+	public void loadAdditional(@NotNull ValueInput input) {
+		super.loadAdditional(input);
+		inputInventory.deserialize(input.childOrEmpty("input"));
+		lockInfo = input.read("lock", ItemInfo.CODEC).orElse(null);
 	}
 
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider registries) {
-		super.saveAdditional(tag, registries);
-		tag.put("input", inputInventory.serializeNBT(registries));
+	protected void saveAdditional(@NotNull ValueOutput output) {
+		super.saveAdditional(output);
+		inputInventory.serialize(output.child("input"));
 		if (lockInfo != null) {
-			DataResult<Tag> result = ItemInfo.CODEC.encodeStart(registries.createSerializationContext(NbtOps.INSTANCE), lockInfo);
-			if (result.isSuccess()) {
-				tag.put("lock", result.getOrThrow());
-			}
+			output.store("lock", ItemInfo.CODEC, lockInfo);
 		}
 	}
 

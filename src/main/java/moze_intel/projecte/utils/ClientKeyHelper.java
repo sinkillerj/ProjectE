@@ -10,22 +10,20 @@ import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import net.neoforged.neoforge.client.settings.KeyModifier;
-import net.neoforged.neoforge.network.PacketDistributor;
-import org.lwjgl.glfw.GLFW;
-
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 public class ClientKeyHelper {
 
 	private static ImmutableBiMap<PEKeybind, KeyMapping> peToMc = ImmutableBiMap.of();
 
 	public static void registerKeyBindings(RegisterKeyMappingsEvent event) {
 		ImmutableBiMap.Builder<PEKeybind, KeyMapping> builder = ImmutableBiMap.builder();
-		addKeyBinding(event, builder, PEKeybind.HELMET_TOGGLE, KeyModifier.SHIFT, GLFW.GLFW_KEY_X);
-		addKeyBinding(event, builder, PEKeybind.BOOTS_TOGGLE, KeyModifier.NONE, GLFW.GLFW_KEY_X);
-		addKeyBinding(event, builder, PEKeybind.CHARGE, KeyModifier.NONE, GLFW.GLFW_KEY_V);
-		addKeyBinding(event, builder, PEKeybind.EXTRA_FUNCTION, KeyModifier.NONE, GLFW.GLFW_KEY_C);
-		addKeyBinding(event, builder, PEKeybind.FIRE_PROJECTILE, KeyModifier.NONE, GLFW.GLFW_KEY_R);
-		addKeyBinding(event, builder, PEKeybind.MODE, KeyModifier.NONE, GLFW.GLFW_KEY_G);
-		addKeyBinding(event, builder, PEKeybind.TRANSMUTATION_TABLET, KeyModifier.NONE, GLFW.GLFW_KEY_K);
+		addKeyBinding(event, builder, PEKeybind.HELMET_TOGGLE, KeyModifier.SHIFT, InputConstants.KEY_X);
+		addKeyBinding(event, builder, PEKeybind.BOOTS_TOGGLE, KeyModifier.NONE, InputConstants.KEY_X);
+		addKeyBinding(event, builder, PEKeybind.CHARGE, KeyModifier.NONE, InputConstants.KEY_V);
+		addKeyBinding(event, builder, PEKeybind.EXTRA_FUNCTION, KeyModifier.NONE, InputConstants.KEY_C);
+		addKeyBinding(event, builder, PEKeybind.FIRE_PROJECTILE, KeyModifier.NONE, InputConstants.KEY_R);
+		addKeyBinding(event, builder, PEKeybind.MODE, KeyModifier.NONE, InputConstants.KEY_G);
+		addKeyBinding(event, builder, PEKeybind.TRANSMUTATION_TABLET, KeyModifier.NONE, InputConstants.KEY_K);
 		peToMc = builder.build();
 	}
 
@@ -50,7 +48,7 @@ public class ClientKeyHelper {
 		private boolean lastState;
 
 		PEKeyMapping(PEKeybind keybind, KeyModifier keyModifier, int keyCode) {
-			super(keybind.getTranslationKey(), KeyConflictContext.IN_GAME, keyModifier, InputConstants.Type.KEYSYM, keyCode, PELang.PROJECTE.getTranslationKey());
+			super(keybind.getTranslationKey(), KeyConflictContext.IN_GAME, keyModifier, InputConstants.Type.KEYBOARD.getOrCreate(keyCode), KeyMapping.Category.GAMEPLAY);
 			this.keybind = keybind;
 		}
 
@@ -61,7 +59,7 @@ public class ClientKeyHelper {
 			boolean state = isDown();
 			if (state != lastState) {
 				if (state) {
-					PacketDistributor.sendToServer(new KeyPressPKT(keybind));
+					ClientPacketDistributor.sendToServer(new KeyPressPKT(keybind));
 				}
 				lastState = state;
 			}

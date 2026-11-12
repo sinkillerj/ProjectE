@@ -2,21 +2,12 @@
   "type": "minecraft:crafting_shapeless",
   "category": "equipment",
   "ingredients": [
-    {
-      "item": "projecte:klein_star_zwei"
-    },
-    {
-      "item": "projecte:klein_star_zwei"
-    },
-    {
-      "item": "projecte:klein_star_zwei"
-    },
-    {
-      "item": "projecte:klein_star_zwei"
-    }
+    "projecte:klein_star_zwei",
+    "projecte:klein_star_zwei",
+    "projecte:klein_star_zwei",
+    "projecte:klein_star_zwei"
   ],
   "result": {
-    "count": 1,
     "id": "projecte:klein_star_drei"
   }
 }

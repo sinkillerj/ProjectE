@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shapeless",
   "category": "redstone",
   "ingredients": [
-    {
-      "item": "projecte:nova_catalyst"
-    },
-    {
-      "item": "projecte:aeternalis_fuel"
-    }
+    "projecte:nova_catalyst",
+    "projecte:aeternalis_fuel"
   ],
   "result": {
     "count": 2,

@@ -3,9 +3,9 @@ package moze_intel.projecte.common.loot;
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 import java.util.Set;
 import moze_intel.projecte.gameObjs.registries.PEBlocks;
-import net.minecraft.advancements.critereon.StatePropertiesPredicate;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.advancements.predicates.StatePropertiesPredicate;
 import net.minecraft.data.loot.BlockLootSubProvider;
+import net.minecraft.data.loot.LootTableSubProvider;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
@@ -13,15 +13,16 @@ import net.minecraft.world.level.block.TntBlock;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
-import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
-import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
+import net.minecraft.world.level.storage.loot.predicates.MatchBlock;
+import net.minecraft.core.Holder;
+import net.minecraft.world.level.storage.loot.providers.number.ints.ConstantValue;
 import org.jetbrains.annotations.NotNull;
 
 public class PEBlockLootTable extends BlockLootSubProvider {
 
 	private final Set<Block> knownBlocks = new ReferenceOpenHashSet<>();
 
-	public PEBlockLootTable(HolderLookup.Provider registries) {
+	public PEBlockLootTable(LootTableSubProvider.Context output) {
 		super(Set.of(
 				PEBlocks.COLLECTOR.getSecondary(),
 				PEBlocks.COLLECTOR_MK2.getSecondary(),
@@ -36,7 +37,7 @@ public class PEBlockLootTable extends BlockLootSubProvider {
 				PEBlocks.RELAY.getSecondary(),
 				PEBlocks.RELAY_MK2.getSecondary(),
 				PEBlocks.RELAY_MK3.getSecondary()
-		), FeatureFlags.VANILLA_SET, registries);
+		), FeatureFlags.VANILLA_SET, output);
 	}
 
 	@Override
@@ -67,27 +68,23 @@ public class PEBlockLootTable extends BlockLootSubProvider {
 
 	@Override
 	public void dropOther(@NotNull Block block, @NotNull ItemLike drop) {
-		//Override to use our own dropping method that names the loot table
 		add(block, dropping(drop));
 	}
 
 	protected LootTable.Builder dropping(ItemLike item) {
-		return LootTable.lootTable().withPool(applyExplosionCondition(item, LootPool.lootPool().setRolls(ConstantValue.exactly(1))
-				.name("main")
+		return LootTable.lootTable().withPool(applyExplosionCondition(item, LootPool.lootPool().setRolls(Holder.direct(new ConstantValue(1)))
 				.add(LootItem.lootTableItem(item))
 		));
 	}
 
 	private void registerCustomTNT(Block tnt) {
-		add(tnt, LootTable.lootTable().withPool(applyExplosionCondition(tnt, LootPool.lootPool().setRolls(ConstantValue.exactly(1))
-				.name("main")
-				.add(LootItem.lootTableItem(tnt).when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(tnt)
-						.setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(TntBlock.UNSTABLE, false)))))));
+		add(tnt, LootTable.lootTable().withPool(applyExplosionCondition(tnt, LootPool.lootPool().setRolls(Holder.direct(new ConstantValue(1)))
+				.add(LootItem.lootTableItem(tnt).when(MatchBlock.blockMatches(blocks, tnt,
+						StatePropertiesPredicate.Builder.properties().hasProperty(TntBlock.UNSTABLE, false)))))));
 	}
 
 	@Override
 	protected void add(@NotNull Block block, @NotNull LootTable.Builder table) {
-		//Overwrite the core register method to add to our list of known blocks
 		super.add(block, table);
 		knownBlocks.add(block);
 	}

@@ -10,14 +10,14 @@ plugins {
     id('eclipse')
     id('idea')
     id('maven-publish')
-    id('com.gradleup.shadow') version('8.3.6')
+    id('com.gradleup.shadow') version('9.6.1')
     // https://projects.neoforged.net/neoforged/ModDevGradle
-    id('net.neoforged.moddev') version('2.0.78')
+    id('net.neoforged.moddev') version('2.0.148')
 }
 
 tasks.named('wrapper', Wrapper) {
     //Define wrapper values here so as to not have to always do so when updating gradlew.properties
-    gradleVersion = '8.12.1'
+    gradleVersion = '9.2.1'
     distributionType = Wrapper.DistributionType.ALL
 }
 
@@ -33,6 +33,15 @@ idea {
 }
 
 sourceSets {
+    // These integrations have no compatible 26.3 API artifact yet.
+    main.java {
+        exclude '**/integration/crafttweaker/**'
+        exclude '**/integration/recipe_viewer/emi/**'
+        exclude '**/integration/wthit/**'
+        exclude '**/integration/top/**'
+    }
+    datagen.java.exclude '**/client/integration/**'
+
     api {
         //The API has no resources
         resources.srcDirs = []
@@ -120,12 +129,11 @@ def replaceResources = tasks.register("replaceResources", Copy) {
 
 version = "${projecte_version}"
 group = "moze_intel.projecte"
-project.base.archivesName = "projecte"
+project.base.archivesName = "ProjectE-${minecraft_version}"
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(21))
-        vendor.set(JvmVendorSpec.JETBRAINS)
+        languageVersion.set(JavaLanguageVersion.of(25))
     }
     withSourcesJar()
 }
@@ -194,8 +202,15 @@ neoForge.runs {
         server()
         programArgument('--nogui')
     }
+    serverData {
+        serverData()
+        programArguments.addAll('--all', '--output', project.file('src/datagen/generated/').getAbsolutePath(),
+                '--mod', 'projecte', '--existing', project.file('src/main/resources/').getAbsolutePath())
+        sourceSet = sourceSets.runData
+        loadedMods = [neoForge.mods.projecte_datagen]
+    }
     data {
-        data()
+        clientData()
         programArguments.addAll('--all', '--output', project.file('src/datagen/generated/').getAbsolutePath(),
                 '--mod', 'projecte', '--existing', project.file('src/main/resources/').getAbsolutePath())
 
@@ -232,6 +247,7 @@ repositories { RepositoryHandler handler ->
     exclusiveRepo(handler, 'https://maven2.bai.lol', 'lol.bai', 'mcp.mobius.waila')//WTHIT
     exclusiveRepo(handler, 'https://modmaven.dev/', 'mcjty.theoneprobe')
     exclusiveRepo(handler, 'https://www.cursemaven.com', 'curse.maven')
+    exclusiveRepo(handler, 'https://api.modrinth.com/maven', 'maven.modrinth')
 }
 
 test {
@@ -241,47 +257,21 @@ test {
 dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junit_version}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junit_version}")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation("net.neoforged:testframework:${neo_version}") {
         transitive = false
     }
 
+    compileOnly("maven.modrinth:jade:${jade_version}")
     compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
     if (recipe_viewer == 'jei' || recipe_viewer == 'hybrid') {
         localRuntime("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
     }
 
-    compileOnly("dev.emi:emi-neoforge:${emi_version}+${minecraft_version}:api")
-    def emi = "dev.emi:emi-neoforge:${emi_version}+${minecraft_version}"
-    //TODO: Re-evaluate (https://github.com/emilyploszaj/emi/issues/537) might allow us to not have to do this
-    //Compile against full emi in datagen
-    datagenCompileOnly(emi)
-    if (recipe_viewer == 'emi' || recipe_viewer == 'hybrid') {
-        localRuntime(emi)
-    } else {
-        //We still need it to load in datagen regardless of if we are using emi or a different viewer so that we can access EMI related objects
-        datagenRuntimeOnly(emi)
-    }
-
-
     compileOnly("top.theillusivec4.curios:curios-neoforge:${curios_version}:api")
     localRuntime("top.theillusivec4.curios:curios-neoforge:${curios_version}")
 
-    //TODO: Remove having to specify these as non transitive once https://github.com/McJtyMods/TheOneProbe/issues/548 is fixed
-    compileOnly("mcjty.theoneprobe:theoneprobe:${top_version}:api") {
-        transitive = false
-    }
-    localRuntime("mcjty.theoneprobe:theoneprobe:${top_version}") {
-        transitive = false
-    }
-    compileOnly("curse.maven:jade-api-324717:${jade_api_id}")
-    localRuntime("curse.maven:jade-324717:${jade_id}")
-    compileOnly("mcp.mobius.waila:wthit-api:forge-${wthit_version}")
-
-    def crt = "com.blamejared.crafttweaker:CraftTweaker-neoforge-${minecraft_version}:${crafttweaker_version}"
-    compileOnly(crt)
-    localRuntime(crt)
-
-    additionalRuntimeClasspath(implementation(shadow(group: 'org.apache.commons', name: 'commons-math3', version: '3.6.1')))
+    implementation(shadow(group: 'org.apache.commons', name: 'commons-math3', version: '3.6.1'))
 }
 
 //Set the various variables/settings for the different process resources tasks
@@ -341,6 +331,7 @@ def shadowJar = tasks.named('shadowJar', ShadowJar) {
     // plugin anyways
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
     archiveClassifier.set('') // Replace the default JAR
+    from('LICENSE') { into 'META-INF' }
     from([sourceSets.api.output, sourceSets.main.output])
 
     configurations = [project.configurations.shadow]

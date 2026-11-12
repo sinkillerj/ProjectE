@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:dm_sword"
+        "recipes": "projecte:dm_sword"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -2,19 +2,14 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "D": {
-      "item": "projecte:dm_helmet"
-    },
-    "M": {
-      "item": "projecte:red_matter"
-    }
+    "D": "projecte:dm_helmet",
+    "M": "projecte:red_matter"
   },
   "pattern": [
     "MMM",
     "MDM"
   ],
   "result": {
-    "count": 1,
     "id": "projecte:rm_helmet"
   }
 }

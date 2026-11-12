@@ -43,7 +43,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:rm_katar"
+        "recipes": "projecte:rm_katar"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

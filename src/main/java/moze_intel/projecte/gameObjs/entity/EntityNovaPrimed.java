@@ -6,9 +6,7 @@ import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.PrimedTnt;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class EntityNovaPrimed extends PrimedTnt {
@@ -42,10 +40,5 @@ public abstract class EntityNovaPrimed extends PrimedTnt {
 	@Override
 	protected void explode() {
 		WorldHelper.createNovaExplosion(level(), this, getX(), getY(), getZ(), getExplosionPower());
-	}
-
-	@Override
-	public ItemStack getPickedResult(@NotNull HitResult target) {
-		return new ItemStack(getBlock());
 	}
 }

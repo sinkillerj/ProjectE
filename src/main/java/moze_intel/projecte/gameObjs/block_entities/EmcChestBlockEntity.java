@@ -23,13 +23,13 @@ public abstract class EmcChestBlockEntity extends EmcBlockEntity implements LidB
 		@Override
 		protected void onOpen(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state) {
 			level.playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, SoundEvents.CHEST_OPEN, SoundSource.BLOCKS, 0.5F,
-					level.random.nextFloat() * 0.1F + 0.9F);
+					level.getRandom().nextFloat() * 0.1F + 0.9F);
 		}
 
 		@Override
 		protected void onClose(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state) {
 			level.playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, SoundEvents.CHEST_CLOSE, SoundSource.BLOCKS, 0.5F,
-					level.random.nextFloat() * 0.1F + 0.9F);
+					level.getRandom().nextFloat() * 0.1F + 0.9F);
 		}
 
 		@Override
@@ -38,7 +38,7 @@ public abstract class EmcChestBlockEntity extends EmcBlockEntity implements LidB
 		}
 
 		@Override
-		protected boolean isOwnContainer(Player player) {
+		public boolean isOwnContainer(Player player) {
 			return player.containerMenu instanceof EmcChestBlockEntityContainer<?> container && container.blockEntityMatches(EmcChestBlockEntity.this);
 		}
 	};
@@ -68,7 +68,7 @@ public abstract class EmcChestBlockEntity extends EmcBlockEntity implements LidB
 
 	public void startOpen(Player player) {
 		if (!isRemoved() && !player.isSpectator() && level != null) {
-			openersCounter.incrementOpeners(player, level, getBlockPos(), getBlockState());
+			openersCounter.incrementOpeners(player, level, getBlockPos(), getBlockState(), 5.0);
 		}
 	}
 

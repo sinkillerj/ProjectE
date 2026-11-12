@@ -5,7 +5,7 @@ import moze_intel.projecte.gameObjs.container.TransmutationContainer;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -23,11 +23,11 @@ public class TransmutationTablet extends ItemPE implements ITransmutationTablet 
 
 	@NotNull
 	@Override
-	public InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand hand) {
-		if (!level.isClientSide) {
-            openContainer(player, hand, player.getInventory().selected);
+	public InteractionResult use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand hand) {
+		if (!level.isClientSide()) {
+            openContainer(player, hand, player.getInventory().getSelectedSlot());
 		}
-		return InteractionResultHolder.success(player.getItemInHand(hand));
+		return InteractionResult.SUCCESS;
 	}
 
     @Override
@@ -35,7 +35,7 @@ public class TransmutationTablet extends ItemPE implements ITransmutationTablet 
         player.openMenu(new ContainerProvider(hand), buf -> {
             buf.writeBoolean(true);
             buf.writeEnum(hand);
-            buf.writeByte(player.getInventory().selected);
+            buf.writeByte(player.getInventory().getSelectedSlot());
         });
     }
 
@@ -51,7 +51,7 @@ public class TransmutationTablet extends ItemPE implements ITransmutationTablet 
             if (hand == null) {
                 return new TransmutationContainer(windowId, playerInventory);
             } else {
-                return new TransmutationContainer(windowId, playerInventory, hand, playerInventory.selected);
+                return new TransmutationContainer(windowId, playerInventory, hand, playerInventory.getSelectedSlot());
             }
 		}
 

@@ -3,7 +3,7 @@ package moze_intel.projecte.integration.jade;
 import moze_intel.projecte.api.proxy.IEMCProxy;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.utils.EMCHelper;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IBlockComponentProvider;
 import snownee.jade.api.ITooltip;
@@ -24,7 +24,7 @@ public class JadeDataProvider implements IBlockComponentProvider {
 	}
 
 	@Override
-	public ResourceLocation getUid() {
+	public Identifier getUid() {
 		return PEJadeConstants.EMC_PROVIDER;
 	}
 }

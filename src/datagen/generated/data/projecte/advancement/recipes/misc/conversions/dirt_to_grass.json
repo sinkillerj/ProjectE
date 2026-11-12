@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:conversions/dirt_to_grass"
+        "recipes": "projecte:conversions/dirt_to_grass"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

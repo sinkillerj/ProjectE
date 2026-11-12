@@ -19,7 +19,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:repair_talisman"
+        "recipes": "projecte:repair_talisman"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:destruction_catalyst"
+        "recipes": "projecte:destruction_catalyst"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

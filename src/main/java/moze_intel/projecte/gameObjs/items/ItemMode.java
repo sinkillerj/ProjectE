@@ -1,11 +1,12 @@
 package moze_intel.projecte.gameObjs.items;
 
-import java.util.List;
+import java.util.function.Consumer;
 import moze_intel.projecte.api.capabilities.item.IItemCharge;
 import moze_intel.projecte.gameObjs.registries.PEDataComponentTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.TooltipFlag;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,9 +20,9 @@ public abstract class ItemMode<MODE extends Enum<MODE> & IModeEnum<MODE>> extend
 	}
 
 	@Override
-	public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flags) {
-		super.appendHoverText(stack, context, tooltip, flags);
-		tooltip.add(getToolTip(stack));
+	public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay display, @NotNull Consumer<Component> tooltip, @NotNull TooltipFlag flags) {
+		super.appendHoverText(stack, context, display, tooltip, flags);
+		tooltip.accept(getToolTip(stack));
 	}
 
 	@Override

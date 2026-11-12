@@ -16,7 +16,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:conversions/charcoal_to_coal"
+        "recipes": "projecte:conversions/charcoal_to_coal"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

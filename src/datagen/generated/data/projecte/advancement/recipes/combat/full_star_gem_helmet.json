@@ -18,7 +18,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:full_star_gem_helmet"
+        "recipes": "projecte:full_star_gem_helmet"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

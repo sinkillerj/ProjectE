@@ -1,6 +1,5 @@
 package moze_intel.projecte.emc.mappers;
 
-import java.util.Optional;
 import moze_intel.projecte.api.mapper.EMCMapper;
 import moze_intel.projecte.api.mapper.IEMCMapper;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
@@ -8,7 +7,6 @@ import moze_intel.projecte.api.nss.NSSItem;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import moze_intel.projecte.config.PEConfigTranslations;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderSet.Named;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.ReloadableServerResources;
@@ -25,13 +23,10 @@ public class OreBlacklistMapper implements IEMCMapper<NormalizedSimpleStack, Lon
 	@Override
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, ReloadableServerResources serverResources,
 			RegistryAccess registryAccess, ResourceManager resourceManager) {
-		Optional<Named<Item>> tag = BuiltInRegistries.ITEM.getTag(Tags.Items.ORES);
-		if (tag.isPresent()) {
-			for (Holder<Item> holder : tag.get()) {
-				NSSItem ore = NSSItem.createItem(holder);
-				mapper.setValueBefore(ore, 0L);
-				mapper.setValueAfter(ore, 0L);
-			}
+		for (Holder<Item> holder : BuiltInRegistries.ITEM.getTagOrEmpty(Tags.Items.ORES)) {
+			NSSItem ore = NSSItem.createItem(holder);
+			mapper.setValueBefore(ore, 0L);
+			mapper.setValueAfter(ore, 0L);
 		}
 	}
 

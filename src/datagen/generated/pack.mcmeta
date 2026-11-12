@@ -3,10 +3,10 @@
     "description": {
       "translate": "misc.projecte.pack_description"
     },
-    "pack_format": 48,
-    "supported_formats": [
-      34,
-      48
+    "max_format": 121,
+    "min_format": [
+      97,
+      1
     ]
   }
 }

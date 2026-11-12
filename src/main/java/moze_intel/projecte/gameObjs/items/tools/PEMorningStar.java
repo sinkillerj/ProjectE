@@ -1,6 +1,6 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
-import java.util.List;
+import java.util.function.Consumer;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.IMatterType;
 import moze_intel.projecte.gameObjs.PETags;
@@ -16,11 +16,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
@@ -35,27 +36,25 @@ import org.jetbrains.annotations.NotNull;
 public class PEMorningStar extends PETool implements IItemMode<PickaxeMode>, IHasConditionalAttributes {
 
 	public PEMorningStar(IMatterType matterType, int numCharges, Properties props) {
-		super(matterType, PETags.Blocks.MINEABLE_WITH_PE_MORNING_STAR, numCharges, props.attributes(createAttributes(matterType, 16, -3))
+		super(matterType, PETags.Blocks.MINEABLE_WITH_PE_MORNING_STAR, numCharges, props.attributes(PETool.createAttributes(matterType, 16, -3))
 				.component(PEDataComponentTypes.PICKAXE_MODE, PickaxeMode.STANDARD)
 		);
 	}
 
 	@Override
-	public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flags) {
-		super.appendHoverText(stack, context, tooltip, flags);
-		tooltip.add(getToolTip(stack));
+	public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay display, @NotNull Consumer<Component> tooltip, @NotNull TooltipFlag flags) {
+		super.appendHoverText(stack, context, display, tooltip, flags);
+		tooltip.accept(getToolTip(stack));
 	}
 
 	@Override
-	public boolean canPerformAction(@NotNull ItemStack stack, @NotNull ItemAbility toolAction) {
-		return ItemAbilities.DEFAULT_PICKAXE_ACTIONS.contains(toolAction) || ItemAbilities.DEFAULT_SHOVEL_ACTIONS.contains(toolAction) ||
-			   ToolHelper.DEFAULT_PE_HAMMER_ACTIONS.contains(toolAction) || ToolHelper.DEFAULT_PE_MORNING_STAR_ACTIONS.contains(toolAction);
+	public boolean canPerformAction(@NotNull ItemInstance stack, @NotNull ItemAbility toolAction) {
+		return ToolHelper.MORNING_STAR_TOOL_ACTIONS.contains(toolAction);
 	}
 
 	@Override
-	public boolean hurtEnemy(@NotNull ItemStack stack, @NotNull LivingEntity damaged, @NotNull LivingEntity damager) {
+	public void hurtEnemy(@NotNull ItemStack stack, @NotNull LivingEntity damaged, @NotNull LivingEntity damager) {
 		ToolHelper.attackWithCharge(stack, damaged, damager, 1.0F);
-		return true;
 	}
 
 	@Override
@@ -96,12 +95,12 @@ public class PEMorningStar extends PETool implements IItemMode<PickaxeMode>, IHa
 
 	@NotNull
 	@Override
-	public InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand hand) {
+	public InteractionResult use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		if (ProjectEConfig.server.items.pickaxeAoeVeinMining.get()) {
 			return ItemHelper.actionResultFromType(ToolHelper.mineOreVeinsInAOE(player, hand), stack);
 		}
-		return InteractionResultHolder.pass(stack);
+		return InteractionResult.PASS;
 	}
 
 	@Override

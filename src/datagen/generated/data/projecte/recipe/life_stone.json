@@ -2,15 +2,10 @@
   "type": "minecraft:crafting_shapeless",
   "category": "equipment",
   "ingredients": [
-    {
-      "item": "projecte:body_stone"
-    },
-    {
-      "item": "projecte:soul_stone"
-    }
+    "projecte:body_stone",
+    "projecte:soul_stone"
   ],
   "result": {
-    "count": 1,
     "id": "projecte:life_stone"
   }
 }

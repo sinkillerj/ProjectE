@@ -17,8 +17,8 @@ import moze_intel.projecte.utils.WorldHelper;
 import moze_intel.projecte.utils.text.TextComponentUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -29,28 +29,30 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.ICapabilityProvider;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
-import net.neoforged.neoforge.items.ItemStackHandler;
-import net.neoforged.neoforge.items.wrapper.CombinedInvWrapper;
-import net.neoforged.neoforge.items.wrapper.RangedWrapper;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import moze_intel.projecte.api.inventory.PEItemStacksHandler;
+import moze_intel.projecte.utils.PECombinedItemStacks;
+import net.neoforged.neoforge.transfer.RangedResourceHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 public class CollectorMK1BlockEntity extends EmcBlockEntity implements MenuProvider {
 
-	public static final ICapabilityProvider<CollectorMK1BlockEntity, @Nullable Direction, IItemHandler> INVENTORY_PROVIDER = (collector, side) -> {
+	public static final ICapabilityProvider<CollectorMK1BlockEntity, @Nullable Direction, ResourceHandler<ItemResource>> INVENTORY_PROVIDER = (collector, side) -> {
+		ResourceHandler<ItemResource> handler;
 		if (side == null) {
-			return collector.joined;
+			handler = collector.joined;
 		} else if (side.getAxis().isVertical()) {
-			return collector.automationAuxSlots;
+			handler = collector.automationAuxSlots;
+		} else {
+			handler = collector.automationInput;
 		}
-		return collector.automationInput;
+		return handler;
 	};
 
-	private final ItemStackHandler input = new StackHandler(getInvSize()) {
+	private final PEItemStacksHandler input = new StackHandler(getInvSize()) {
 		@Override
 		protected void onContentsChanged(int slot) {
 			super.onContentsChanged(slot);
@@ -66,14 +68,14 @@ public class CollectorMK1BlockEntity extends EmcBlockEntity implements MenuProvi
 			}
 		}
 	};
-	private final CombinedInvWrapper toSort = new CombinedInvWrapper(new RangedWrapper(auxSlots, UPGRADING_SLOT, UPGRADING_SLOT + 1), input);
+	private final PECombinedItemStacks toSort = new PECombinedItemStacks(RangedResourceHandler.of(auxSlots, UPGRADING_SLOT, UPGRADING_SLOT + 1), input);
 	public static final int UPGRADING_SLOT = 0;
 	public static final int UPGRADE_SLOT = 1;
 	public static final int LOCK_SLOT = 2;
 
-	private final IItemHandlerModifiable automationAuxSlots;
-	private final IItemHandlerModifiable automationInput;
-	private final IItemHandler joined;
+	private final WrappedItemHandler automationAuxSlots;
+	private final WrappedItemHandler automationInput;
+	private final ResourceHandler<ItemResource> joined;
 
 	private final long emcGen;
 
@@ -91,20 +93,19 @@ public class CollectorMK1BlockEntity extends EmcBlockEntity implements MenuProvi
 		super(type, pos, state, tier.getStorage());
 		this.emcGen = tier.getGenRate();
 		this.automationInput = new WrappedItemHandler(input, WrappedItemHandler.WriteMode.IN) {
-			@NotNull
 			@Override
-			public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
-				return SlotPredicates.COLLECTOR_INV.test(stack) ? super.insertItem(slot, stack, simulate) : stack;
+			public int insert(int slot, ItemResource resource, int amount, net.neoforged.neoforge.transfer.transaction.TransactionContext transaction) {
+                ItemStack stack = resource.toStack();
+				return SlotPredicates.COLLECTOR_INV.test(stack) ? super.insert(slot, resource, amount, transaction) : 0;
 			}
 		};
 		this.automationAuxSlots = new WrappedItemHandler(auxSlots, WrappedItemHandler.WriteMode.OUT) {
-			@NotNull
 			@Override
-			public ItemStack extractItem(int slot, int count, boolean simulate) {
-				return slot == UPGRADE_SLOT ? super.extractItem(slot, count, simulate) : ItemStack.EMPTY;
+			public int extract(int slot, ItemResource resource, int count, net.neoforged.neoforge.transfer.transaction.TransactionContext transaction) {
+				return slot == UPGRADE_SLOT ? super.extract(slot, resource, count, transaction) : 0;
 			}
 		};
-		this.joined = new CombinedInvWrapper(automationInput, automationAuxSlots);
+		this.joined = new PECombinedItemStacks(automationInput, automationAuxSlots);
 	}
 
 	@Override
@@ -113,11 +114,11 @@ public class CollectorMK1BlockEntity extends EmcBlockEntity implements MenuProvi
 		return hasFuel || hasChargeableItem;
 	}
 
-	public IItemHandler getInput() {
+	public ResourceHandler<ItemResource> getInput() {
 		return input;
 	}
 
-	public IItemHandler getAux() {
+	public ResourceHandler<ItemResource> getAux() {
 		return auxSlots;
 	}
 
@@ -148,7 +149,7 @@ public class CollectorMK1BlockEntity extends EmcBlockEntity implements MenuProvi
 
 	public static void tickServer(Level level, BlockPos pos, BlockState state, CollectorMK1BlockEntity collector) {
 		if (collector.needsCompacting) {
-			ItemHelper.compactInventory(collector.toSort);
+			ItemHelper.compactInventory(collector.toSort, collector.toSort);
 			collector.needsCompacting = false;
 		}
 		collector.checkFuelOrKlein();
@@ -162,7 +163,7 @@ public class CollectorMK1BlockEntity extends EmcBlockEntity implements MenuProvi
 		if (!upgraded.isEmpty()) {
 			ItemStack lock = getLock();
 			if (lock.isEmpty() || upgraded.getItem() != lock.getItem() || upgraded.getCount() >= upgraded.getMaxStackSize()) {
-				auxSlots.setStackInSlot(UPGRADE_SLOT, ItemHandlerHelper.insertItemStacked(input, upgraded.copy(), false));
+				auxSlots.setStackInSlot(UPGRADE_SLOT, PEItemStacksHandler.insertStackedRemainder(input, upgraded.copy(), false));
 			}
 		}
 	}
@@ -284,7 +285,7 @@ public class CollectorMK1BlockEntity extends EmcBlockEntity implements MenuProvi
 	}
 
 	public static int getSunLevel(@NotNull Level level, @NotNull BlockPos pos) {
-		if (level.dimensionType().ultraWarm()) {
+		if (level.dimension() == Level.NETHER) {
 			return 16;
 		}
 		return level.getMaxLocalRawBrightness(pos.above()) + 1;
@@ -316,19 +317,19 @@ public class CollectorMK1BlockEntity extends EmcBlockEntity implements MenuProvi
 	}
 
 	@Override
-	public void loadAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider registries) {
-		super.loadAdditional(tag, registries);
-		unprocessedEMC = tag.getDouble("unprocessed_emc");
-		input.deserializeNBT(registries, tag.getCompound("input"));
-		auxSlots.deserializeNBT(registries, tag.getCompound("aux_slots"));
+	public void loadAdditional(@NotNull ValueInput input) {
+		super.loadAdditional(input);
+		unprocessedEMC = input.getDoubleOr("unprocessed_emc", 0);
+		this.input.deserialize(input.childOrEmpty("input"));
+		auxSlots.deserialize(input.childOrEmpty("aux_slots"));
 	}
 
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider registries) {
-		super.saveAdditional(tag, registries);
-		tag.putDouble("unprocessed_emc", unprocessedEMC);
-		tag.put("input", input.serializeNBT(registries));
-		tag.put("aux_slots", auxSlots.serializeNBT(registries));
+	protected void saveAdditional(@NotNull ValueOutput output) {
+		super.saveAdditional(output);
+		output.putDouble("unprocessed_emc", unprocessedEMC);
+		this.input.serialize(output.child("input"));
+		auxSlots.serialize(output.child("aux_slots"));
 	}
 
 	private static void sendRelayBonus(@NotNull Level level, @NotNull BlockPos pos) {

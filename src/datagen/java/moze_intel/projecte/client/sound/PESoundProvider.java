@@ -4,18 +4,17 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.registration.impl.SoundEventRegistryObject;
 import moze_intel.projecte.gameObjs.registries.PESoundEvents;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.common.data.SoundDefinition;
 import net.neoforged.neoforge.common.data.SoundDefinitionsProvider;
 
 public class PESoundProvider extends SoundDefinitionsProvider {
 
-	public PESoundProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
-		super(output, PECore.MODID, existingFileHelper);
+	public PESoundProvider(PackOutput output) {
+		super(output, PECore.MODID);
 	}
 
-	protected void addSoundEventWithSubtitle(SoundEventRegistryObject<?> soundEventRO, ResourceLocation location) {
+	protected void addSoundEventWithSubtitle(SoundEventRegistryObject<?> soundEventRO, Identifier location) {
 		add(soundEventRO.get(), SoundDefinition.definition().subtitle(soundEventRO.getTranslationKey()).with(sound(location)));
 	}
 

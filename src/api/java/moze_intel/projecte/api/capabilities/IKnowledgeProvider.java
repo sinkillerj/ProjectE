@@ -13,7 +13,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.capabilities.EntityCapability;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -105,7 +106,7 @@ public interface IKnowledgeProvider {
 	 * @return The player's input and lock slots
 	 */
 	@NotNull
-	IItemHandler getInputAndLocks();
+	moze_intel.projecte.api.inventory.PEItemStacksHandler getInputAndLocks();
 
 	/**
 	 * @return The emc in this player's transmutation tablet network

@@ -24,7 +24,7 @@ import moze_intel.projecte.integration.recipe_viewer.RecipeViewerHelper;
 import moze_intel.projecte.integration.recipe_viewer.WorldTransmuteEntry;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -52,7 +52,7 @@ public class WorldTransmuteRecipeCategory implements IRecipeCategory<WorldTransm
 	}
 
 	@Override
-	public ResourceLocation getRegistryName(WorldTransmuteEntry recipe) {
+	public Identifier getRegistryName(WorldTransmuteEntry recipe) {
 		return recipe.syntheticId();
 	}
 

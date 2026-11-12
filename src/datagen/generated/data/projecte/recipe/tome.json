@@ -14,21 +14,11 @@
   "category": "equipment",
   "group": "projecte:tome",
   "key": {
-    "B": {
-      "item": "minecraft:book"
-    },
-    "H": {
-      "item": "projecte:high_covalence_dust"
-    },
-    "K": {
-      "item": "projecte:klein_star_omega"
-    },
-    "L": {
-      "item": "projecte:low_covalence_dust"
-    },
-    "M": {
-      "item": "projecte:medium_covalence_dust"
-    }
+    "B": "minecraft:book",
+    "H": "projecte:high_covalence_dust",
+    "K": "projecte:klein_star_omega",
+    "L": "projecte:low_covalence_dust",
+    "M": "projecte:medium_covalence_dust"
   },
   "pattern": [
     "HML",
@@ -36,7 +26,6 @@
     "LMH"
   ],
   "result": {
-    "count": 1,
     "id": "projecte:tome"
   }
 }

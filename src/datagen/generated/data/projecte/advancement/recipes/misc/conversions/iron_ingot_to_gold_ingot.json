@@ -16,7 +16,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:conversions/iron_ingot_to_gold_ingot"
+        "recipes": "projecte:conversions/iron_ingot_to_gold_ingot"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

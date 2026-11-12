@@ -2,16 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "M": {
-      "item": "projecte:dark_matter"
-    }
+    "M": "projecte:dark_matter"
   },
   "pattern": [
     "MM",
     "MM"
   ],
   "result": {
-    "count": 1,
     "id": "projecte:dark_matter_block"
   }
 }

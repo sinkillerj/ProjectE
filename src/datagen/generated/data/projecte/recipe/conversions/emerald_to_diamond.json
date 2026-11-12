@@ -1,13 +1,8 @@
 {
   "type": "minecraft:crafting_shapeless",
-  "category": "misc",
   "ingredients": [
-    {
-      "item": "projecte:philosophers_stone"
-    },
-    {
-      "tag": "c:gems/emerald"
-    }
+    "projecte:philosophers_stone",
+    "#c:gems/emerald"
   ],
   "result": {
     "count": 2,

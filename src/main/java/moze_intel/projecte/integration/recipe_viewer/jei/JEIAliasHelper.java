@@ -33,7 +33,7 @@ public class JEIAliasHelper implements RVAliasHelper<ItemStack> {
 
 	@Override
 	public List<ItemStack> tagContents(TagKey<Item> tag) {
-		return BuiltInRegistries.ITEM.getTag(tag)
+		return BuiltInRegistries.ITEM.get(tag)
 				.stream()
 				.flatMap(HolderSet::stream)
 				.map(ItemStack::new)
@@ -44,7 +44,7 @@ public class JEIAliasHelper implements RVAliasHelper<ItemStack> {
 	public void addAliases(List<ItemStack> stacks, IHasTranslationKey... aliases) {
 		if (aliases.length == 0) {
 			PECore.LOGGER.warn("Expected to have at least one alias for  item ingredients: {}", stacks.stream()
-					.map(stack -> stack.getItemHolder().getRegisteredName())
+					.map(stack -> stack.typeHolder().getRegisteredName())
 					.collect(Collectors.joining(", "))
 			);
 		} else if (!stacks.isEmpty()) {

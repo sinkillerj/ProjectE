@@ -26,14 +26,15 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.PickaxeItem;
+import net.minecraft.world.item.component.Tool;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -42,63 +43,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
 
-public class PEPickaxe extends PickaxeItem implements IItemCharge, IItemMode<PickaxeMode>, IBarHelper {
-
-	private final IMatterType matterType;
-	private final int numCharges;
+public class PEPickaxe extends PETool implements IItemMode<PickaxeMode> {
 
 	public PEPickaxe(IMatterType matterType, int numCharges, Properties props) {
-		super(matterType, props.attributes(createAttributes(matterType, 4, -2.8F))
+		super(matterType, BlockTags.MINEABLE_WITH_PICKAXE, numCharges, props.attributes(PETool.createAttributes(matterType, 4, -2.8F))
 				.component(PEDataComponentTypes.PICKAXE_MODE, PickaxeMode.STANDARD)
-				.component(PEDataComponentTypes.CHARGE, 0)
-		);
-		this.matterType = matterType;
-		this.numCharges = numCharges;
-	}
-
-	@Override
-	public boolean isEnchantable(@NotNull ItemStack stack) {
-		return false;
-	}
-
-	@Override
-	public boolean isBookEnchantable(@NotNull ItemStack stack, @NotNull ItemStack book) {
-		return false;
-	}
-
-	@Override
-	public boolean isPrimaryItemFor(@NotNull ItemStack stack, @NotNull Holder<Enchantment> enchantment) {
-		return false;
-	}
-
-	@Override
-	public boolean supportsEnchantment(@NotNull ItemStack stack, @NotNull Holder<Enchantment> enchantment) {
-		return false;
-	}
-
-	@Override
-	public <T extends LivingEntity> int damageItem(@NotNull ItemStack stack, int amount, T entity, @NotNull Consumer<Item> onBroken) {
-		return 0;
-	}
-
-	@Override
-	public boolean isBarVisible(@NotNull ItemStack stack) {
-		return true;
-	}
-
-	@Override
-	public float getWidthForBar(ItemStack stack) {
-		return 1 - getChargePercent(stack);
-	}
-
-	@Override
-	public int getBarWidth(@NotNull ItemStack stack) {
-		return getScaledBarWidth(stack);
-	}
-
-	@Override
-	public int getBarColor(@NotNull ItemStack stack) {
-		return getColorForBar(stack);
+				.component(PEDataComponentTypes.CHARGE, 0));
 	}
 
 	@Override
@@ -106,29 +56,24 @@ public class PEPickaxe extends PickaxeItem implements IItemCharge, IItemMode<Pic
 		if (ToolHelper.canMatterMine(matterType, state.getBlock())) {
 			return 1_200_000;
 		}
-		return ToolHelper.getDestroySpeed(super.getDestroySpeed(stack, state), matterType, getCharge(stack));
+		return super.getDestroySpeed(stack, state);
 	}
 
 	@Override
-	public int getNumCharges(@NotNull ItemStack stack) {
-		return numCharges;
-	}
-
-	@Override
-	public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flags) {
-		super.appendHoverText(stack, context, tooltip, flags);
-		tooltip.add(getToolTip(stack));
+	public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay display, @NotNull Consumer<Component> tooltip, @NotNull TooltipFlag flags) {
+		super.appendHoverText(stack, context, display, tooltip, flags);
+		tooltip.accept(getToolTip(stack));
 	}
 
 	@NotNull
 	@Override
-	public InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand hand) {
+	public InteractionResult use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		if (ProjectEConfig.server.items.pickaxeAoeVeinMining.get()) {
 			//If we are supposed to mine in an AOE then attempt to do so
 			return ItemHelper.actionResultFromType(ToolHelper.mineOreVeinsInAOE(player, hand), stack);
 		}
-		return InteractionResultHolder.pass(stack);
+		return InteractionResult.PASS;
 	}
 
 	@NotNull

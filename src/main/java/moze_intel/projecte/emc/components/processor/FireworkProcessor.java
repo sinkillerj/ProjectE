@@ -15,7 +15,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.FireworkExplosion;
 import net.minecraft.world.item.component.Fireworks;
-import net.minecraft.world.item.crafting.FireworkRocketRecipe;
+import java.util.ArrayList;
+import net.minecraft.world.item.crafting.Ingredient;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
@@ -76,7 +77,7 @@ public class FireworkProcessor extends PersistentComponentProcessor<Fireworks> {
 			return;
 		}
 		//TODO: Do we even want to be supporting this, or just getting the value for gunpowder?
-		powderEmc = IComponentProcessorHelper.INSTANCE.getMinEmcFor(emcLookup, FireworkRocketRecipe.GUNPOWDER_INGREDIENT);
+		powderEmc = IComponentProcessorHelper.INSTANCE.getMinEmcFor(emcLookup, Ingredient.of(Items.GUNPOWDER));
 	}
 
 	@Override

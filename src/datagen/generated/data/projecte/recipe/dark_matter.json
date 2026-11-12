@@ -1,13 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
-    "A": {
-      "item": "projecte:aeternalis_fuel"
-    },
-    "D": {
-      "tag": "c:storage_blocks/diamond"
-    }
+    "A": "projecte:aeternalis_fuel",
+    "D": "#c:storage_blocks/diamond"
   },
   "pattern": [
     "AAA",
@@ -15,7 +10,6 @@
     "AAA"
   ],
   "result": {
-    "count": 1,
     "id": "projecte:dark_matter"
   }
 }

@@ -12,8 +12,8 @@ import moze_intel.projecte.gameObjs.registries.PEBlockEntityTypes;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -23,30 +23,33 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.ICapabilityProvider;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
-import net.neoforged.neoforge.items.ItemStackHandler;
-import net.neoforged.neoforge.items.wrapper.CombinedInvWrapper;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import moze_intel.projecte.api.inventory.PEItemStacksHandler;
+import moze_intel.projecte.utils.PECombinedItemStacks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class RelayMK1BlockEntity extends EmcBlockEntity implements MenuProvider, IRelay {
 
-	public static final ICapabilityProvider<RelayMK1BlockEntity, @Nullable Direction, IItemHandler> INVENTORY_PROVIDER = (relay, side) -> {
+	public static final ICapabilityProvider<RelayMK1BlockEntity, @Nullable Direction, ResourceHandler<ItemResource>> INVENTORY_PROVIDER = (relay, side) -> {
+		ResourceHandler<ItemResource> handler;
 		if (side == null) {
-			return relay.joined;
+			handler = relay.joined;
 		} else if (side.getAxis().isVertical()) {
-			return relay.automationOutput;
+			handler = relay.automationOutput;
+		} else {
+			handler = relay.automationInput;
 		}
-		return relay.automationInput;
+		return handler;
 	};
 
 	private final CompactableStackHandler input;
-	private final ItemStackHandler output = new StackHandler(1);
+	private final PEItemStacksHandler output = new StackHandler(1);
 
-	private final IItemHandlerModifiable automationOutput;
-	private final IItemHandlerModifiable automationInput;
-	private final IItemHandler joined;
+	private final WrappedItemHandler automationOutput;
+	private final WrappedItemHandler automationInput;
+	private final ResourceHandler<ItemResource> joined;
 
 	private final long chargeRate;
 
@@ -60,33 +63,32 @@ public class RelayMK1BlockEntity extends EmcBlockEntity implements MenuProvider,
 		super(type, pos, state, tier.getStorage());
 		this.chargeRate = tier.getChargeRate();
 		input = new CompactableStackHandler(sizeInv) {
-			@NotNull
 			@Override
-			public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
-				return SlotPredicates.RELAY_INV.test(stack) ? super.insertItem(slot, stack, simulate) : stack;
+			public int insert(int slot, ItemResource resource, int amount, net.neoforged.neoforge.transfer.transaction.TransactionContext transaction) {
+                ItemStack stack = resource.toStack();
+				return SlotPredicates.RELAY_INV.test(stack) ? super.insert(slot, resource, amount, transaction) : 0;
 			}
 		};
 
 		this.automationInput = new WrappedItemHandler(input, WrappedItemHandler.WriteMode.IN);
 		this.automationOutput = new WrappedItemHandler(output, WrappedItemHandler.WriteMode.IN_OUT) {
-			@NotNull
 			@Override
-			public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
-				return SlotPredicates.EMC_HOLDER.test(stack) ? super.insertItem(slot, stack, simulate) : stack;
+			public int insert(int slot, ItemResource resource, int amount, net.neoforged.neoforge.transfer.transaction.TransactionContext transaction) {
+                ItemStack stack = resource.toStack();
+				return SlotPredicates.EMC_HOLDER.test(stack) ? super.insert(slot, resource, amount, transaction) : 0;
 			}
 
-			@NotNull
 			@Override
-			public ItemStack extractItem(int slot, int amount, boolean simulate) {
+			public int extract(int slot, ItemResource resource, int amount, net.neoforged.neoforge.transfer.transaction.TransactionContext transaction) {
 				ItemStack stack = getStackInSlot(slot);
 				IItemEmcHolder emcHolder = stack.getCapability(PECapabilities.EMC_HOLDER_ITEM_CAPABILITY);
 				if (emcHolder != null && emcHolder.getNeededEmc(stack) > 0) {
-					return ItemStack.EMPTY;
+					return 0;
 				}
-				return super.extractItem(slot, amount, simulate);
+				return super.extract(slot, resource, amount, transaction);
 			}
 		};
-		this.joined = new CombinedInvWrapper(automationInput, automationOutput);
+		this.joined = new PECombinedItemStacks(automationInput, automationOutput);
 	}
 
 	@Override
@@ -102,11 +104,11 @@ public class RelayMK1BlockEntity extends EmcBlockEntity implements MenuProvider,
 		return input.getStackInSlot(0);
 	}
 
-	public IItemHandler getInput() {
+	public ResourceHandler<ItemResource> getInput() {
 		return input;
 	}
 
-	public IItemHandler getOutput() {
+	public ResourceHandler<ItemResource> getOutput() {
 		return output;
 	}
 
@@ -173,19 +175,19 @@ public class RelayMK1BlockEntity extends EmcBlockEntity implements MenuProvider,
 	}
 
 	@Override
-	public void loadAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider registries) {
-		super.loadAdditional(tag, registries);
-		input.deserializeNBT(registries, tag.getCompound("input"));
-		output.deserializeNBT(registries, tag.getCompound("output"));
-		bonusEMC = tag.getDouble("bonus_emc");
+	public void loadAdditional(@NotNull ValueInput input) {
+		super.loadAdditional(input);
+		this.input.deserialize(input.childOrEmpty("input"));
+		this.output.deserialize(input.childOrEmpty("output"));
+		bonusEMC = input.getDoubleOr("bonus_emc", 0);
 	}
 
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider registries) {
-		super.saveAdditional(tag, registries);
-		tag.put("input", input.serializeNBT(registries));
-		tag.put("output", output.serializeNBT(registries));
-		tag.putDouble("bonus_emc", bonusEMC);
+	protected void saveAdditional(@NotNull ValueOutput output) {
+		super.saveAdditional(output);
+		this.input.serialize(output.child("input"));
+		this.output.serialize(output.child("output"));
+		output.putDouble("bonus_emc", bonusEMC);
 	}
 
 	@Override

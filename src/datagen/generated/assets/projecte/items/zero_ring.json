@@ -1,0 +1,20 @@
+{
+  "model": {
+    "type": "minecraft:select",
+    "cases": [
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "projecte:item/zero_ring_active_on"
+        },
+        "when": true
+      }
+    ],
+    "component": "projecte:active",
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "projecte:item/zero_ring_active_off"
+    },
+    "property": "minecraft:component"
+  }
+}

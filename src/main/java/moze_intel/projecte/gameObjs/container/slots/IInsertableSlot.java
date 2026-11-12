@@ -19,8 +19,8 @@ public interface IInsertableSlot {
 	 * Inserts an {@link ItemStack} into this {@link IInsertableSlot} and return the remainder as if a player was inserting by trying to interact with the slot. The
 	 * {@link ItemStack} <em>should not</em> be modified in this function!
 	 * </p>
-	 * Note: This behaviour is subtly different from {@link net.neoforged.neoforge.fluids.capability.IFluidHandler#fill(net.neoforged.neoforge.fluids.FluidStack,
-	 * net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction)}
+	 * Note: This behaviour is subtly different from {@link net.neoforged.neoforge.fluids.capability.ResourceHandler<FluidResource>#fill(net.neoforged.neoforge.fluids.FluidStack,
+	 * net.neoforged.neoforge.fluids.capability.ResourceHandler<FluidResource>.FluidAction)}
 	 *
 	 * @param stack    {@link ItemStack} to insert. This must not be modified by the slot.
 	 * @param simulate Whether to simulate insertion.

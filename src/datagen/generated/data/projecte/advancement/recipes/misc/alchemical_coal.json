@@ -16,7 +16,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:alchemical_coal"
+        "recipes": "projecte:alchemical_coal"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

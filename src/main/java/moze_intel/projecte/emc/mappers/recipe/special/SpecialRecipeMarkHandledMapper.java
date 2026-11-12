@@ -23,7 +23,6 @@ import net.minecraft.world.item.crafting.DecoratedPotRecipe;
 import net.minecraft.world.item.crafting.FireworkRocketRecipe;
 import net.minecraft.world.item.crafting.FireworkStarFadeRecipe;
 import net.minecraft.world.item.crafting.FireworkStarRecipe;
-import net.minecraft.world.item.crafting.MapCloningRecipe;
 import net.minecraft.world.item.crafting.MapExtendingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -54,7 +53,7 @@ public class SpecialRecipeMarkHandledMapper implements IRecipeTypeMapper {
 			//Not needed, it just recreates the smelting recipes
 			return recipe instanceof PhiloStoneSmeltingRecipe
 				   //Cloning recipes, creates something from itself, doesn't change overall emc values as amounts all balance out
-					|| recipe instanceof BookCloningRecipe || recipe instanceof MapCloningRecipe || recipe instanceof BannerDuplicateRecipe;
+					|| recipe instanceof BookCloningRecipe || recipe instanceof BannerDuplicateRecipe;
 		} else if (recipe instanceof MapExtendingRecipe) {
 			return MappingConfig.isEnabled(MapScaleProcessor.INSTANCE);
 		}

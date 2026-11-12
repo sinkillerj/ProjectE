@@ -1,7 +1,7 @@
 package moze_intel.projecte.config;
 
 import moze_intel.projecte.PECore;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

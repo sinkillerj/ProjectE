@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:life_stone"
+        "recipes": "projecte:life_stone"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

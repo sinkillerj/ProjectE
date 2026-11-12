@@ -1,12 +1,14 @@
 package moze_intel.projecte.gameObjs.block_entities;
 
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntMaps;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import com.mojang.serialization.Codec;
+import it.unimi.dsi.fastutil.objects.Reference2IntMap;
+import it.unimi.dsi.fastutil.objects.Reference2IntMaps;
+import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
@@ -20,10 +22,14 @@ import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
@@ -47,28 +53,33 @@ import net.minecraft.world.level.block.entity.Hopper;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
-import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
-import net.neoforged.neoforge.items.wrapper.CombinedInvWrapper;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import moze_intel.projecte.api.inventory.PEItemStacksHandler;
+import moze_intel.projecte.utils.PECombinedItemStacks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 public class DMFurnaceBlockEntity extends EmcBlockEntity implements MenuProvider, RecipeCraftingHolder {
 
-	public static final ICapabilityProvider<DMFurnaceBlockEntity, @Nullable Direction, IItemHandler> INVENTORY_PROVIDER = (furnace, side) -> {
+	private static final Codec<Map<ResourceKey<Recipe<?>>, Integer>> RECIPES_USED_CODEC = Codec.unboundedMap(Recipe.KEY_CODEC, Codec.INT);
+
+	public static final ICapabilityProvider<DMFurnaceBlockEntity, @Nullable Direction, ResourceHandler<ItemResource>> INVENTORY_PROVIDER = (furnace, side) -> {
+		ResourceHandler<ItemResource> handler;
 		if (side == null) {
-			return furnace.joined;
+			handler = furnace.joined;
 		} else if (side == Direction.UP) {
-			return furnace.automationInput;
+			handler = furnace.automationInput;
 		} else if (side == Direction.DOWN) {
-			return furnace.automationOutput;
+			handler = furnace.automationOutput;
+		} else {
+			handler = furnace.automationSides;
 		}
-		return furnace.automationSides;
+		return handler;
 	};
 	private static final long EMC_CONSUMPTION = 2;
 
@@ -98,20 +109,20 @@ public class DMFurnaceBlockEntity extends EmcBlockEntity implements MenuProvider
 	private final CompactableStackHandler outputInventory = new CompactableStackHandler(getInvSize());
 	private final StackHandler fuelInv = new StackHandler(1);
 
-	private final IItemHandler joined;
-	private final IItemHandlerModifiable automationInput;
-	private final IItemHandlerModifiable automationOutput;
-	private final IItemHandler automationSides;
+	private final ResourceHandler<ItemResource> joined;
+	private final WrappedItemHandler automationInput;
+	private final WrappedItemHandler automationOutput;
+	private final ResourceHandler<ItemResource> automationSides;
 
 	protected final int ticksBeforeSmelt;
 	private final int efficiencyBonus;
-	private final Object2IntOpenHashMap<ResourceLocation> recipesUsed = new Object2IntOpenHashMap<>();
+	private final Reference2IntOpenHashMap<ResourceKey<Recipe<?>>> recipesUsed = new Reference2IntOpenHashMap<>();
 	private final RecipeManager.CachedCheck<SingleRecipeInput, SmeltingRecipe> quickCheck;
 
 	@Nullable
-	private BlockCapabilityCache<IItemHandler, @Nullable Direction> pullTarget;
+	private BlockCapabilityCache<ResourceHandler<ItemResource>, @Nullable Direction> pullTarget;
 	@Nullable
-	private BlockCapabilityCache<IItemHandler, @Nullable Direction> pushTarget;
+	private BlockCapabilityCache<ResourceHandler<ItemResource>, @Nullable Direction> pushTarget;
 
 	public int litTime;
 	public int litDuration;
@@ -129,30 +140,30 @@ public class DMFurnaceBlockEntity extends EmcBlockEntity implements MenuProvider
 		this.quickCheck = RecipeManager.createCheck(RecipeType.SMELTING);
 
 		this.automationInput = new WrappedItemHandler(inputInventory, WrappedItemHandler.WriteMode.IN) {
-			@NotNull
 			@Override
-			public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
-				return hasSmeltingResult(stack) ? super.insertItem(slot, stack, simulate) : stack;
+			public int insert(int slot, ItemResource resource, int amount, net.neoforged.neoforge.transfer.transaction.TransactionContext transaction) {
+                ItemStack stack = resource.toStack();
+				return hasSmeltingResult(stack) ? super.insert(slot, resource, amount, transaction) : 0;
 			}
 		};
 		this.automationOutput = new WrappedItemHandler(outputInventory, WrappedItemHandler.WriteMode.OUT);
-		IItemHandlerModifiable automationFuel = new WrappedItemHandler(fuelInv, WrappedItemHandler.WriteMode.IN) {
-			@NotNull
+		WrappedItemHandler automationFuel = new WrappedItemHandler(fuelInv, WrappedItemHandler.WriteMode.IN) {
 			@Override
-			public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
-				return SlotPredicates.FURNACE_FUEL.test(stack) ? super.insertItem(slot, stack, simulate) : stack;
+			public int insert(int slot, ItemResource resource, int amount, net.neoforged.neoforge.transfer.transaction.TransactionContext transaction) {
+                ItemStack stack = resource.toStack();
+				return SlotPredicates.FURNACE_FUEL.test(stack) ? super.insert(slot, resource, amount, transaction) : 0;
 			}
 		};
-		this.automationSides = new CombinedInvWrapper(automationFuel, automationOutput);
-		this.joined = new CombinedInvWrapper(automationInput, automationFuel, automationOutput);
+		this.automationSides = new PECombinedItemStacks(automationFuel, automationOutput);
+		this.joined = new PECombinedItemStacks(automationInput, automationFuel, automationOutput);
 	}
 
 	@Override
 	public void setLevel(@NotNull Level level) {
 		super.setLevel(level);
 		if (level instanceof ServerLevel serverLevel) {
-			pullTarget = BlockCapabilityCache.create(ItemHandler.BLOCK, serverLevel, worldPosition.above(), Direction.DOWN);
-			pushTarget = BlockCapabilityCache.create(ItemHandler.BLOCK, serverLevel, worldPosition.below(), Direction.UP);
+			pullTarget = BlockCapabilityCache.create(Capabilities.Item.BLOCK, serverLevel, worldPosition.above(), Direction.DOWN);
+			pushTarget = BlockCapabilityCache.create(Capabilities.Item.BLOCK, serverLevel, worldPosition.below(), Direction.UP);
 		}
 	}
 
@@ -206,7 +217,7 @@ public class DMFurnaceBlockEntity extends EmcBlockEntity implements MenuProvider
 		return PELang.GUI_DARK_MATTER_FURNACE.translate();
 	}
 
-	public IItemHandler getFuel() {
+	public ResourceHandler<ItemResource> getFuel() {
 		return fuelInv;
 	}
 
@@ -218,11 +229,11 @@ public class DMFurnaceBlockEntity extends EmcBlockEntity implements MenuProvider
 		return fuelInv.getStackInSlot(0);
 	}
 
-	public IItemHandler getInput() {
+	public ResourceHandler<ItemResource> getInput() {
 		return inputInventory;
 	}
 
-	public IItemHandler getOutput() {
+	public ResourceHandler<ItemResource> getOutput() {
 		return outputInventory;
 	}
 
@@ -264,7 +275,8 @@ public class DMFurnaceBlockEntity extends EmcBlockEntity implements MenuProvider
 					fuelItem.shrink(1);
 					furnace.fuelInv.onContentsChanged(0);
 					if (fuelItem.isEmpty()) {
-						furnace.fuelInv.setStackInSlot(0, copy.getItem().getCraftingRemainingItem(copy));
+						ItemStackTemplate remainder = copy.getCraftingRemainder();
+						furnace.fuelInv.setStackInSlot(0, remainder != null ? remainder.create() : ItemStack.EMPTY);
 					}
 					furnace.markDirty(level, pos, false);
 				}
@@ -304,12 +316,13 @@ public class DMFurnaceBlockEntity extends EmcBlockEntity implements MenuProvider
 		if (pullTarget == null || isHopper(level, pos.above())) {
 			return;
 		}
-		IItemHandler handler = pullTarget.getCapability();
+		ResourceHandler<ItemResource> resourceHandler = pullTarget.getCapability();
+		ResourceHandler<ItemResource> handler = resourceHandler == null ? null : /*ResourceHandler<ItemResource>.of*/(resourceHandler);
 		if (handler != null) {
-			for (int i = 0, slots = handler.getSlots(); i < slots; i++) {
-				ItemStack extractTest = handler.extractItem(i, Integer.MAX_VALUE, true);
+			for (int i = 0, slots = PEItemStacksHandler.getSlotCount(handler); i < slots; i++) {
+				ItemStack extractTest = PEItemStacksHandler.extractItem(handler, i, Integer.MAX_VALUE, true);
 				if (!extractTest.isEmpty()) {
-					IItemHandler targetInv = SlotPredicates.FURNACE_FUEL.test(extractTest) ? fuelInv : inputInventory;
+					ResourceHandler<ItemResource> targetInv = SlotPredicates.FURNACE_FUEL.test(extractTest) ? fuelInv : inputInventory;
 					transferItem(targetInv, i, extractTest, handler);
 				}
 			}
@@ -320,7 +333,8 @@ public class DMFurnaceBlockEntity extends EmcBlockEntity implements MenuProvider
 		if (pushTarget == null || outputInventory.isEmpty() || isHopper(level, pos.below())) {
 			return;
 		}
-		IItemHandler targetInv = pushTarget.getCapability();
+		ResourceHandler<ItemResource> pushResourceHandler = pushTarget.getCapability();
+		ResourceHandler<ItemResource> targetInv = pushResourceHandler == null ? null : /*ResourceHandler<ItemResource>.of*/(pushResourceHandler);
 		if (targetInv != null) {
 			for (int i = 0, slots = outputInventory.getSlots(); i < slots; i++) {
 				ItemStack extractTest = outputInventory.extractItem(i, Integer.MAX_VALUE, true);
@@ -331,12 +345,12 @@ public class DMFurnaceBlockEntity extends EmcBlockEntity implements MenuProvider
 		}
 	}
 
-	private void transferItem(IItemHandler targetInv, int i, ItemStack extractTest, IItemHandler outputInventory) {
-		ItemStack remainderTest = ItemHandlerHelper.insertItemStacked(targetInv, extractTest, true);
+	private void transferItem(ResourceHandler<ItemResource> targetInv, int i, ItemStack extractTest, ResourceHandler<ItemResource> outputInventory) {
+		ItemStack remainderTest = PEItemStacksHandler.insertStackedRemainder(targetInv, extractTest, true);
 		int successfullyTransferred = extractTest.getCount() - remainderTest.getCount();
 		if (successfullyTransferred > 0) {
-			ItemStack toInsert = outputInventory.extractItem(i, successfullyTransferred, false);
-			ItemStack result = ItemHandlerHelper.insertItemStacked(targetInv, toInsert, false);
+			ItemStack toInsert = PEItemStacksHandler.extractItem(outputInventory, i, successfullyTransferred, false);
+			ItemStack result = PEItemStacksHandler.insertStackedRemainder(targetInv, toInsert, false);
 			assert result.isEmpty();
 		}
 	}
@@ -346,15 +360,15 @@ public class DMFurnaceBlockEntity extends EmcBlockEntity implements MenuProvider
 	}
 
 	private RecipeResult getSmeltingRecipe(@Nullable Level level, ItemStack input) {
-		if (level == null || input.isEmpty()) {
+		if (!(level instanceof ServerLevel serverLevel) || input.isEmpty()) {
 			return RecipeResult.EMPTY;
 		}
 		//Note: We copy the input and fuel so that if anyone attempts to mutate the input from assemble then there is no side effects that occur
 		SingleRecipeInput recipeInput = new SingleRecipeInput(input.copyWithCount(1));
-		Optional<RecipeHolder<SmeltingRecipe>> optionalRecipe = quickCheck.getRecipeFor(recipeInput, level);
+		Optional<RecipeHolder<SmeltingRecipe>> optionalRecipe = quickCheck.getRecipeFor(recipeInput, serverLevel);
 		if (optionalRecipe.isPresent()) {
 			RecipeHolder<SmeltingRecipe> recipeHolder = optionalRecipe.get();
-			return new RecipeResult(recipeHolder, recipeHolder.value().assemble(recipeInput, level.registryAccess()));
+			return new RecipeResult(recipeHolder, recipeHolder.value().assemble(recipeInput));
 		}
 		return RecipeResult.EMPTY;
 	}
@@ -365,9 +379,9 @@ public class DMFurnaceBlockEntity extends EmcBlockEntity implements MenuProvider
 
 	private void smeltItem(@NotNull Level level, @NotNull RecipeResult recipeResult) {
 		ItemStack toSmelt = getItemToSmelt();
-		ItemStack smeltResult = recipeResult.scaledResult(level.random, getDoubleChance(toSmelt));
+		ItemStack smeltResult = recipeResult.scaledResult(level.getRandom(), getDoubleChance(toSmelt));
 		if (!smeltResult.isEmpty()) {//Double-check the result isn't somehow empty
-			ItemHandlerHelper.insertItemStacked(outputInventory, smeltResult, false);
+			PEItemStacksHandler.insertStackedRemainder(outputInventory, smeltResult, false);
 
 			if (toSmelt.is(Items.WET_SPONGE)) {
 				//Hardcoded handling of wet sponge to filling a bucket with water
@@ -399,14 +413,25 @@ public class DMFurnaceBlockEntity extends EmcBlockEntity implements MenuProvider
 	}
 
 	private int getItemBurnTime(ItemStack stack) {
-		return stack.getBurnTime(RecipeType.SMELTING) * ticksBeforeSmelt / AbstractFurnaceBlockEntity.BURN_TIME_STANDARD * efficiencyBonus;
+		if (level == null) {
+			return 0;
+		}
+		if (!(level instanceof ServerLevel serverLevel)) {
+			return 0;
+		}
+		var lootParams = new net.minecraft.world.level.storage.loot.LootParams.Builder(serverLevel)
+				.create(net.minecraft.world.level.storage.loot.parameters.LootContextParamSets.EMPTY);
+		var lootContext = new net.minecraft.world.level.storage.loot.LootContext.Builder(lootParams).create(java.util.Optional.empty());
+		int burn = net.minecraft.world.level.storage.loot.providers.number.ints.ResolvableInt.getFromItem(
+				stack, net.minecraft.core.component.DataComponents.COOKING_FUEL, net.minecraft.world.item.component.CookingFuel::burnTime, lootContext, 0);
+		return burn * ticksBeforeSmelt / AbstractFurnaceBlockEntity.BURN_TIME_STANDARD * efficiencyBonus;
 	}
 
 	private int getTotalCookTime(RecipeResult recipeResult) {
 		if (recipeResult.recipeHolder() == null) {
 			return ticksBeforeSmelt;
 		}
-		int cookingTime = recipeResult.recipeHolder().value().getCookingTime();
+		int cookingTime = recipeResult.recipeHolder().value().cookingTime();
 		return Mth.ceil(ticksBeforeSmelt * cookingTime / (float) AbstractFurnaceBlockEntity.BURN_TIME_STANDARD);
 	}
 
@@ -419,38 +444,31 @@ public class DMFurnaceBlockEntity extends EmcBlockEntity implements MenuProvider
 	}
 
 	@Override
-	public void loadAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider registries) {
-		super.loadAdditional(tag, registries);
-		litTime = tag.getInt("burn_time");
-		cookingProgress = tag.getInt("cook_time");
-		cookingTotalTime = tag.getInt("cook_time_total");
-		fuelInv.deserializeNBT(registries, tag.getCompound("fuel"));
-		inputInventory.deserializeNBT(registries, tag.getCompound("input"));
-		outputInventory.deserializeNBT(registries, tag.getCompound("output"));
+	public void loadAdditional(@NotNull ValueInput input) {
+		super.loadAdditional(input);
+		litTime = input.getIntOr("burn_time", 0);
+		cookingProgress = input.getIntOr("cook_time", 0);
+		cookingTotalTime = input.getIntOr("cook_time_total", 0);
+		fuelInv.deserialize(input.childOrEmpty("fuel"));
+		inputInventory.deserialize(input.childOrEmpty("input"));
+		outputInventory.deserialize(input.childOrEmpty("output"));
 		litDuration = getItemBurnTime(getFuelItem());
 		//[VanillaCopy] AbstractFurnaceBlockEntity
-		CompoundTag usedRecipes = tag.getCompound("recipes_used");
-		for (String recipeId : usedRecipes.getAllKeys()) {
-			this.recipesUsed.put(ResourceLocation.parse(recipeId), usedRecipes.getInt(recipeId));
-		}
+		recipesUsed.clear();
+		recipesUsed.putAll(input.read("RecipesUsed", RECIPES_USED_CODEC).orElse(Map.of()));
 	}
 
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider registries) {
-		super.saveAdditional(tag, registries);
-		tag.putInt("burn_time", litTime);
-		tag.putInt("cook_time", cookingProgress);
-		tag.putInt("cook_time_total", this.cookingTotalTime);
-		tag.put("input", inputInventory.serializeNBT(registries));
-		tag.put("output", outputInventory.serializeNBT(registries));
-		tag.put("fuel", fuelInv.serializeNBT(registries));
+	protected void saveAdditional(@NotNull ValueOutput output) {
+		super.saveAdditional(output);
+		output.putInt("burn_time", litTime);
+		output.putInt("cook_time", cookingProgress);
+		output.putInt("cook_time_total", this.cookingTotalTime);
+		inputInventory.serialize(output.child("input"));
+		outputInventory.serialize(output.child("output"));
+		fuelInv.serialize(output.child("fuel"));
 		//[VanillaCopy] AbstractFurnaceBlockEntity
-		CompoundTag usedRecipes = new CompoundTag();
-		for (Iterator<Object2IntMap.Entry<ResourceLocation>> iterator = Object2IntMaps.fastIterator(recipesUsed); iterator.hasNext(); ) {
-			Object2IntMap.Entry<ResourceLocation> entry = iterator.next();
-			usedRecipes.putInt(entry.getKey().toString(), entry.getIntValue());
-		}
-		tag.put("recipes_used", usedRecipes);
+		output.store("RecipesUsed", RECIPES_USED_CODEC, this.recipesUsed);
 	}
 
 	@Override
@@ -475,7 +493,7 @@ public class DMFurnaceBlockEntity extends EmcBlockEntity implements MenuProvider
 
 	//[VanillaCopy] AbstractFurnaceBlockEntity
 	public void awardUsedRecipesAndPopExperience(ServerPlayer player) {
-		List<RecipeHolder<?>> recipes = getRecipesToAwardAndPopExperience(player.serverLevel(), player.position());
+		List<RecipeHolder<?>> recipes = getRecipesToAwardAndPopExperience(player.level(), player.position());
 		player.awardRecipes(recipes);
 
 		for (RecipeHolder<?> recipeholder : recipes) {
@@ -489,19 +507,15 @@ public class DMFurnaceBlockEntity extends EmcBlockEntity implements MenuProvider
 
 	//[VanillaCopy] AbstractFurnaceBlockEntity
 	public List<RecipeHolder<?>> getRecipesToAwardAndPopExperience(ServerLevel level, Vec3 popVec) {
-		RecipeManager recipeManager = level.getRecipeManager();
 		List<RecipeHolder<?>> list = new ArrayList<>();
-		for (Iterator<Object2IntMap.Entry<ResourceLocation>> iterator = Object2IntMaps.fastIterator(recipesUsed); iterator.hasNext(); ) {
-			Object2IntMap.Entry<ResourceLocation> entry = iterator.next();
-			Optional<RecipeHolder<?>> optionalRecipe = recipeManager.byKey(entry.getKey());
-			if (optionalRecipe.isPresent()) {
-				RecipeHolder<?> recipeHolder = optionalRecipe.get();
+		for (Iterator<Reference2IntMap.Entry<ResourceKey<Recipe<?>>>> iterator = Reference2IntMaps.fastIterator(recipesUsed); iterator.hasNext(); ) {
+			Reference2IntMap.Entry<ResourceKey<Recipe<?>>> entry = iterator.next();
+			level.recipeAccess().byKey(entry.getKey()).ifPresent(recipeHolder -> {
 				list.add(recipeHolder);
-				//Validate it is actually a cooking recipe
 				if (recipeHolder.value() instanceof SmeltingRecipe recipe) {
-					createExperience(level, popVec, entry.getIntValue(), recipe.getExperience());
+					createExperience(level, popVec, entry.getIntValue(), recipe.experience());
 				}
-			}
+			});
 		}
 		return list;
 	}

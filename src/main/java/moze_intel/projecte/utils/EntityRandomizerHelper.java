@@ -10,10 +10,9 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.animal.Rabbit;
-import net.minecraft.world.entity.animal.Rabbit.Variant;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,24 +21,17 @@ public class EntityRandomizerHelper {
 	@Nullable
 	public static Mob getRandomEntity(Level level, Mob toRandomize) {
 		EntityType<?> entType = toRandomize.getType();
-		boolean isPeaceful = entType.is(PETags.Entities.RANDOMIZER_PEACEFUL);
-		boolean isHostile = entType.is(PETags.Entities.RANDOMIZER_HOSTILE);
+		Holder<EntityType<?>> entHolder = BuiltInRegistries.ENTITY_TYPE.wrapAsHolder(entType);
+		boolean isPeaceful = entHolder.is(PETags.Entities.RANDOMIZER_PEACEFUL);
+		boolean isHostile = entHolder.is(PETags.Entities.RANDOMIZER_HOSTILE);
 		if (isPeaceful && isHostile) {
-			//If it is in both lists do some extra checks to see if it really is peaceful
-			// currently this only includes our special casing for killer rabbits
-			if (toRandomize instanceof Rabbit rabbit && rabbit.getVariant() == Variant.EVIL) {
-				//Killer rabbits are not peaceful
-				isPeaceful = false;
-			}
+			//If it is in both lists, favor hostile handling.
+			isPeaceful = false;
 		}
 		if (isPeaceful) {
 			return createRandomEntity(level, toRandomize, PETags.Entities.RANDOMIZER_PEACEFUL);
 		} else if (isHostile) {
-			Mob ent = createRandomEntity(level, toRandomize, PETags.Entities.RANDOMIZER_HOSTILE);
-			if (ent instanceof Rabbit rabbit) {
-				rabbit.setVariant(Variant.EVIL);
-			}
-			return ent;
+			return createRandomEntity(level, toRandomize, PETags.Entities.RANDOMIZER_HOSTILE);
 		}
 		return null;
 	}
@@ -52,9 +44,9 @@ public class EntityRandomizerHelper {
 			//If the type is identical return null so that nothing happens
 			return null;
 		}
-		Entity newEntity = newType.create(level);
-		if (newEntity instanceof Mob) {
-			return (Mob) newEntity;
+		Entity newEntity = newType.create(level, EntitySpawnReason.MOB_SUMMONED);
+		if (newEntity instanceof Mob mob) {
+			return mob;
 		} else if (newEntity != null) {
 			//There are "invalid" entries in the list that do not correspond to, kill the new entity
 			newEntity.discard();
@@ -66,14 +58,14 @@ public class EntityRandomizerHelper {
 	}
 
 	private static EntityType<?> getRandomTagEntry(RandomSource random, Registry<EntityType<?>> registry, TagKey<EntityType<?>> tagKey, EntityType<?> toExclude) {
-		Optional<HolderSet.Named<EntityType<?>>> optionalTag = registry.getTag(tagKey);
+		Optional<HolderSet.Named<EntityType<?>>> optionalTag = registry.get(tagKey);
 		if (optionalTag.isEmpty()) {
 			//Failed to get the tag
 			return toExclude;
 		}
 		HolderSet.Named<EntityType<?>> tag = optionalTag.get();
 		int size = tag.size();
-		if (size == 0 || size == 1 && toExclude.is(tagKey)) {
+		if (size == 0 || size == 1 && BuiltInRegistries.ENTITY_TYPE.wrapAsHolder(toExclude).is(tagKey)) {
 			return toExclude;
 		}
 		Optional<EntityType<?>> obj;

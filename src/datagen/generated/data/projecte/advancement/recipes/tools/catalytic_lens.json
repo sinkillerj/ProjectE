@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:catalytic_lens"
+        "recipes": "projecte:catalytic_lens"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

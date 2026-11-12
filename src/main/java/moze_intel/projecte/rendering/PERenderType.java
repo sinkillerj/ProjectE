@@ -1,51 +1,18 @@
 package moze_intel.projecte.rendering;
 
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 import java.util.function.Function;
-import net.minecraft.Util;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.RenderStateShard;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.resources.Identifier;
 
-public class PERenderType extends RenderType {
+public final class PERenderType {
 
-	//Ignored
-	private PERenderType(String name, VertexFormat format, Mode drawMode, int bufferSize, boolean useDelegate, boolean needsSorting, Runnable setupTask, Runnable clearTask) {
-		super(name, format, drawMode, bufferSize, useDelegate, needsSorting, setupTask, clearTask);
+	private PERenderType() {
 	}
 
-	public static final RenderStateShard.ShaderStateShard POSITION_TEX_COLOR_SHADER = new RenderStateShard.ShaderStateShard(
-			GameRenderer::getPositionTexColorShader
-	);
+	public static final Function<Identifier, RenderType> SPRITE_RENDERER = RenderTypes::entityCutout;
 
-	public static final Function<ResourceLocation, RenderType> SPRITE_RENDERER = Util.memoize(resourceLocation -> {
-		RenderType.CompositeState state = RenderType.CompositeState.builder()
-				.setShaderState(RenderStateShard.POSITION_TEX_SHADER)
-				.setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
-				.createCompositeState(true);
-		return create("projecte_sprite_renderer", DefaultVertexFormat.POSITION_TEX, Mode.QUADS, 256, true, false, state);
-	});
+	public static final Function<Identifier, RenderType> YEU_RENDERER = RenderTypes::entityTranslucent;
 
-	public static final Function<ResourceLocation, RenderType> YEU_RENDERER = Util.memoize(resourceLocation -> {
-		RenderType.CompositeState state = RenderType.CompositeState.builder()
-				.setShaderState(POSITION_TEX_COLOR_SHADER)
-				.setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
-				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-				.setCullState(NO_CULL)
-				.createCompositeState(true);
-		return create("projecte_yeu_renderer", DefaultVertexFormat.POSITION_TEX_COLOR, Mode.QUADS, 256, true, false, state);
-	});
-
-	public static final RenderType TRANSMUTATION_OVERLAY = create("projecte_transmutation_overlay", DefaultVertexFormat.POSITION_COLOR, Mode.QUADS, 256,
-			true, false, RenderType.CompositeState.builder()
-					.setShaderState(POSITION_COLOR_SHADER)
-					.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-					.setCullState(NO_CULL)
-					.setWriteMaskState(COLOR_WRITE)
-					.setLayeringState(POLYGON_OFFSET_LAYERING)//Offset it so that can render properly
-					.createCompositeState(true)
-	);
+	public static final RenderType TRANSMUTATION_OVERLAY = RenderTypes.lines();
 }

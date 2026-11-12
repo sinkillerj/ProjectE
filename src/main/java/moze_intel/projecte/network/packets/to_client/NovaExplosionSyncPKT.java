@@ -41,12 +41,12 @@ public record NovaExplosionSyncPKT(Vec3 explosionCenter, float explosionRadius, 
 	public void handle(IPayloadContext context) {
 		Level level = context.player().level();
 		level.playLocalSound(explosionCenter.x, explosionCenter.y, explosionCenter.z, explosionSound.value(), SoundSource.BLOCKS, 4.0F,
-				(1.0F + (level.random.nextFloat() - level.random.nextFloat()) * 0.2F) * 0.7F, false);
+				(1.0F + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.2F) * 0.7F, false);
 		for (BlockPos pos : positions) {
-			Vec3 adjusted = Vec3.atLowerCornerWithOffset(pos, level.random.nextFloat(), level.random.nextFloat(), level.random.nextFloat());
+			Vec3 adjusted = Vec3.atLowerCornerWithOffset(pos, level.getRandom().nextFloat(), level.getRandom().nextFloat(), level.getRandom().nextFloat());
 			Vec3 difference = adjusted.subtract(explosionCenter);
 			double d7 = 0.5D / (difference.length() / explosionRadius + 0.1D);
-			d7 *= level.random.nextFloat() * level.random.nextFloat() + 0.3F;
+			d7 *= level.getRandom().nextFloat() * level.getRandom().nextFloat() + 0.3F;
 			difference = difference.normalize().scale(d7);
 			Vec3 adjustedPoof = adjusted.add(explosionCenter).scale(0.5);
 			level.addParticle(ParticleTypes.POOF, adjustedPoof.x(), adjustedPoof.y(), adjustedPoof.z(), difference.x(), difference.y(), difference.z());

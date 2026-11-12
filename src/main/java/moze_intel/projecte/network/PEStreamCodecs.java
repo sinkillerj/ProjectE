@@ -9,7 +9,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.items.ItemStackHandler;
+import moze_intel.projecte.api.inventory.PEItemStacksHandler;
 import org.jetbrains.annotations.NotNull;
 
 public final class PEStreamCodecs {
@@ -34,10 +34,10 @@ public final class PEStreamCodecs {
 			Vec3::new
 	);
 
-	public static StreamCodec<RegistryFriendlyByteBuf, ItemStackHandler> handlerStreamCodec(int handlerSize) {
+	public static StreamCodec<RegistryFriendlyByteBuf, PEItemStacksHandler> handlerStreamCodec(int handlerSize) {
 		return new StreamCodec<>() {
 			@Override
-			public void encode(@NotNull RegistryFriendlyByteBuf buffer, @NotNull ItemStackHandler handler) {
+			public void encode(@NotNull RegistryFriendlyByteBuf buffer, @NotNull PEItemStacksHandler handler) {
 				for (int slot = 0; slot < handlerSize; slot++) {
 					ItemStack.OPTIONAL_STREAM_CODEC.encode(buffer, handler.getStackInSlot(slot));
 				}
@@ -45,8 +45,8 @@ public final class PEStreamCodecs {
 
 			@NotNull
 			@Override
-			public ItemStackHandler decode(@NotNull RegistryFriendlyByteBuf buffer) {
-				ItemStackHandler locks = new ItemStackHandler(handlerSize);
+			public PEItemStacksHandler decode(@NotNull RegistryFriendlyByteBuf buffer) {
+				PEItemStacksHandler locks = new PEItemStacksHandler(handlerSize);
 				for (int slot = 0; slot < handlerSize; slot++) {
 					locks.setStackInSlot(slot, ItemStack.OPTIONAL_STREAM_CODEC.decode(buffer));
 				}

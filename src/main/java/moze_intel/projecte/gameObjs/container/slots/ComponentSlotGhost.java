@@ -1,15 +1,15 @@
 package moze_intel.projecte.gameObjs.container.slots;
 
 import net.minecraft.world.entity.player.Player;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.ItemHandlerCopySlot;
 import org.jetbrains.annotations.NotNull;
 
-public class ComponentSlotGhost extends ItemHandlerCopySlot implements ISlotGhost {
+public class ComponentSlotGhost extends SlotGhost {
 
-	public ComponentSlotGhost(IItemHandler inv, int slotIndex, int xPos, int yPos) {
-		super(inv, slotIndex, xPos, yPos);
+	public ComponentSlotGhost(ResourceHandler<ItemResource> inv, int slotIndex, int xPos, int yPos) {
+		super(inv, slotIndex, xPos, yPos, stack -> true);
 	}
 
 	@Override

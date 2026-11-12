@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:condenser_mk2"
+        "recipes": "projecte:condenser_mk2"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

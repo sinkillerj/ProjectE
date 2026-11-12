@@ -8,7 +8,8 @@ import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
 import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 public class CondenserMK2Container extends CondenserContainer {
 
@@ -20,7 +21,7 @@ public class CondenserMK2Container extends CondenserContainer {
 	protected void initSlots() {
 		this.addSlot(new SlotCondenserLock(blockEntity::getLockInfo, 0, 12, 6));
 		//Inputs
-		IItemHandler input = blockEntity.getInput();
+		ResourceHandler<ItemResource> input = blockEntity.getInput();
 		Predicate<ItemStack> validator = s -> SlotPredicates.HAS_EMC.test(s) && !blockEntity.isStackEqualToLock(s);
 		for (int i = 0; i < 7; i++) {
 			for (int j = 0; j < 6; j++) {
@@ -28,7 +29,7 @@ public class CondenserMK2Container extends CondenserContainer {
 			}
 		}
 		//Outputs
-		IItemHandler output = blockEntity.getOutput();
+		ResourceHandler<ItemResource> output = blockEntity.getOutput();
 		for (int i = 0; i < 7; i++) {
 			for (int j = 0; j < 6; j++) {
 				this.addSlot(new ValidatedSlot(output, j + i * 6, 138 + j * 18, 26 + i * 18, SlotPredicates.ALWAYS_FALSE));

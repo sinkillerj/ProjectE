@@ -1,6 +1,9 @@
 {
-  "parent": "projecte:block/relay_mk1",
+  "parent": "minecraft:block/orientable_with_bottom",
   "textures": {
+    "bottom": "projecte:block/relays/other",
+    "front": "projecte:block/relays/front",
+    "side": "projecte:block/relays/other",
     "top": "projecte:block/relays/top_2"
   }
 }

@@ -142,6 +142,26 @@
       "result": "minecraft:copper_trapdoor"
     },
     {
+      "alt_result": "minecraft:oxidized_copper_bars",
+      "origin": "minecraft:copper_bars",
+      "result": "minecraft:exposed_copper_bars"
+    },
+    {
+      "alt_result": "minecraft:copper_bars",
+      "origin": "minecraft:exposed_copper_bars",
+      "result": "minecraft:weathered_copper_bars"
+    },
+    {
+      "alt_result": "minecraft:exposed_copper_bars",
+      "origin": "minecraft:weathered_copper_bars",
+      "result": "minecraft:oxidized_copper_bars"
+    },
+    {
+      "alt_result": "minecraft:weathered_copper_bars",
+      "origin": "minecraft:oxidized_copper_bars",
+      "result": "minecraft:copper_bars"
+    },
+    {
       "alt_result": "minecraft:oxidized_copper_grate",
       "origin": "minecraft:copper_grate",
       "result": "minecraft:exposed_copper_grate"
@@ -180,6 +200,106 @@
       "alt_result": "minecraft:weathered_copper_bulb",
       "origin": "minecraft:oxidized_copper_bulb",
       "result": "minecraft:copper_bulb"
+    },
+    {
+      "alt_result": "minecraft:oxidized_copper_lantern",
+      "origin": "minecraft:copper_lantern",
+      "result": "minecraft:exposed_copper_lantern"
+    },
+    {
+      "alt_result": "minecraft:copper_lantern",
+      "origin": "minecraft:exposed_copper_lantern",
+      "result": "minecraft:weathered_copper_lantern"
+    },
+    {
+      "alt_result": "minecraft:exposed_copper_lantern",
+      "origin": "minecraft:weathered_copper_lantern",
+      "result": "minecraft:oxidized_copper_lantern"
+    },
+    {
+      "alt_result": "minecraft:weathered_copper_lantern",
+      "origin": "minecraft:oxidized_copper_lantern",
+      "result": "minecraft:copper_lantern"
+    },
+    {
+      "alt_result": "minecraft:oxidized_copper_chest",
+      "origin": "minecraft:copper_chest",
+      "result": "minecraft:exposed_copper_chest"
+    },
+    {
+      "alt_result": "minecraft:copper_chest",
+      "origin": "minecraft:exposed_copper_chest",
+      "result": "minecraft:weathered_copper_chest"
+    },
+    {
+      "alt_result": "minecraft:exposed_copper_chest",
+      "origin": "minecraft:weathered_copper_chest",
+      "result": "minecraft:oxidized_copper_chest"
+    },
+    {
+      "alt_result": "minecraft:weathered_copper_chest",
+      "origin": "minecraft:oxidized_copper_chest",
+      "result": "minecraft:copper_chest"
+    },
+    {
+      "alt_result": "minecraft:oxidized_copper_golem_statue",
+      "origin": "minecraft:copper_golem_statue",
+      "result": "minecraft:exposed_copper_golem_statue"
+    },
+    {
+      "alt_result": "minecraft:copper_golem_statue",
+      "origin": "minecraft:exposed_copper_golem_statue",
+      "result": "minecraft:weathered_copper_golem_statue"
+    },
+    {
+      "alt_result": "minecraft:exposed_copper_golem_statue",
+      "origin": "minecraft:weathered_copper_golem_statue",
+      "result": "minecraft:oxidized_copper_golem_statue"
+    },
+    {
+      "alt_result": "minecraft:weathered_copper_golem_statue",
+      "origin": "minecraft:oxidized_copper_golem_statue",
+      "result": "minecraft:copper_golem_statue"
+    },
+    {
+      "alt_result": "minecraft:oxidized_lightning_rod",
+      "origin": "minecraft:lightning_rod",
+      "result": "minecraft:exposed_lightning_rod"
+    },
+    {
+      "alt_result": "minecraft:lightning_rod",
+      "origin": "minecraft:exposed_lightning_rod",
+      "result": "minecraft:weathered_lightning_rod"
+    },
+    {
+      "alt_result": "minecraft:exposed_lightning_rod",
+      "origin": "minecraft:weathered_lightning_rod",
+      "result": "minecraft:oxidized_lightning_rod"
+    },
+    {
+      "alt_result": "minecraft:weathered_lightning_rod",
+      "origin": "minecraft:oxidized_lightning_rod",
+      "result": "minecraft:lightning_rod"
+    },
+    {
+      "alt_result": "minecraft:oxidized_copper_chain",
+      "origin": "minecraft:copper_chain",
+      "result": "minecraft:exposed_copper_chain"
+    },
+    {
+      "alt_result": "minecraft:copper_chain",
+      "origin": "minecraft:exposed_copper_chain",
+      "result": "minecraft:weathered_copper_chain"
+    },
+    {
+      "alt_result": "minecraft:exposed_copper_chain",
+      "origin": "minecraft:weathered_copper_chain",
+      "result": "minecraft:oxidized_copper_chain"
+    },
+    {
+      "alt_result": "minecraft:weathered_copper_chain",
+      "origin": "minecraft:oxidized_copper_chain",
+      "result": "minecraft:copper_chain"
     }
   ]
 }

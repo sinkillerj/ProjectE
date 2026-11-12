@@ -16,11 +16,9 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.PackOutput.PathProvider;
 import net.minecraft.data.PackOutput.Target;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.PackType;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.level.ItemLike;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -28,19 +26,17 @@ import org.jetbrains.annotations.NotNull;
  */
 public abstract class BaseEmiDefaults implements DataProvider {
 
-	private static final Codec<List<ResourceLocation>> CODEC = ExtraCodecs.nonEmptyList(ResourceLocation.CODEC.listOf())
+	private static final Codec<List<Identifier>> CODEC = ExtraCodecs.nonEmptyList(Identifier.CODEC.listOf())
 			.fieldOf("added")
 			.codec();
 
 	private final CompletableFuture<HolderLookup.Provider> registries;
-	private final Set<ResourceLocation> recipes = new HashSet<>();
-	private final ExistingFileHelper existingFileHelper;
+	private final Set<Identifier> recipes = new HashSet<>();
 	private final PathProvider pathProvider;
 	private final String modid;
 
-	protected BaseEmiDefaults(PackOutput output, ExistingFileHelper existingFileHelper, CompletableFuture<HolderLookup.Provider> registries, String modid) {
+	protected BaseEmiDefaults(PackOutput output, CompletableFuture<HolderLookup.Provider> registries, String modid) {
 		this.pathProvider = output.createPathProvider(Target.RESOURCE_PACK, "recipe/defaults");
-		this.existingFileHelper = existingFileHelper;
 		this.registries = registries;
 		this.modid = modid;
 	}
@@ -57,9 +53,9 @@ public abstract class BaseEmiDefaults implements DataProvider {
 		return this.registries.thenCompose(lookupProvider -> {
 			addDefaults(lookupProvider);
 			//Sort to make the output more stable
-			List<ResourceLocation> sortedRecipes = new ArrayList<>(recipes);
-			sortedRecipes.sort(ResourceLocation::compareNamespaced);
-			Path path = pathProvider.json(ResourceLocation.fromNamespaceAndPath(IntegrationHelper.EMI_MODID, modid));
+			List<Identifier> sortedRecipes = new ArrayList<>(recipes);
+			sortedRecipes.sort(Identifier::compareNamespaced);
+			Path path = pathProvider.json(Identifier.fromNamespaceAndPath(IntegrationHelper.EMI_MODID, modid));
 			return DataProvider.saveStable(cachedOutput, lookupProvider, CODEC, sortedRecipes, path);
 		});
 	}
@@ -67,31 +63,23 @@ public abstract class BaseEmiDefaults implements DataProvider {
 	protected abstract void addDefaults(HolderLookup.Provider lookupProvider);
 
 	protected void addRecipe(ItemLike output) {
-		ResourceLocation registryName = BuiltInRegistries.ITEM.getResourceKey(output.asItem())
+		Identifier registryName = BuiltInRegistries.ITEM.getResourceKey(output.asItem())
 				.map(ResourceKey::location)
 				.orElseThrow(() -> new IllegalStateException("Could not retrieve registry name for output."));
 		addRecipe(registryName);
 	}
 
 	protected void addRecipe(String recipePath) {
-		addRecipe(ResourceLocation.fromNamespaceAndPath(modid, recipePath));
+		addRecipe(Identifier.fromNamespaceAndPath(modid, recipePath));
 	}
 
-	protected void addRecipe(ResourceLocation recipe) {
-		if (recipeExists(recipe)) {
-			addUncheckedRecipe(recipe);
-		} else {
-			throw new IllegalArgumentException("Recipe '" + recipe + "' does not exist.");
-		}
+	protected void addRecipe(Identifier recipe) {
+		addUncheckedRecipe(recipe);
 	}
 
-	protected void addUncheckedRecipe(ResourceLocation recipe) {
+	protected void addUncheckedRecipe(Identifier recipe) {
 		if (!recipes.add(recipe)) {
 			throw new IllegalArgumentException("Recipe '" + recipe + "' was added multiple times.");
 		}
-	}
-
-	public boolean recipeExists(ResourceLocation location) {
-		return existingFileHelper.exists(location, PackType.SERVER_DATA, ".json", "recipes");
 	}
 }

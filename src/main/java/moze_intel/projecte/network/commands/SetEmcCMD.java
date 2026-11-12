@@ -35,7 +35,7 @@ public class SetEmcCMD {
 						.then(Commands.argument("item", ItemArgument.item(context))
 								.executes(ctx -> {
 									ItemInput itemInput = ItemArgument.getItem(ctx, "item");
-									return setEmc(ctx, NSSItem.createItem(itemInput.createItemStack(1, false)), LongArgumentType.getLong(ctx, "emc"));
+									return setEmc(ctx, NSSItem.createItem(itemInput.createItemStack(1)), LongArgumentType.getLong(ctx, "emc"));
 								}))
 						.then(Commands.argument("tag", ResourceOrTagKeyArgument.resourceOrTagKey(Registries.ITEM))
 								.executes(ctx -> {

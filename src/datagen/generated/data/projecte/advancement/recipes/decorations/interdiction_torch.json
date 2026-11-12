@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:interdiction_torch"
+        "recipes": "projecte:interdiction_torch"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

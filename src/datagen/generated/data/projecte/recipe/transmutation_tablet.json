@@ -1,16 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
-    "D": {
-      "item": "projecte:dark_matter_block"
-    },
-    "S": {
-      "tag": "c:stones"
-    },
-    "T": {
-      "item": "projecte:transmutation_table"
-    }
+    "D": "projecte:dark_matter_block",
+    "S": "#c:stones",
+    "T": "projecte:transmutation_table"
   },
   "pattern": [
     "DSD",
@@ -18,7 +11,6 @@
     "DSD"
   ],
   "result": {
-    "count": 1,
     "id": "projecte:transmutation_tablet"
   }
 }

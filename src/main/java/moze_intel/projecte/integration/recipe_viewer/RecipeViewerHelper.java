@@ -21,7 +21,7 @@ public class RecipeViewerHelper {
 
 	public static String stripForSynthetic(Holder<?> holder) {
 		ResourceKey<?> key = holder.getKey();
-		return key == null ? "unregistered" : key.location().toString().replace(':', '_');
+		return key == null ? "unregistered" : key.identifier().toString().replace(':', '_');
 	}
 
 	public static Set<WorldTransmuteEntry> getAllTransmutations() {

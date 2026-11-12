@@ -1,7 +1,0 @@
-// 1.21.1	2025-01-28T21:57:55.5914378	Tags for minecraft:entity_type mod id projecte
-347212bf7c84c5279c4d1e105470a30be61b8c70 data/minecraft/tags/entity_type/arrows.json
-71024194932bd2c14f21c5429e5a40bf45705c26 data/minecraft/tags/entity_type/impact_projectiles.json
-35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/projecte/tags/entity_type/blacklist/interdiction.json
-35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/projecte/tags/entity_type/blacklist/swrg.json
-82fa1d03b87ec2d25b5e73928bf63813ef77eb0a data/projecte/tags/entity_type/randomizer/hostile.json
-87b5257b280a1b40f5e098cbd98e6f8f550ec872 data/projecte/tags/entity_type/randomizer/peaceful.json

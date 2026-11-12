@@ -9,7 +9,8 @@ import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.DataSlot;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 
 public class RelayMK1Container extends PEContainer {
@@ -33,8 +34,8 @@ public class RelayMK1Container extends PEContainer {
 	}
 
 	void initSlots() {
-		IItemHandler input = relay.getInput();
-		IItemHandler output = relay.getOutput();
+		ResourceHandler<ItemResource> input = relay.getInput();
+		ResourceHandler<ItemResource> output = relay.getOutput();
 		//Klein Star charge slot
 		this.addSlot(new ValidatedSlot(output, 0, 127, 43, SlotPredicates.EMC_HOLDER));
 		//Burning slot

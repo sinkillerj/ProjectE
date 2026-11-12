@@ -18,12 +18,7 @@ public class SlotConsume extends InventoryContainerSlot {
 	}
 
 	@Override
-	public void initialize(@NotNull ItemStack stack) {
-		//Note: We don't need to copy any of the logic from set as initialize is only ever called on the client
-	}
-
-	@Override
-	public void set(@NotNull ItemStack stack) {
+	protected void setStackCopy(@NotNull ItemStack stack) {
 		if (inv.isServer() && !stack.isEmpty()) {
 			inv.handleKnowledge(stack);
 			inv.addEmc(BigInteger.valueOf(IEMCProxy.INSTANCE.getSellValue(stack)).multiply(BigInteger.valueOf(stack.getCount())));
