@@ -8,7 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import moze_intel.projecte.client.lang.FormatSplitter.Component;
 import moze_intel.projecte.client.lang.FormatSplitter.FormatComponent;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.data.PackOutput;
 
 /**

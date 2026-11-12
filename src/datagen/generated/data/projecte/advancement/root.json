@@ -24,7 +24,6 @@
       "translate": "advancements.projecte.description"
     },
     "icon": {
-      "count": 1,
       "id": "projecte:philosophers_stone"
     },
     "show_toast": false,

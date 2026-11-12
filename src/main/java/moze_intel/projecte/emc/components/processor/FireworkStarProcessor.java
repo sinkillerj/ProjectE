@@ -14,7 +14,7 @@ import moze_intel.projecte.api.components.DataComponentProcessor;
 import moze_intel.projecte.api.components.IComponentProcessorHelper;
 import moze_intel.projecte.config.PEConfigTranslations;
 import moze_intel.projecte.utils.Constants;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -23,7 +23,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.FireworkExplosion;
-import net.minecraft.world.item.crafting.FireworkStarRecipe;
+import net.minecraft.world.item.crafting.Ingredient;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
@@ -34,6 +34,12 @@ public class FireworkStarProcessor extends PersistentComponentProcessor<Firework
 	@DataComponentProcessor.Instance
 	public static final FireworkStarProcessor INSTANCE = new FireworkStarProcessor();
 	private static final ResourceKey<Item> FIREWORK_STAR = BuiltInRegistries.ITEM.getResourceKey(Items.FIREWORK_STAR).orElseThrow();
+	private static final Map<Item, FireworkExplosion.Shape> VANILLA_SHAPE_ITEMS = Map.of(
+			Items.FIRE_CHARGE, FireworkExplosion.Shape.LARGE_BALL,
+			Items.GOLD_NUGGET, FireworkExplosion.Shape.STAR,
+			Items.CREEPER_HEAD, FireworkExplosion.Shape.CREEPER,
+			Items.FEATHER, FireworkExplosion.Shape.BURST
+	);
 	private static final Int2ObjectMap<DyeColor> REVERSE_COLOR_LOOKUP = Util.make(new Int2ObjectOpenHashMap<>(), reverseLookup -> {
 		for (DyeColor color : Constants.COLORS) {
 			reverseLookup.putIfAbsent(color.getFireworkColor(), color);
@@ -132,7 +138,7 @@ public class FireworkStarProcessor extends PersistentComponentProcessor<Firework
 		}
 		//Note: We subtract one from the length, as SMALL_BALL does not require any, and won't be processed or stored
 		shapeEmcLookup = new Reference2LongOpenHashMap<>(FireworkExplosion.Shape.values().length - 1);
-		for (Map.Entry<Item, FireworkExplosion.Shape> entry : FireworkStarRecipe.SHAPE_BY_ITEM.entrySet()) {
+		for (Map.Entry<Item, FireworkExplosion.Shape> entry : VANILLA_SHAPE_ITEMS.entrySet()) {
 			FireworkExplosion.Shape shape = entry.getValue();
 			if (shape != FireworkExplosion.Shape.SMALL_BALL) {
 				long emc = emcLookup.applyAsLong(ItemInfo.fromItem(entry.getKey()));
@@ -141,8 +147,8 @@ public class FireworkStarProcessor extends PersistentComponentProcessor<Firework
 				}
 			}
 		}
-		trailEmc = IComponentProcessorHelper.INSTANCE.getMinEmcFor(emcLookup, FireworkStarRecipe.TRAIL_INGREDIENT);
-		twinkleEmc = IComponentProcessorHelper.INSTANCE.getMinEmcFor(emcLookup, FireworkStarRecipe.TWINKLE_INGREDIENT);
+		trailEmc = IComponentProcessorHelper.INSTANCE.getMinEmcFor(emcLookup, Ingredient.of(Items.DIAMOND));
+		twinkleEmc = IComponentProcessorHelper.INSTANCE.getMinEmcFor(emcLookup, Ingredient.of(Items.GLOWSTONE_DUST));
 	}
 
 	@Override

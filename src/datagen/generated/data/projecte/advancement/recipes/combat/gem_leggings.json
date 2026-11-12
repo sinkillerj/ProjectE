@@ -21,7 +21,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:gem_leggings"
+        "recipes": "projecte:gem_leggings"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

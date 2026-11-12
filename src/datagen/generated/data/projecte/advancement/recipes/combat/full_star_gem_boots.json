@@ -18,7 +18,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:full_star_gem_boots"
+        "recipes": "projecte:full_star_gem_boots"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

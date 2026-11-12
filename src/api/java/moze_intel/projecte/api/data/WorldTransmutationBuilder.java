@@ -10,7 +10,6 @@ import moze_intel.projecte.api.world_transmutation.IWorldTransmutation;
 import moze_intel.projecte.api.world_transmutation.SimpleWorldTransmutation;
 import moze_intel.projecte.api.world_transmutation.WorldTransmutation;
 import moze_intel.projecte.api.world_transmutation.WorldTransmutationFile;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -18,7 +17,6 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
 @ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class WorldTransmutationBuilder extends BaseFileBuilder<WorldTransmutationBuilder> {
 
 	private static final Logger LOGGER = LogUtils.getLogger();
@@ -68,7 +66,7 @@ public class WorldTransmutationBuilder extends BaseFileBuilder<WorldTransmutatio
 	 * @param result Resulting block state.
 	 */
 	public WorldTransmutationBuilder register(BlockState from, BlockState result) {
-		if (from.getValues().isEmpty() && result.getValues().isEmpty()) {
+		if (from.getValues().findAny().isEmpty() && result.getValues().findAny().isEmpty()) {
 			throw new IllegalArgumentException("None of the provided states have any properties, use the block based register method.");
 		} else if (from == result) {
 			throw new IllegalArgumentException("Cannot register a world transmutation from a block to itself.");
@@ -84,7 +82,7 @@ public class WorldTransmutationBuilder extends BaseFileBuilder<WorldTransmutatio
 	 * @param altResult Alternate resulting state.
 	 */
 	public WorldTransmutationBuilder register(BlockState from, BlockState result, BlockState altResult) {
-		if (from.getValues().isEmpty() && result.getValues().isEmpty() && altResult.getValues().isEmpty()) {
+		if (from.getValues().findAny().isEmpty() && result.getValues().findAny().isEmpty() && altResult.getValues().findAny().isEmpty()) {
 			throw new IllegalArgumentException("None of the provided states have any properties, use the block based register method.");
 		} else if (from == result || from == altResult) {
 			throw new IllegalArgumentException("Cannot register a world transmutation from a block to itself.");

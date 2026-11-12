@@ -1,16 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
-    "C": {
-      "item": "projecte:condenser_mk1"
-    },
-    "D": {
-      "item": "projecte:dark_matter_block"
-    },
-    "R": {
-      "item": "projecte:red_matter_block"
-    }
+    "C": "projecte:condenser_mk1",
+    "D": "projecte:dark_matter_block",
+    "R": "projecte:red_matter_block"
   },
   "pattern": [
     "RDR",
@@ -18,7 +11,6 @@
     "RDR"
   ],
   "result": {
-    "count": 1,
     "id": "projecte:condenser_mk2"
   }
 }

@@ -5,10 +5,10 @@ import moze_intel.projecte.components.GemData;
 import moze_intel.projecte.gameObjs.registries.PEDataComponentTypes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackLinkedSet;
-import net.neoforged.neoforge.items.ItemStackHandler;
+import moze_intel.projecte.api.inventory.PEItemStacksHandler;
 import org.jetbrains.annotations.NotNull;
 
-public class EternalDensityInventory extends ItemStackHandler {
+public class EternalDensityInventory extends PEItemStacksHandler {
 
 	private final ItemStack invItem;
 	private final boolean remote;

@@ -19,7 +19,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.status.ChunkStatus;
-import net.neoforged.neoforge.items.ItemStackHandler;
+import moze_intel.projecte.api.inventory.PEItemStacksHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
@@ -77,11 +77,11 @@ public abstract class EmcBlockEntity extends BaseEmcBlockEntity {
 			//Only mark the chunk as dirty at most once per tick
 			ChunkAccess chunk = level.getChunk(SectionPos.blockToSectionCoord(pos.getX()), SectionPos.blockToSectionCoord(pos.getZ()), ChunkStatus.FULL, false);
 			if (chunk != null) {
-				chunk.setUnsaved(true);
+				chunk.markUnsaved();
 			}
 			lastSave = time;
 		}
-		if (recheckComparators && !level.isClientSide) {
+		if (recheckComparators && !level.isClientSide()) {
 			updateComparators = true;
 		}
 	}
@@ -140,7 +140,7 @@ public abstract class EmcBlockEntity extends BaseEmcBlockEntity {
 		return sentEmc;
 	}
 
-	protected class StackHandler extends ItemStackHandler {
+	protected class StackHandler extends PEItemStacksHandler {
 
 		protected StackHandler(int size) {
 			super(size);
@@ -171,7 +171,7 @@ public abstract class EmcBlockEntity extends BaseEmcBlockEntity {
 
 		public void compact() {
 			if (needsCompacting) {
-				if (level != null && !level.isClientSide) {
+				if (level != null && !level.isClientSide()) {
 					empty = ItemHelper.compactInventory(this);
 				}
 				needsCompacting = false;

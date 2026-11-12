@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:white_alchemical_bag"
+        "recipes": "projecte:white_alchemical_bag"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -11,7 +11,7 @@ import moze_intel.projecte.api.capabilities.item.IModeChanger;
 import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.api.capabilities.item.IProjectileShooter;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.EntityCapability;
 import net.neoforged.neoforge.capabilities.ItemCapability;
@@ -22,8 +22,8 @@ public class PECapabilities {
 	private PECapabilities() {
 	}
 
-	private static ResourceLocation rl(String path) {
-		return ResourceLocation.fromNamespaceAndPath(ProjectEAPI.PROJECTE_MODID, path);
+	private static Identifier rl(String path) {
+		return Identifier.fromNamespaceAndPath(ProjectEAPI.PROJECTE_MODID, path);
 	}
 
 	/**

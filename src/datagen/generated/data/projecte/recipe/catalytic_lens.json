@@ -3,15 +3,9 @@
   "category": "equipment",
   "group": "projecte:catalytic_lens",
   "key": {
-    "D": {
-      "item": "projecte:destruction_catalyst"
-    },
-    "H": {
-      "item": "projecte:hyperkinetic_lens"
-    },
-    "M": {
-      "item": "projecte:dark_matter"
-    }
+    "D": "projecte:destruction_catalyst",
+    "H": "projecte:hyperkinetic_lens",
+    "M": "projecte:dark_matter"
   },
   "pattern": [
     "MMM",
@@ -19,7 +13,6 @@
     "MMM"
   ],
   "result": {
-    "count": 1,
     "id": "projecte:catalytic_lens"
   }
 }

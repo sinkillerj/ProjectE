@@ -34,6 +34,7 @@ import moze_intel.projecte.gameObjs.container.TransmutationContainer;
 import moze_intel.projecte.impl.capability.KnowledgeImpl;
 import moze_intel.projecte.network.packets.to_client.SyncEmcPKT;
 import moze_intel.projecte.utils.AnnotationHelper;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.ReloadableServerResources;
@@ -67,7 +68,7 @@ public final class EMCMappingHandler {
 		}
 	}
 
-	public static void map(ReloadableServerResources serverResources, RegistryAccess registryAccess, ResourceManager resourceManager) {
+	public static void map(ReloadableServerResources serverResources, HolderLookup.Provider registryAccess, ResourceManager resourceManager) {
 		//Start by clearing the cached map so if values are removed say by setting EMC to zero then we respect the change
 		clearEmcMap();
 		SimpleGraphMapper<NormalizedSimpleStack, BigFraction, IValueArithmetic<BigFraction>> mapper = new SimpleGraphMapper<>(new HiddenBigFractionArithmetic());
@@ -92,7 +93,7 @@ public final class EMCMappingHandler {
 				if (MappingConfig.isEnabled(emcMapper)) {
 					DumpToFileCollector.currentGroupName = emcMapper.getName();
 					try {
-						emcMapper.addMappings(mappingCollector, serverResources, registryAccess, resourceManager);
+						emcMapper.addMappings(mappingCollector, serverResources, asRegistryAccess(registryAccess), resourceManager);
 						PECore.debugLog("Collected Mappings from " + emcMapper.getClass().getName());
 					} catch (Exception e) {
 						PECore.LOGGER.error(LogUtils.FATAL_MARKER, "Exception during Mapping Collection from Mapper {}. PLEASE REPORT THIS! EMC VALUES MIGHT BE INCONSISTENT!",
@@ -204,5 +205,17 @@ public final class EMCMappingHandler {
 
 	public static SyncEmcPKT createPacketData() {
 		return new SyncEmcPKT(emc == null ? Object2LongMaps.emptyMap() : Object2LongMaps.unmodifiable(emc));
+	}
+
+	private static RegistryAccess asRegistryAccess(HolderLookup.Provider registries) {
+		if (registries instanceof RegistryAccess access) {
+			return access;
+		}
+		// MC 26.3: ReloadableServerResources#getRegistryLookup() is a HolderLookup.Provider wrapper, not RegistryAccess.
+		MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+		if (server != null) {
+			return server.registryAccess();
+		}
+		throw new IllegalStateException("Reload registries are not a RegistryAccess: " + registries);
 	}
 }

@@ -6,7 +6,7 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.proxy.IEMCProxy;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 
 public record FuelUpgradeRecipe(Holder<Item> input, Holder<Item> output, long upgradeEMC) {
@@ -22,7 +22,7 @@ public record FuelUpgradeRecipe(Holder<Item> input, Holder<Item> output, long up
 		this(input, output, IEMCProxy.INSTANCE.getValue(output) - IEMCProxy.INSTANCE.getValue(input));
 	}
 
-	public ResourceLocation syntheticId() {
+	public Identifier syntheticId() {
 		return PECore.rl("/fuel_upgrade/" + RecipeViewerHelper.stripForSynthetic(input) + "/" + RecipeViewerHelper.stripForSynthetic(output) + "/");
 	}
 }

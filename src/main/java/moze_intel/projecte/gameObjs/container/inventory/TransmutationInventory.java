@@ -26,17 +26,16 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
-import net.neoforged.neoforge.items.ItemStackHandler;
-import net.neoforged.neoforge.items.wrapper.CombinedInvWrapper;
+import moze_intel.projecte.api.inventory.PEItemStacksHandler;
+import moze_intel.projecte.utils.PECombinedItemStacks;
 
-public class TransmutationInventory extends CombinedInvWrapper {
+public class TransmutationInventory extends PECombinedItemStacks {
 
 	public final Player player;
 	public final IKnowledgeProvider provider;
-	private final IItemHandlerModifiable inputLocks;
-	private final IItemHandlerModifiable learning;
-	public final IItemHandlerModifiable outputs;
+	private final PEItemStacksHandler inputLocks;
+	private final PEItemStacksHandler learning;
+	public final PEItemStacksHandler outputs;
 
 	private static final int MAX_MATTER_DISPLAY = 12;
 	private static final int MAX_FUEL_DISPLAY = 4;
@@ -51,13 +50,13 @@ public class TransmutationInventory extends CombinedInvWrapper {
 	private long lastAvailableEmc;
 
 	public TransmutationInventory(Player player) {
-		super((IItemHandlerModifiable) Objects.requireNonNull(player.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY)).getInputAndLocks(),
-				new ItemStackHandler(2), new ItemStackHandler(16));
+		super((PEItemStacksHandler) Objects.requireNonNull(player.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY)).getInputAndLocks(),
+				new PEItemStacksHandler(2), new PEItemStacksHandler(16));
 		this.player = player;
 		this.provider = Objects.requireNonNull(player.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY));
-		this.inputLocks = itemHandler[0];
-		this.learning = itemHandler[1];
-		this.outputs = itemHandler[2];
+		this.inputLocks = getStackHandler(0);
+		this.learning = getStackHandler(1);
+		this.outputs = getStackHandler(2);
 		if (isClient()) {
 			//Update all targets so that we display the items to the player
 			updateClientTargets(false);
@@ -69,7 +68,7 @@ public class TransmutationInventory extends CombinedInvWrapper {
 	}
 
 	public boolean isClient() {
-		return player.level().isClientSide;
+		return player.level().isClientSide();
 	}
 
 	/**
@@ -532,15 +531,26 @@ public class TransmutationInventory extends CombinedInvWrapper {
 		PlayerHelper.updateScore((ServerPlayer) player, PlayerHelper.SCOREBOARD_EMC, emc);
 	}
 
-	public IItemHandlerModifiable getHandlerForSlot(int slot) {
-		return super.getHandlerFromIndex(super.getIndexForSlot(slot));
+	public PEItemStacksHandler getHandlerForSlot(int slot) {
+		int handlerIndex = 0;
+		for (int i = 0; i < 3; i++) {
+			PEItemStacksHandler h = getStackHandler(i);
+			if (slot < h.getSlots()) {
+				handlerIndex = i;
+				break;
+			}
+			slot -= h.getSlots();
+		}
+		return getStackHandler(handlerIndex);
 	}
 
 	public int getIndexFromSlot(int slot) {
-		for (IItemHandlerModifiable h : itemHandler) {
-			if (slot >= h.getSlots()) {
-				slot -= h.getSlots();
+		for (int i = 0; i < 3; i++) {
+			PEItemStacksHandler h = getStackHandler(i);
+			if (slot < h.getSlots()) {
+				return slot;
 			}
+			slot -= h.getSlots();
 		}
 		return slot;
 	}

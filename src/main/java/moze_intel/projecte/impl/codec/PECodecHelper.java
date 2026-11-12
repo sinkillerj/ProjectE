@@ -34,27 +34,17 @@ import moze_intel.projecte.api.ProjectERegistries;
 import moze_intel.projecte.api.codec.IPECodecHelper;
 import moze_intel.projecte.api.codec.MapProcessor;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.ItemStackHandler;
+import moze_intel.projecte.api.inventory.PEItemStacksHandler;
 import org.jetbrains.annotations.Nullable;
 
 public class PECodecHelper implements IPECodecHelper {
 
 	private static final Gson PRETTY_GSON = new GsonBuilder().setPrettyPrinting().create();
-	private static final MethodHandle HANDLER_STACK_FIELD = Util.make(() -> {
-		try {
-			Field field = ItemStackHandler.class.getDeclaredField("stacks");
-			field.setAccessible(true);
-			return MethodHandles.lookup().unreflectGetter(field);
-		} catch (ReflectiveOperationException roe) {
-			throw new RuntimeException("Couldn't get getter MethodHandle for stacks", roe);
-		}
-	});
-
 	private static final Codec<ItemStack> LENIENT_STACK_CODEC = ItemStack.CODEC.promotePartial(error -> PECore.LOGGER.error("Tried to load invalid item: '{}'", error));
 	//Based off of ItemStack#OPTIONAL_CODEC
 	private static final Codec<ItemStack> LENIENT_OPTIONAL_STACK_CODEC = ExtraCodecs.optionalEmptyMap(LENIENT_STACK_CODEC.orElse(ItemStack.EMPTY)).xmap(
@@ -62,18 +52,12 @@ public class PECodecHelper implements IPECodecHelper {
 			stack -> stack.isEmpty() ? Optional.empty() : Optional.of(stack)
 	);
 
-	public static final Codec<ItemStackHandler> MUTABLE_HANDLER_CODEC = LENIENT_OPTIONAL_STACK_CODEC.listOf().flatComapMap(
+	public static final Codec<PEItemStacksHandler> MUTABLE_HANDLER_CODEC = LENIENT_OPTIONAL_STACK_CODEC.listOf().flatComapMap(
 			list -> {
 				NonNullList<ItemStack> itemList = NonNullList.createWithCapacity(list.size());
 				itemList.addAll(list);
-				return new ItemStackHandler(itemList);
-			}, handler -> {
-		try {
-			return DataResult.<List<ItemStack>>success((NonNullList<ItemStack>) HANDLER_STACK_FIELD.invokeExact(handler));
-		} catch (Throwable t) {
-			return DataResult.error(t::getMessage);
-		}
-	});
+				return new PEItemStacksHandler(itemList);
+			}, handler -> DataResult.success(handler.copyToList().stream().toList()));
 
 	private final Codec<Long> NON_NEGATIVE_LONG = longRangeWithMessage(0, Long.MAX_VALUE, value -> "Value must be non-negative: " + value);
 	private final Codec<Long> POSITIVE_LONG = longRangeWithMessage(1, Long.MAX_VALUE, value -> "Value must be positive: " + value);

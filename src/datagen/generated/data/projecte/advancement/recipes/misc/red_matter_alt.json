@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:red_matter_alt"
+        "recipes": "projecte:red_matter_alt"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

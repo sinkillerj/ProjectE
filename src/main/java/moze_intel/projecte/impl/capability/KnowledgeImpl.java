@@ -1,6 +1,7 @@
 package moze_intel.projecte.impl.capability;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
@@ -38,8 +39,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
-import net.neoforged.neoforge.items.ItemStackHandler;
+import moze_intel.projecte.api.inventory.PEItemStacksHandler;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -68,7 +68,7 @@ public class KnowledgeImpl implements IKnowledgeProvider {
 	}
 
 	protected void fireChangedEvent() {
-		if (player != null && !player.level().isClientSide) {
+		if (player != null && !player.level().isClientSide()) {
 			NeoForge.EVENT_BUS.post(new PlayerKnowledgeChangeEvent(player));
 		}
 	}
@@ -206,7 +206,7 @@ public class KnowledgeImpl implements IKnowledgeProvider {
 
 	@NotNull
 	@Override
-	public IItemHandlerModifiable getInputAndLocks() {
+	public PEItemStacksHandler getInputAndLocks() {
 		return attachment().inputLocks;
 	}
 
@@ -303,12 +303,13 @@ public class KnowledgeImpl implements IKnowledgeProvider {
 		private static final Codec<Set<ItemInfo>> MUTABLE_KNOWLEDGE_CODEC = ItemInfo.CODEC.listOf()
 			.promotePartial(error -> PECore.LOGGER.error("Failed to load stored knowledge: {}", error))
 			.xmap(HashSet::new, List::copyOf);
-		public static final Codec<KnowledgeAttachment> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+		public static final MapCodec<KnowledgeAttachment> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 				MUTABLE_KNOWLEDGE_CODEC.fieldOf("knowledge").forGetter(attachment -> attachment.knowledge),
 				PECodecHelper.MUTABLE_HANDLER_CODEC.fieldOf("input_locks").forGetter(attachment -> attachment.inputLocks),
 				IPECodecHelper.INSTANCE.nonNegativeBigInt().optionalFieldOf("emc", BigInteger.ZERO).forGetter(attachment -> attachment.emc),
 				Codec.BOOL.optionalFieldOf("full_knowledge", false).forGetter(attachment -> attachment.fullKnowledge)
 		).apply(instance, KnowledgeAttachment::new));
+		public static final Codec<KnowledgeAttachment> CODEC = MAP_CODEC.codec();
 		public static final StreamCodec<RegistryFriendlyByteBuf, KnowledgeAttachment> STREAM_CODEC = StreamCodec.composite(
 				ItemInfo.STREAM_CODEC.apply(ByteBufCodecs.collection(HashSet::new)), attachment -> attachment.knowledge,
 				PEStreamCodecs.handlerStreamCodec(LOCK_SLOTS), attachment -> attachment.inputLocks,
@@ -317,16 +318,16 @@ public class KnowledgeImpl implements IKnowledgeProvider {
 				KnowledgeAttachment::new
 		);
 
-		private final ItemStackHandler inputLocks;
+		private final PEItemStacksHandler inputLocks;
 		private final Set<ItemInfo> knowledge;
 		private boolean fullKnowledge;
 		private BigInteger emc;
 
 		public KnowledgeAttachment() {
-			this(new HashSet<>(), new ItemStackHandler(LOCK_SLOTS), BigInteger.ZERO, false);
+			this(new HashSet<>(), new PEItemStacksHandler(LOCK_SLOTS), BigInteger.ZERO, false);
 		}
 
-		private KnowledgeAttachment(Set<ItemInfo> knowledge, ItemStackHandler inputLocks, BigInteger emc, boolean fullKnowledge) {
+		private KnowledgeAttachment(Set<ItemInfo> knowledge, PEItemStacksHandler inputLocks, BigInteger emc, boolean fullKnowledge) {
 			this.knowledge = knowledge;
 			this.inputLocks = inputLocks;
 			this.emc = emc;
@@ -336,7 +337,7 @@ public class KnowledgeImpl implements IKnowledgeProvider {
 		@Nullable
 		public KnowledgeAttachment copy(IAttachmentHolder holder, HolderLookup.Provider registries) {
 			//Note: ItemInfo and BigInteger are both immutable, so we can just add them directly
-			return new KnowledgeAttachment(new HashSet<>(knowledge), PEAttachmentTypes.copyHandler(inputLocks, ItemStackHandler::new), emc, fullKnowledge);
+			return new KnowledgeAttachment(new HashSet<>(knowledge), PEAttachmentTypes.copyHandler(inputLocks, PEItemStacksHandler::new), emc, fullKnowledge);
 		}
 	}
 }

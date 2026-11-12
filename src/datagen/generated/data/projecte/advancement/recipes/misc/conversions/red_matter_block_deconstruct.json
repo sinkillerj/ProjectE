@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:conversions/red_matter_block_deconstruct"
+        "recipes": "projecte:conversions/red_matter_block_deconstruct"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

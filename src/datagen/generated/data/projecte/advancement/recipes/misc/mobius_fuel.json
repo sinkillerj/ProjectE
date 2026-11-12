@@ -16,7 +16,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:mobius_fuel"
+        "recipes": "projecte:mobius_fuel"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

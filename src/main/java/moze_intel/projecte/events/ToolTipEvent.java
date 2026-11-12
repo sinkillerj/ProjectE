@@ -12,7 +12,7 @@ import moze_intel.projecte.gameObjs.registries.PEDataComponentTypes;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -45,10 +45,10 @@ public class ToolTipEvent {
 		}
 
 		if (ProjectEConfig.client.tagToolTips.get()) {
-			current.getTags().forEach(tag -> tooltip.add(Component.literal("#" + tag.location())));
+			current.tags().forEach(tag -> tooltip.add(Component.literal("#" + tag.location())));
 		}
 
-		if (ProjectEConfig.client.emcToolTips.get() && (!ProjectEConfig.client.shiftEmcToolTips.get() || Screen.hasShiftDown())) {
+		if (ProjectEConfig.client.emcToolTips.get() && (!ProjectEConfig.client.shiftEmcToolTips.get() || Minecraft.getInstance().options.keyShift.isDown())) {
 			long value = IEMCProxy.INSTANCE.getValue(current);
 			if (value > 0) {
 				tooltip.add(EMCHelper.getEmcTextComponent(value, 1));
@@ -56,7 +56,7 @@ public class ToolTipEvent {
 					tooltip.add(EMCHelper.getEmcTextComponent(value, current.getCount()));
 				}
 				Player player = event.getEntity();
-				if (player != null && (!ProjectEConfig.client.shiftLearnedToolTips.get() || Screen.hasShiftDown())) {
+				if (player != null && (!ProjectEConfig.client.shiftLearnedToolTips.get() || Minecraft.getInstance().options.keyShift.isDown())) {
 					IKnowledgeProvider knowledgeProvider = player.getCapability(PECapabilities.KNOWLEDGE_CAPABILITY);
 					if (knowledgeProvider != null && knowledgeProvider.hasKnowledge(current)) {
 						tooltip.add(PELang.EMC_HAS_KNOWLEDGE.translateColored(ChatFormatting.YELLOW));

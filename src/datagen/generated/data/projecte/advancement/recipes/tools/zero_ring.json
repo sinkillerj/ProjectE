@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:zero_ring"
+        "recipes": "projecte:zero_ring"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

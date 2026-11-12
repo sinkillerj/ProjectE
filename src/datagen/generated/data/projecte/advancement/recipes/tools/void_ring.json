@@ -33,7 +33,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:void_ring"
+        "recipes": "projecte:void_ring"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

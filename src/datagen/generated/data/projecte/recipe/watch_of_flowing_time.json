@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "C": {
-      "item": "minecraft:clock"
-    },
-    "D": {
-      "item": "projecte:dark_matter"
-    },
-    "G": {
-      "item": "minecraft:glowstone"
-    },
-    "O": {
-      "tag": "c:obsidians/normal"
-    }
+    "C": "minecraft:clock",
+    "D": "projecte:dark_matter",
+    "G": "minecraft:glowstone",
+    "O": "#c:obsidians/normal"
   },
   "pattern": [
     "DGD",
@@ -21,7 +13,6 @@
     "DGD"
   ],
   "result": {
-    "count": 1,
     "id": "projecte:watch_of_flowing_time"
   }
 }

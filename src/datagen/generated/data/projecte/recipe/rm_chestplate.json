@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "D": {
-      "item": "projecte:dm_chestplate"
-    },
-    "M": {
-      "item": "projecte:red_matter"
-    }
+    "D": "projecte:dm_chestplate",
+    "M": "projecte:red_matter"
   },
   "pattern": [
     "MDM",
@@ -15,7 +11,6 @@
     "MMM"
   ],
   "result": {
-    "count": 1,
     "id": "projecte:rm_chestplate"
   }
 }

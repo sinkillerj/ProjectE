@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "D": {
-      "item": "projecte:dark_matter"
-    },
-    "F": {
-      "tag": "c:feathers"
-    },
-    "I": {
-      "item": "projecte:iron_band"
-    }
+    "D": "projecte:dark_matter",
+    "F": "#c:feathers",
+    "I": "projecte:iron_band"
   },
   "pattern": [
     "DFD",
@@ -18,7 +12,6 @@
     "DFD"
   ],
   "result": {
-    "count": 1,
     "id": "projecte:swiftwolf_rending_gale"
   }
 }

@@ -1,7 +1,6 @@
 package moze_intel.projecte.gameObjs.registration.impl;
 
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.capabilities.item.IAlchBagItem;
@@ -14,8 +13,11 @@ import moze_intel.projecte.api.capabilities.item.IPedestalItem;
 import moze_intel.projecte.api.capabilities.item.IProjectileShooter;
 import moze_intel.projecte.gameObjs.items.ICapabilityAware;
 import moze_intel.projecte.gameObjs.registration.PEDeferredRegister;
+import moze_intel.projecte.gameObjs.registration.PERegistryUtil;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
@@ -91,18 +93,18 @@ public class ItemDeferredRegister extends PEDeferredRegister<Item> {
 	}
 
 	public <ITEM extends Item> ItemRegistryObject<ITEM> registerTool(String name, Function<Item.Properties, ITEM> sup) {
-		return register(name, () -> sup.apply(new NoDurabilityItemProperties().stacksTo(1).fireResistant()));
+		return register(name, id -> sup.apply(new NoDurabilityItemProperties().setId(ResourceKey.create(Registries.ITEM, id)).stacksTo(1).fireResistant()));
 	}
 
 	public <ITEM extends Item> ItemRegistryObject<ITEM> register(String name, Function<Item.Properties, ITEM> sup, UnaryOperator<Item.Properties> propertyModifier) {
-		return register(name, () -> sup.apply(propertyModifier.apply(new Item.Properties())));
+		return register(name, id -> sup.apply(propertyModifier.apply(PERegistryUtil.itemProps(id))));
 	}
 
 	@NotNull
 	@Override
 	@SuppressWarnings("unchecked")
-	public <ITEM extends Item> ItemRegistryObject<ITEM> register(@NotNull String name, @NotNull Supplier<? extends ITEM> sup) {
-		return (ItemRegistryObject<ITEM>) super.register(name, sup);
+	public <ITEM extends Item> ItemRegistryObject<ITEM> register(@NotNull String name, @NotNull Function<Identifier, ? extends ITEM> func) {
+		return (ItemRegistryObject<ITEM>) super.register(name, func);
 	}
 
 	private static class NoDurabilityItemProperties extends Item.Properties {

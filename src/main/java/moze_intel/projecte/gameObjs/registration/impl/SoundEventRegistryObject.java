@@ -2,7 +2,7 @@ package moze_intel.projecte.gameObjs.registration.impl;
 
 import moze_intel.projecte.gameObjs.registration.PEDeferredHolder;
 import moze_intel.projecte.utils.text.ILangEntry;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
 

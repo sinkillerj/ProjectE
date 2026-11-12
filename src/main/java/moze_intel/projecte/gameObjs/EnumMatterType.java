@@ -69,13 +69,13 @@ public enum EnumMatterType implements StringRepresentable, IMatterType {
 
 	@Override
 	public int getEnchantmentValue() {
-		return 0;
+		return 1;
 	}
 
 	@NotNull
 	@Override
 	public Ingredient getRepairIngredient() {
-		return Ingredient.EMPTY;
+		return Ingredient.of();
 	}
 
 	public MapColor getMapColor() {

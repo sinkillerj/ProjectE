@@ -12,6 +12,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import moze_intel.projecte.PECore;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -201,7 +204,8 @@ public class SearchQueryParser {
 			@Override
 			public boolean matches(@Nullable Level level, @Nullable Player player, String key, ItemStack stack) {
 				Item item = stack.getItem();
-				String modid = item.getCreatorModId(stack);
+				HolderLookup.Provider provider = level != null ? level.registryAccess() : RegistryAccess.EMPTY;
+				String modid = item.getCreatorModId(provider, stack);
 				if (modid == null) {
 					PECore.LOGGER.error("Unexpected null registry name for item of class type: {}", item.getClass().getSimpleName());
 					return false;
@@ -224,7 +228,7 @@ public class SearchQueryParser {
 		TAG('#') {
 			@Override
 			public boolean matches(@Nullable Level level, @Nullable Player player, String key, ItemStack stack) {
-				return stack.getTags().anyMatch(tag -> tag.location().toString().toLowerCase(Locale.ROOT).contains(key));
+				return stack.tags().anyMatch(tag -> tag.location().toString().toLowerCase(Locale.ROOT).contains(key));
 			}
 		};
 

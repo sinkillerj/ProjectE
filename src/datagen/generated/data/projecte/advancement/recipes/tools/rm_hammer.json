@@ -16,7 +16,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:rm_hammer"
+        "recipes": "projecte:rm_hammer"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

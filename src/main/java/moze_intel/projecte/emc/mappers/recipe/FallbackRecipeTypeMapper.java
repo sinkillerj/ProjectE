@@ -1,5 +1,6 @@
 package moze_intel.projecte.emc.mappers.recipe;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
@@ -15,6 +16,7 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleItemRecipe;
+import net.minecraft.world.item.crafting.SmithingRecipe;
 import net.minecraft.world.item.crafting.SmithingTransformRecipe;
 import net.minecraft.world.item.crafting.SmithingTrimRecipe;
 
@@ -60,11 +62,19 @@ public class FallbackRecipeTypeMapper extends BaseRecipeTypeMapper {
 			//If the extension of upgrade recipe doesn't override getIngredients (just like vanilla doesn't)
 			// grab the values from the recipe's object itself
 			if (recipe instanceof SmithingTransformRecipe transformRecipe) {
-				return List.of(transformRecipe.base, transformRecipe.addition, transformRecipe.template);
+				return smithingIngredients(transformRecipe);
 			} else if (recipe instanceof SmithingTrimRecipe trimRecipe) {
-				return List.of(trimRecipe.base, trimRecipe.addition, trimRecipe.template);
+				return smithingIngredients(trimRecipe);
 			}
 		}
+		return ingredients;
+	}
+
+	private static List<Ingredient> smithingIngredients(SmithingRecipe recipe) {
+		List<Ingredient> ingredients = new ArrayList<>(3);
+		recipe.templateIngredient().ifPresent(ingredients::add);
+		ingredients.add(recipe.baseIngredient());
+		recipe.additionIngredient().ifPresent(ingredients::add);
 		return ingredients;
 	}
 }

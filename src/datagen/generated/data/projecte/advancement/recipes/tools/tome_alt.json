@@ -30,7 +30,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:tome_alt"
+        "recipes": "projecte:tome_alt"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

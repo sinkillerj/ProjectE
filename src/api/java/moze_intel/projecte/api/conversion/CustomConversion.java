@@ -12,7 +12,7 @@ import java.util.List;
 import moze_intel.projecte.api.codec.IPECodecHelper;
 import moze_intel.projecte.api.nss.NSSTag;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.util.ExtraCodecs;
 
 /**

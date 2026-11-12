@@ -1,10 +1,7 @@
 {
   "type": "minecraft:crafting_shapeless",
-  "category": "misc",
   "ingredients": [
-    {
-      "item": "projecte:dark_matter_block"
-    }
+    "projecte:dark_matter_block"
   ],
   "result": {
     "count": 4,

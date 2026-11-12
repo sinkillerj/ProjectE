@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "H": {
-      "item": "projecte:dm_hammer"
-    },
-    "M": {
-      "item": "projecte:dark_matter"
-    },
-    "R": {
-      "item": "projecte:red_matter"
-    }
+    "H": "projecte:dm_hammer",
+    "M": "projecte:dark_matter",
+    "R": "projecte:red_matter"
   },
   "pattern": [
     "RMR",
@@ -18,7 +12,6 @@
     " M "
   ],
   "result": {
-    "count": 1,
     "id": "projecte:rm_hammer"
   }
 }

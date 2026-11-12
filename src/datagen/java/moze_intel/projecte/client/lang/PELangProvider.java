@@ -8,13 +8,11 @@ import moze_intel.projecte.gameObjs.registries.PEBlocks;
 import moze_intel.projecte.gameObjs.registries.PEEntityTypes;
 import moze_intel.projecte.gameObjs.registries.PEItems;
 import moze_intel.projecte.gameObjs.registries.PESoundEvents;
-import moze_intel.projecte.integration.jade.PEJadeConstants;
-import moze_intel.projecte.integration.recipe_viewer.alias.ProjectEAliases;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.text.PELang;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class PELangProvider extends BaseLanguageProvider {
 
@@ -25,7 +23,7 @@ public class PELangProvider extends BaseLanguageProvider {
 	@Override
 	protected void addTranslations() {
 		addAdvancements();
-		addAliases(ProjectEAliases.values());
+		addIntegrationAliases();
 		addBlocks();
 		addCommands();
 		addConfigs();
@@ -65,14 +63,13 @@ public class PELangProvider extends BaseLanguageProvider {
 		add(PEKeybind.EXTRA_FUNCTION, "Extra Function");
 		add(PEKeybind.FIRE_PROJECTILE, "Fire Projectile");
 		add(PEKeybind.MODE, "Change Mode");
-		add(PEKeybind.TRANSMUTATION_TABLET, "Transmutation Tablet");
+		add(PEKeybind.TRANSMUTATION_TABLET, "Open Transmutation Tablet");
 		//JEI
 		add(PELang.JEI_COLLECTOR, "Collector Fuel Upgrades");
 		add(PELang.WORLD_TRANSMUTE, "World Transmutation");
 		add(PELang.WORLD_TRANSMUTE_DESCRIPTION, "Use item (%1$s) in world, hold %2$s while interacting for alternate output");
 		//Curios
 		add(PELang.CURIOS_KLEIN_STAR, "Klein Star");
-		add(PELang.CURIOS_TRANSMUTATION_TABLET, "Transmutation Tablet");
 		//Gem Armor
 		add(PELang.GEM_ENABLED, "ENABLED");
 		add(PELang.GEM_DISABLED, "DISABLED");
@@ -100,10 +97,80 @@ public class PELangProvider extends BaseLanguageProvider {
 		add(PELang.GUI_RELAY_MK2, "Relay MKII");
 		add(PELang.GUI_RELAY_MK3, "Relay MKIII");
 		//Jade config strings
-		addJadeConfigTooltip(PEJadeConstants.EMC_PROVIDER, "EMC Provider");
+		addJadeConfigTooltip(PECore.rl("emc_provider"), "EMC Provider");
 	}
 
-	private void addJadeConfigTooltip(ResourceLocation location, String value) {
+	private void addIntegrationAliases() {
+		addAlias("auto.feeder", "Auto-Feeder");
+		addAlias("auto.healer", "Auto-Healer");
+		addAlias("building_wand", "Building Wand");
+		addAlias("explosive", "Explosive");
+		addAlias("fire.extinguisher", "Fire Extinguisher");
+		addAlias("protection.fire", "Fire Protection");
+		addAlias("fire.starter", "Fire Starter");
+		addAlias("freeze", "Freeze");
+		addAlias("item_repair", "Item Repair");
+		addAlias("lightning", "Lightning");
+		addAlias("magnet", "Magnet");
+		addAlias("night_vision", "Night Vision");
+		addAlias("accelerator.plant", "Plant Accelerator");
+		addAlias("grower.plant", "Plant Grower");
+		addAlias("ring.base", "Ring Base");
+		addAlias("accelerator.tick", "Tick Accelerator");
+		addAlias("control.time", "Time Control");
+		addAlias("control.weather", "Weather Control");
+		addAlias("transmutation", "Word Transmutation");
+		addAlias("condenser.items", "Item Condenser");
+		addAlias("condenser.matter", "Matter Condenser");
+		addAlias("emc.charger", "EMC Charger");
+		addAlias("emc.detector", "EMC Detector");
+		addAlias("emc.generator", "EMC Generator");
+		addAlias("emc.transfer", "EMC Transfer");
+		addAlias("block.alchemical_coal", "Block of Alchemical Coal");
+		addAlias("block.mobius_fuel", "Block of Mobius Fuel");
+		addAlias("block.aeternalis_fuel", "Block of Aeternalis Fuel");
+		addAlias("block.dark_matter", "Block of Dark Matter");
+		addAlias("block.red_matter", "Block of Red Matter");
+		addAlias("crafting.portable", "Portable Crafting Table");
+		addAlias("crafting.portable.workbench", "Portable Workbench");
+		addAlias("transmutation.portable", "Portable Transmutation");
+		addAlias("infinite.lava", "Infinite Lava");
+		addAlias("infinite.water", "Infinite Water");
+		addAlias("flight.creative", "Creative Flight");
+		addAlias("speed.movement", "Movement Speed");
+		addAlias("auto_step", "Auto-Step");
+		addAlias("step_assist", "Step Assist");
+		addAlias("walking.lava", "Lava Walking");
+		addAlias("walking.water", "Water Walking");
+		addAlias("tool.axe", "Axe");
+		addAlias("tool.hoe", "Hoe");
+		addAlias("tool.pickaxe", "Pickaxe");
+		addAlias("tool.shovel", "Shovel");
+		addAlias("tool.sword", "Sword");
+		addAlias("tool.ranged", "Ranged");
+		addAlias("tool.weapon", "Weapon");
+		addAlias("tool.hammer", "Hammer");
+		addAlias("tool.shears", "Shears");
+		addAlias("aoe", "AOE");
+		addAlias("aoe.long", "Area of Effect");
+		addAlias("repel.mob", "Repel Mobs");
+		addAlias("repel.hostile", "Repel Hostile");
+		addAlias("repel.projectile", "Repel Projectile");
+		addAlias("slow.hostile", "Slow Hostile");
+		addAlias("slow.mobs", "Slow Mobs");
+		addAlias("storage.backpack", "Backpack");
+		addAlias("storage.portable", "Portable Storage");
+		addAlias("storage.item", "Item Storage");
+		addAlias("storage.emc", "EMC Storage");
+		addAlias("emc.battery", "EMC Battery");
+		addAlias("storage.xp", "Experience Storage");
+		addAlias("teleporter", "Self-Teleporter");
+		addAlias("teleporation", "Teleporation");
+		addAlias("fluid.void", "Void Fluid");
+		addAlias("fluid.remover", "Fluid Remover");
+	}
+
+	private void addJadeConfigTooltip(Identifier location, String value) {
 		add("config.jade.plugin_" + location.getNamespace() + "." + location.getPath(), value);
 	}
 
@@ -262,7 +329,6 @@ public class PELangProvider extends BaseLanguageProvider {
 
 	private void addTags() {
 		add(PETags.Items.CURIOS_KLEIN_STAR, "Klein Stars");
-		add(PETags.Items.CURIOS_TRANSMUTATION_TABLET, "Transmutation Tablets");
 		add(PETags.Items.ALCHEMICAL_BAGS, "Alchemical Bags");
 		add(PETags.Items.COLLECTOR_FUEL, "Collector Fuels");
 		add(PETags.Items.DATA_COMPONENT_WHITELIST, "Data Component Whitelist");

@@ -2,21 +2,11 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "1": {
-      "item": "projecte:rm_shears"
-    },
-    "2": {
-      "item": "projecte:rm_axe"
-    },
-    "3": {
-      "item": "projecte:rm_sword"
-    },
-    "4": {
-      "item": "projecte:rm_hoe"
-    },
-    "R": {
-      "item": "projecte:red_matter"
-    }
+    "1": "projecte:rm_shears",
+    "2": "projecte:rm_axe",
+    "3": "projecte:rm_sword",
+    "4": "projecte:rm_hoe",
+    "R": "projecte:red_matter"
   },
   "pattern": [
     "123",
@@ -24,7 +14,6 @@
     "RRR"
   ],
   "result": {
-    "count": 1,
     "id": "projecte:rm_katar"
   }
 }

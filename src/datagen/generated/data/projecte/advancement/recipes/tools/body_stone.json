@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:body_stone"
+        "recipes": "projecte:body_stone"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

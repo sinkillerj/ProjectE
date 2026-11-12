@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "M": {
-      "item": "projecte:dark_matter"
-    }
+    "M": "projecte:dark_matter"
   },
   "pattern": [
     "MMM",
@@ -12,7 +10,6 @@
     "M M"
   ],
   "result": {
-    "count": 1,
     "id": "projecte:dm_leggings"
   }
 }

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:divining_rod_3"
+        "recipes": "projecte:divining_rod_3"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

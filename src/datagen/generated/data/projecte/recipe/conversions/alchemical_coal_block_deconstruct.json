@@ -1,10 +1,7 @@
 {
   "type": "minecraft:crafting_shapeless",
-  "category": "misc",
   "ingredients": [
-    {
-      "item": "projecte:alchemical_coal_block"
-    }
+    "projecte:alchemical_coal_block"
   ],
   "result": {
     "count": 9,

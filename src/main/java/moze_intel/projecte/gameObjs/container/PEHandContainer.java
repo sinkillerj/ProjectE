@@ -6,7 +6,7 @@ import moze_intel.projecte.network.packets.to_client.container.SyncOffhandPkt;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -68,8 +68,8 @@ public class PEHandContainer extends PEContainer {
 	}
 
 	@Override
-	public void clicked(int slotId, int dragType, @NotNull ClickType clickType, @NotNull Player player) {
-		if (clickType == ClickType.SWAP) {
+	public void clicked(int slotId, int dragType, @NotNull ContainerInput clickType, @NotNull Player player) {
+		if (clickType == ContainerInput.SWAP) {
 			if (hand == InteractionHand.OFF_HAND && dragType == 40) {
 				//Block pressing f to swap it when it is in the offhand
 				return;
@@ -83,7 +83,7 @@ public class PEHandContainer extends PEContainer {
 		clickPostValidate(slotId, dragType, clickType, player);
 	}
 
-	public void clickPostValidate(int slotId, int dragType, @NotNull ClickType clickType, @NotNull Player player) {
+	public void clickPostValidate(int slotId, int dragType, @NotNull ContainerInput clickType, @NotNull Player player) {
 		super.clicked(slotId, dragType, clickType, player);
 	}
 }

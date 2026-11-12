@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:harvest_goddess_band"
+        "recipes": "projecte:harvest_goddess_band"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

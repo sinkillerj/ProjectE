@@ -4,11 +4,12 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.utils.text.PELang;
 import moze_intel.projecte.utils.text.TextComponentUtil;
 import net.minecraft.client.player.LocalPlayer;
+import java.net.URI;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.util.TimeUtil;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.VersionChecker;
+import net.neoforged.neoforge.common.VersionChecker;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.loading.FMLConfig;
 import net.neoforged.fml.loading.FMLConfig.ConfigValue;
@@ -34,12 +35,13 @@ public class ThreadCheckUpdate extends Thread {
 			return;
 		}
 		IModInfo info = PECore.MOD_CONTAINER.getModInfo();
+        if (info.getUpdateURL().isEmpty()) return;
 		VersionChecker.CheckResult result = null;
 
 		int tries = 0;
 		do {
 			VersionChecker.CheckResult res = VersionChecker.getResult(info);
-			if (res.status() != VersionChecker.Status.PENDING) {
+			if (res != null) {
 				result = res;
 			}
 			try {
@@ -65,7 +67,7 @@ public class ThreadCheckUpdate extends Thread {
 			hasSentMessage = true;
 			player.sendSystemMessage(PELang.UPDATE_AVAILABLE.translate(target));
 			player.sendSystemMessage(PELang.UPDATE_GET_IT.translate());
-			player.sendSystemMessage(TextComponentUtil.build(new ClickEvent(ClickEvent.Action.OPEN_URL, curseURL), curseURL));
+			player.sendSystemMessage(TextComponentUtil.build(new ClickEvent.OpenUrl(URI.create(curseURL)), curseURL));
 		}
 	}
 }

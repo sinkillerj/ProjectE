@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:gem_of_eternal_density"
+        "recipes": "projecte:gem_of_eternal_density"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

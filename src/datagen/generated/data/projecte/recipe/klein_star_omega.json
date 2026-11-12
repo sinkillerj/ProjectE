@@ -2,21 +2,12 @@
   "type": "minecraft:crafting_shapeless",
   "category": "equipment",
   "ingredients": [
-    {
-      "item": "projecte:klein_star_sphere"
-    },
-    {
-      "item": "projecte:klein_star_sphere"
-    },
-    {
-      "item": "projecte:klein_star_sphere"
-    },
-    {
-      "item": "projecte:klein_star_sphere"
-    }
+    "projecte:klein_star_sphere",
+    "projecte:klein_star_sphere",
+    "projecte:klein_star_sphere",
+    "projecte:klein_star_sphere"
   ],
   "result": {
-    "count": 1,
     "id": "projecte:klein_star_omega"
   }
 }

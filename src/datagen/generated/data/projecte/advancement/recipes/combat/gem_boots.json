@@ -21,7 +21,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:gem_boots"
+        "recipes": "projecte:gem_boots"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:conversions/water_to_ice"
+        "recipes": "projecte:conversions/water_to_ice"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

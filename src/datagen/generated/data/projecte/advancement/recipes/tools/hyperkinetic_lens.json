@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:hyperkinetic_lens"
+        "recipes": "projecte:hyperkinetic_lens"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -8,6 +8,7 @@ import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.Consumer;
 import java.util.function.IntFunction;
 import moze_intel.projecte.api.capabilities.item.IExtraFunction;
 import moze_intel.projecte.api.capabilities.item.IProjectileShooter;
@@ -45,6 +46,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ClipContext;
@@ -56,21 +58,10 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.NotNull;
 
-public class PhilosophersStone extends ItemMode<PhilosophersStoneMode> implements IProjectileShooter, IExtraFunction {
+public class PhilosophersStone extends ItemMode<PhilosophersStoneMode> implements IProjectileShooter, IExtraFunction, ISelfCraftingRemainder {
 
 	public PhilosophersStone(Properties props) {
 		super(props.component(PEDataComponentTypes.PHILOSOPHERS_STONE_MODE, PhilosophersStoneMode.CUBE), 4);
-	}
-
-	@Override
-	public boolean hasCraftingRemainingItem(@NotNull ItemStack stack) {
-		return true;
-	}
-
-	@NotNull
-	@Override
-	public ItemStack getCraftingRemainingItem(ItemStack stack) {
-		return stack.copy();
 	}
 
 	public BlockHitResult getHitBlock(Level level, Player player, boolean isSneaking) {
@@ -96,7 +87,7 @@ public class PhilosophersStone extends ItemMode<PhilosophersStoneMode> implement
 			}
 		}
 
-		if (level.isClientSide) {
+		if (level.isClientSide()) {
 			if (WorldTransmutationManager.INSTANCE.getWorldTransmutation(level.getBlockState(pos), true) == null) {
 				//Pass if there is no world transmutation for the target block
 				return InteractionResult.PASS;
@@ -124,7 +115,7 @@ public class PhilosophersStone extends ItemMode<PhilosophersStoneMode> implement
 			} else {
 				PlayerHelper.checkedReplaceBlock((ServerPlayer) player, level, currentPos, targetState);
 			}
-			if (level.random.nextInt(8) == 0) {
+			if (level.getRandom().nextInt(8) == 0) {
 				((ServerLevel) level).sendParticles(ParticleTypes.LARGE_SMOKE, currentPos.getX(), currentPos.getY() + 1, currentPos.getZ(), 2, 0, 0, 0, 0);
 			}
 		}
@@ -145,16 +136,16 @@ public class PhilosophersStone extends ItemMode<PhilosophersStoneMode> implement
 
 	@Override
 	public boolean doExtraFunction(@NotNull Player player, @NotNull ItemStack stack, InteractionHand hand) {
-		if (!player.level().isClientSide) {
+		if (!player.level().isClientSide()) {
 			player.openMenu(new ContainerProvider(stack));
 		}
 		return true;
 	}
 
 	@Override
-	public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flags) {
-		super.appendHoverText(stack, context, tooltip, flags);
-		tooltip.add(PELang.TOOLTIP_PHILOSTONE.translate(ClientKeyHelper.getKeyName(PEKeybind.EXTRA_FUNCTION)));
+	public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay display, @NotNull Consumer<Component> tooltip, @NotNull TooltipFlag flags) {
+		super.appendHoverText(stack, context, display, tooltip, flags);
+		tooltip.accept(PELang.TOOLTIP_PHILOSTONE.translate(ClientKeyHelper.getKeyName(PEKeybind.EXTRA_FUNCTION)));
 	}
 
 	public static Object2ReferenceMap<BlockPos, BlockState> getChanges(Level level, BlockPos pos, Direction sideHit, Direction horizontalDirection, boolean isSneaking,

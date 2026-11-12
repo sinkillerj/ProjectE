@@ -1,0 +1,111 @@
+{
+  "model": {
+    "type": "minecraft:select",
+    "cases": [
+      {
+        "model": {
+          "type": "minecraft:select",
+          "cases": [
+            {
+              "model": {
+                "type": "minecraft:model",
+                "model": "projecte:item/arcana_ring_arcana_0_on"
+              },
+              "when": true
+            }
+          ],
+          "component": "projecte:active",
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "projecte:item/arcana_ring_arcana_0_off"
+          },
+          "property": "minecraft:component"
+        },
+        "when": "zero"
+      },
+      {
+        "model": {
+          "type": "minecraft:select",
+          "cases": [
+            {
+              "model": {
+                "type": "minecraft:model",
+                "model": "projecte:item/arcana_ring_arcana_1_on"
+              },
+              "when": true
+            }
+          ],
+          "component": "projecte:active",
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "projecte:item/arcana_ring_arcana_1_off"
+          },
+          "property": "minecraft:component"
+        },
+        "when": "ignition"
+      },
+      {
+        "model": {
+          "type": "minecraft:select",
+          "cases": [
+            {
+              "model": {
+                "type": "minecraft:model",
+                "model": "projecte:item/arcana_ring_arcana_2_on"
+              },
+              "when": true
+            }
+          ],
+          "component": "projecte:active",
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "projecte:item/arcana_ring_arcana_2_off"
+          },
+          "property": "minecraft:component"
+        },
+        "when": "harvest"
+      },
+      {
+        "model": {
+          "type": "minecraft:select",
+          "cases": [
+            {
+              "model": {
+                "type": "minecraft:model",
+                "model": "projecte:item/arcana_ring_arcana_3_on"
+              },
+              "when": true
+            }
+          ],
+          "component": "projecte:active",
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "projecte:item/arcana_ring_arcana_3_off"
+          },
+          "property": "minecraft:component"
+        },
+        "when": "swrg"
+      }
+    ],
+    "component": "projecte:arcana_mode",
+    "fallback": {
+      "type": "minecraft:select",
+      "cases": [
+        {
+          "model": {
+            "type": "minecraft:model",
+            "model": "projecte:item/arcana_ring_arcana_0_on"
+          },
+          "when": true
+        }
+      ],
+      "component": "projecte:active",
+      "fallback": {
+        "type": "minecraft:model",
+        "model": "projecte:item/arcana_ring_arcana_0_off"
+      },
+      "property": "minecraft:component"
+    },
+    "property": "minecraft:component"
+  }
+}

@@ -1,7 +1,19 @@
 {
   "variants": {
-    "": {
+    "facing=east": {
+      "model": "projecte:block/alchemical_chest",
+      "y": 90
+    },
+    "facing=north": {
       "model": "projecte:block/alchemical_chest"
+    },
+    "facing=south": {
+      "model": "projecte:block/alchemical_chest",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "projecte:block/alchemical_chest",
+      "y": 270
     }
   }
 }

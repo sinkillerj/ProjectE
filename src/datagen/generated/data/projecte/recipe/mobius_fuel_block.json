@@ -2,36 +2,17 @@
   "type": "minecraft:crafting_shapeless",
   "category": "building",
   "ingredients": [
-    {
-      "item": "projecte:mobius_fuel"
-    },
-    {
-      "item": "projecte:mobius_fuel"
-    },
-    {
-      "item": "projecte:mobius_fuel"
-    },
-    {
-      "item": "projecte:mobius_fuel"
-    },
-    {
-      "item": "projecte:mobius_fuel"
-    },
-    {
-      "item": "projecte:mobius_fuel"
-    },
-    {
-      "item": "projecte:mobius_fuel"
-    },
-    {
-      "item": "projecte:mobius_fuel"
-    },
-    {
-      "item": "projecte:mobius_fuel"
-    }
+    "projecte:mobius_fuel",
+    "projecte:mobius_fuel",
+    "projecte:mobius_fuel",
+    "projecte:mobius_fuel",
+    "projecte:mobius_fuel",
+    "projecte:mobius_fuel",
+    "projecte:mobius_fuel",
+    "projecte:mobius_fuel",
+    "projecte:mobius_fuel"
   ],
   "result": {
-    "count": 1,
     "id": "projecte:mobius_fuel_block"
   }
 }

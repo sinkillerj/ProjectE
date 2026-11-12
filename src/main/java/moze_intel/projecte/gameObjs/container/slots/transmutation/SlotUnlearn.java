@@ -22,17 +22,11 @@ public class SlotUnlearn extends InventoryContainerSlot {
 	}
 
 	@Override
-	public void initialize(@NotNull ItemStack stack) {
-		//Note: We don't need to copy any of the logic from set as initialize is only ever called on the client
-		super.initialize(stack);
-	}
-
-	@Override
-	public void set(@NotNull ItemStack stack) {
+	protected void setStackCopy(@NotNull ItemStack stack) {
 		if (inv.isServer() && !stack.isEmpty()) {
 			inv.handleUnlearn(stack.copy());
 		}
-		super.set(stack);
+		super.setStackCopy(stack);
 	}
 
 	@Override

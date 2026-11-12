@@ -3,15 +3,9 @@
   "category": "equipment",
   "group": "projecte:philosophers_stone",
   "key": {
-    "D": {
-      "tag": "c:gems/diamond"
-    },
-    "G": {
-      "tag": "c:dusts/glowstone"
-    },
-    "R": {
-      "tag": "c:dusts/redstone"
-    }
+    "D": "#c:gems/diamond",
+    "G": "#c:dusts/glowstone",
+    "R": "#c:dusts/redstone"
   },
   "pattern": [
     "GRG",
@@ -19,7 +13,6 @@
     "GRG"
   ],
   "result": {
-    "count": 1,
     "id": "projecte:philosophers_stone"
   }
 }

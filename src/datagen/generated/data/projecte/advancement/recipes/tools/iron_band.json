@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:iron_band"
+        "recipes": "projecte:iron_band"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

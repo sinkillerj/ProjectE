@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:philosophers_stone_alt"
+        "recipes": "projecte:philosophers_stone_alt"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

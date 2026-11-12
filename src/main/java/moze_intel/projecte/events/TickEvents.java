@@ -12,14 +12,15 @@ import moze_intel.projecte.gameObjs.items.IFireProtector;
 import moze_intel.projecte.handlers.InternalAbilities;
 import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.server.level.ServerPlayer;
+import moze_intel.projecte.utils.ItemHelper;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
-import net.neoforged.neoforge.items.IItemHandler;
+import moze_intel.projecte.api.inventory.PEItemStacksHandler;
 
 @EventBusSubscriber(modid = PECore.MODID)
 public class TickEvents {
@@ -31,7 +32,7 @@ public class TickEvents {
 		if (provider != null) {
 			Set<DyeColor> colorsChanged = EnumSet.noneOf(DyeColor.class);
 			for (DyeColor color : getBagColorsPresent(player)) {
-				IItemHandler inv = provider.getBag(color);
+				PEItemStacksHandler inv = provider.getBag(color);
 				for (int i = 0, slots = inv.getSlots(); i < slots; i++) {
 					ItemStack current = inv.getStackInSlot(i);
 					IAlchBagItem alchBagItem = current.getCapability(PECapabilities.ALCH_BAG_ITEM_CAPABILITY);
@@ -60,7 +61,11 @@ public class TickEvents {
 	}
 
 	public static boolean shouldPlayerResistFire(Player player) {
-		for (ItemStack stack : player.getArmorSlots()) {
+		for (EquipmentSlot slot : EquipmentSlot.values()) {
+			if (!slot.isArmor()) {
+				continue;
+			}
+			ItemStack stack = player.getItemBySlot(slot);
 			if (!stack.isEmpty() && stack.getItem() instanceof IFireProtector protector && protector.canProtectAgainstFire(stack, player)) {
 				return true;
 			}
@@ -70,13 +75,9 @@ public class TickEvents {
 
 	private static Set<DyeColor> getBagColorsPresent(Player player) {
 		Set<DyeColor> bagsPresent = EnumSet.noneOf(DyeColor.class);
-		IItemHandler inv = player.getCapability(ItemHandler.ENTITY);
-		if (inv != null) {
-			for (int i = 0, slots = inv.getSlots(); i < slots; i++) {
-				ItemStack stack = inv.getStackInSlot(i);
-				if (!stack.isEmpty() && stack.getItem() instanceof AlchemicalBag bag) {
-					bagsPresent.add(bag.color);
-				}
+		for (ItemStack stack : ItemHelper.getInventoryStacks(player.getInventory())) {
+			if (!stack.isEmpty() && stack.getItem() instanceof AlchemicalBag bag) {
+				bagsPresent.add(bag.color);
 			}
 		}
 		return bagsPresent;

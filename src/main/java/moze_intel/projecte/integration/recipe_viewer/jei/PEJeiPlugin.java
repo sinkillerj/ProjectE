@@ -27,7 +27,7 @@ import moze_intel.projecte.integration.IntegrationHelper;
 import moze_intel.projecte.integration.recipe_viewer.RecipeViewerHelper;
 import moze_intel.projecte.integration.recipe_viewer.alias.ProjectEAliasMapping;
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
@@ -38,7 +38,7 @@ import org.jetbrains.annotations.Nullable;
 @JeiPlugin
 public class PEJeiPlugin implements IModPlugin {
 
-	private static final ResourceLocation UID = PECore.rl("main");
+	private static final Identifier UID = PECore.rl("main");
 
 	private static final ISubtypeInterpreter<ItemStack> PROJECTE_INTERPRETER = new ISubtypeInterpreter<>() {
 		@Nullable
@@ -58,28 +58,11 @@ public class PEJeiPlugin implements IModPlugin {
 			return null;
 		}
 
-		@NotNull
-		@Override
-		public String getLegacyStringSubtypeInfo(@NotNull ItemStack stack, @NotNull UidContext context) {
-			if (context == UidContext.Ingredient) {
-				Object mode = null;
-				if (stack.getItem() instanceof IModeChanger<?> modeChanger) {
-					mode = modeChanger.getMode(stack);
-				}
-				Long stored = stack.get(PEDataComponentTypes.STORED_EMC);
-				if (stored != null && stored > 0) {
-					return mode == null ? stored.toString() : mode + ";" + stored;
-				} else if (mode != null) {
-					return mode.toString();
-				}
-			}
-			return "";
-		}
 	};
 
 	@NotNull
 	@Override
-	public ResourceLocation getPluginUid() {
+	public Identifier getPluginUid() {
 		return UID;
 	}
 
@@ -124,16 +107,16 @@ public class PEJeiPlugin implements IModPlugin {
 			registry.addRecipeCatalyst(new ItemStack(PEBlocks.COLLECTOR), CollectorRecipeCategory.RECIPE_TYPE);
 			registry.addRecipeCatalyst(new ItemStack(PEBlocks.COLLECTOR_MK2), CollectorRecipeCategory.RECIPE_TYPE);
 			registry.addRecipeCatalyst(new ItemStack(PEBlocks.COLLECTOR_MK3), CollectorRecipeCategory.RECIPE_TYPE);
-			registry.addRecipeCatalyst(new ItemStack(PEBlocks.DARK_MATTER_FURNACE), RecipeTypes.SMELTING, RecipeTypes.FUELING);
-			registry.addRecipeCatalyst(new ItemStack(PEBlocks.RED_MATTER_FURNACE), RecipeTypes.SMELTING, RecipeTypes.FUELING);
+			registry.addRecipeCatalyst(new ItemStack(PEBlocks.DARK_MATTER_FURNACE), RecipeTypes.SMELTING, RecipeTypes.SMELTING_FUEL);
+			registry.addRecipeCatalyst(new ItemStack(PEBlocks.RED_MATTER_FURNACE), RecipeTypes.SMELTING, RecipeTypes.SMELTING_FUEL);
 		}
 	}
 
 	@Override
 	public void registerGuiHandlers(@NotNull IGuiHandlerRegistration registry) {
 		if (shouldLoad()) {
-			registry.addRecipeClickArea(GUIDMFurnace.class, 73, 34, 25, 16, RecipeTypes.SMELTING, RecipeTypes.FUELING);
-			registry.addRecipeClickArea(GUIRMFurnace.class, 88, 35, 25, 17, RecipeTypes.SMELTING, RecipeTypes.FUELING);
+			registry.addRecipeClickArea(GUIDMFurnace.class, 73, 34, 25, 16, RecipeTypes.SMELTING, RecipeTypes.SMELTING_FUEL);
+			registry.addRecipeClickArea(GUIRMFurnace.class, 88, 35, 25, 17, RecipeTypes.SMELTING, RecipeTypes.SMELTING_FUEL);
 			registry.addRecipeClickArea(AbstractCollectorScreen.MK1.class, 138, 31, 10, 24, CollectorRecipeCategory.RECIPE_TYPE);
 			registry.addRecipeClickArea(AbstractCollectorScreen.MK2.class, 138 + 16, 31, 10, 24, CollectorRecipeCategory.RECIPE_TYPE);
 			registry.addRecipeClickArea(AbstractCollectorScreen.MK3.class, 138 + 34, 31, 10, 24, CollectorRecipeCategory.RECIPE_TYPE);

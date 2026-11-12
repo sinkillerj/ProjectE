@@ -3,21 +3,11 @@
   "category": "equipment",
   "group": "projecte:repair_talisman",
   "key": {
-    "H": {
-      "item": "projecte:high_covalence_dust"
-    },
-    "L": {
-      "item": "projecte:low_covalence_dust"
-    },
-    "M": {
-      "item": "projecte:medium_covalence_dust"
-    },
-    "P": {
-      "item": "minecraft:paper"
-    },
-    "S": {
-      "tag": "c:strings"
-    }
+    "H": "projecte:high_covalence_dust",
+    "L": "projecte:low_covalence_dust",
+    "M": "projecte:medium_covalence_dust",
+    "P": "minecraft:paper",
+    "S": "#c:strings"
   },
   "pattern": [
     "HML",
@@ -25,7 +15,6 @@
     "LMH"
   ],
   "result": {
-    "count": 1,
     "id": "projecte:repair_talisman"
   }
 }

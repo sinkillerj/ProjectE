@@ -17,7 +17,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -25,6 +27,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class LifeStone extends PEToggleItem implements IPedestalItem, ICapabilityAware {
 
@@ -33,9 +36,9 @@ public class LifeStone extends PEToggleItem implements IPedestalItem, ICapabilit
 	}
 
 	@Override
-	public void inventoryTick(@NotNull ItemStack stack, @NotNull Level level, @NotNull Entity entity, int slot, boolean isHeld) {
-		super.inventoryTick(stack, level, entity, slot, isHeld);
-		if (level.isClientSide || !hotBarOrOffHand(slot) || !(entity instanceof Player player)) {
+	public void inventoryTick(@NotNull ItemStack stack, @NotNull ServerLevel level, @NotNull Entity entity, @Nullable EquipmentSlot slot) {
+		super.inventoryTick(stack, level, entity, slot);
+		if (level.isClientSide() || !hotBarOrOffHand(slot) || !(entity instanceof Player player)) {
 			return;
 		}
 		if (stack.getOrDefault(PEDataComponentTypes.ACTIVE, false)) {
@@ -60,7 +63,7 @@ public class LifeStone extends PEToggleItem implements IPedestalItem, ICapabilit
 	@Override
 	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@NotNull ItemStack stack, @NotNull Level level, @NotNull BlockPos pos,
 			@NotNull PEDESTAL pedestal) {
-		if (!level.isClientSide && ProjectEConfig.server.cooldown.pedestal.life.get() != -1) {
+		if (!level.isClientSide() && ProjectEConfig.server.cooldown.pedestal.life.get() != -1) {
 			if (pedestal.getActivityCooldown() == 0) {
 				for (ServerPlayer player : level.getEntitiesOfClass(ServerPlayer.class, pedestal.getEffectBounds())) {
 					if (player.getHealth() < player.getMaxHealth()) {

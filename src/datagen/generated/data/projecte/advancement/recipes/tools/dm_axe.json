@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:dm_axe"
+        "recipes": "projecte:dm_axe"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

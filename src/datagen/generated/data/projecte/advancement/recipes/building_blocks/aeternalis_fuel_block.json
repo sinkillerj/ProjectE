@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:aeternalis_fuel_block"
+        "recipes": "projecte:aeternalis_fuel_block"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

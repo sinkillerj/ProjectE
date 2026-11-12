@@ -1,60 +1,64 @@
 package moze_intel.projecte.utils;
 
-import java.util.ArrayList;
-import java.util.List;
-import net.minecraft.Util;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.NonNullList;
+import java.util.Optional;
+import net.minecraft.core.Holder;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.EntityBasedExplosionDamageCalculator;
+import net.minecraft.world.level.ExplosionDamageCalculator;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.ServerExplosion;
+import net.minecraft.world.level.SimpleExplosionDamageCalculator;
+import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.event.EventHooks;
 import org.jetbrains.annotations.Nullable;
 
-public class NovaExplosion extends Explosion {
+/**
+ * Helper for creating nova-style explosions using the 26.1 {@link ServerExplosion} API.
+ */
+public final class NovaExplosion {
 
-	// Copies of private super fields
-	private final Level level;
-
-	public NovaExplosion(Level level, @Nullable Entity entity, double x, double y, double z, float radius, Explosion.BlockInteraction mode) {
-		//Nova Explosions don't cause fire
-		super(level, entity, x, y, z, radius, false, mode);
-		this.level = level;
+	private NovaExplosion() {
 	}
 
-	// [VanillaCopy] super, but collecting all drops into one place, and no fire (so we don't have to copy that bit)
-	// We also sync the sound playing and particles by the caller instead of here, so we don't bother copying those either
-	@Override
-	public void finalizeExplosion(boolean spawnParticles) {
-		finalizeExplosion();
+	public static Holder<SoundEvent> defaultExplosionSound() {
+		return SoundEvents.GENERIC_EXPLODE;
 	}
 
-	public List<BlockPos> finalizeExplosion() {
-		List<BlockPos> particlePositions = new ArrayList<>();
-		boolean interactsWithBlocks = interactsWithBlocks();
-		List<BlockPos> toBlow = getToBlow();
-		if (interactsWithBlocks) {
-			this.level.getProfiler().push("explosion_blocks");
+	public static @Nullable ServerExplosion create(
+			ServerLevel level,
+			@Nullable Entity entity,
+			double x,
+			double y,
+			double z,
+			float radius,
+			Explosion.BlockInteraction mode
+	) {
+		Vec3 center = new Vec3(x, y, z);
+		ExplosionDamageCalculator calculator = entity == null
+				? new SimpleExplosionDamageCalculator(true, true, Optional.empty(), Optional.empty())
+				: new EntityBasedExplosionDamageCalculator(entity);
+		DamageSource damageSource = entity == null
+				? level.damageSources().generic()
+				: entity instanceof LivingEntity living ? level.damageSources().mobAttack(living) : level.damageSources().generic();
+		ServerExplosion explosion = new ServerExplosion(level, entity, damageSource, calculator, center, radius, false, mode);
+		return EventHooks.onExplosionStart(level, explosion) ? null : explosion;
+	}
 
-			NonNullList<ItemStack> allDrops = NonNullList.create();
-			Util.shuffle(toBlow, this.level.random);
-
-			for (BlockPos pos : toBlow) {
-				BlockState state = level.getBlockState(pos);
-				if (!state.isAir()) {
-					particlePositions.add(pos);
-				}
-				// PE: Collect the drops we can, spawn the stuff we can't
-				state.onExplosionHit(this.level, pos, this, (stack, position) -> allDrops.add(stack));
-			}
-
-			// PE: Drop all together
-			LivingEntity placer = getIndirectSourceEntity();
-			WorldHelper.createLootDrop(allDrops, level, placer == null ? center() : placer.position());
-			this.level.getProfiler().pop();
+	public static boolean explode(Level level, @Nullable Entity entity, double x, double y, double z, float radius, Explosion.BlockInteraction mode) {
+		if (!(level instanceof ServerLevel serverLevel)) {
+			return false;
 		}
-		return particlePositions;
+		ServerExplosion explosion = create(serverLevel, entity, x, y, z, radius, mode);
+		if (explosion == null) {
+			return false;
+		}
+		explosion.explode();
+		return true;
 	}
 }

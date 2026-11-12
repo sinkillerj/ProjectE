@@ -30,7 +30,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:tome"
+        "recipes": "projecte:tome"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

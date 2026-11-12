@@ -24,10 +24,10 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.server.permissions.Permissions;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.BundleItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
@@ -58,12 +58,11 @@ public class DumpMissingEmc {
 			//Assume unbreakable blocks won't have an EMC value by default
 			case BlockItem blockItem when blockItem.getBlock().defaultDestroyTime() == Block.INDESTRUCTIBLE -> true;
 			case Tome tome when !ProjectEConfig.common.craftableTome.get() -> true;
-			case BundleItem bundleItem when !enabledFeatures.contains(FeatureFlags.BUNDLE) -> true;
 			default -> false;
 		}) {
 			return true;
-		} else if (!FMLEnvironment.production && SKIP_TOP &&
-				   holder.unwrapKey().map(key -> key.location().getNamespace().equals(IntegrationHelper.TOP_MODID)).orElse(false)) {
+		} else if (!FMLEnvironment.isProduction() && SKIP_TOP &&
+				   holder.unwrapKey().map(key -> key.identifier().getNamespace().equals(IntegrationHelper.TOP_MODID)).orElse(false)) {
 			//Skip TOP items in dev
 			return true;
 		}
@@ -96,7 +95,7 @@ public class DumpMissingEmc {
 				if (minecraft.player != null) {
 					hasPermissions = minecraft.player.canUseGameMasterBlocks();
 				} else {
-					hasPermissions = source.hasPermission(Commands.LEVEL_GAMEMASTERS);
+					hasPermissions = source.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER);
 				}
 			}
 
@@ -108,7 +107,7 @@ public class DumpMissingEmc {
 		}
 
 		Set<ItemInfo> missing = new HashSet<>();
-		for (Item item : registryAccess.registryOrThrow(Registries.ITEM)) {
+		for (Item item : registryAccess.lookupOrThrow(Registries.ITEM)) {
 			//Skip air, and skip any items that are not currently enabled in the world
 			if (item != Items.AIR && item.isEnabled(features)) {
 				//Note: This is intentionally not using Item#getDefaultInstance as data component based variants should be based on the creative mode tabs

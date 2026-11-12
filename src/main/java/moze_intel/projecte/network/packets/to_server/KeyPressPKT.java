@@ -2,43 +2,35 @@ package moze_intel.projecte.network.packets.to_server;
 
 import io.netty.buffer.ByteBuf;
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.api.item.ITransmutationTablet;
+import moze_intel.projecte.integration.curios.TransmutationTableCurios;
+import moze_intel.projecte.api.inventory.PEItemStacksHandler;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.capabilities.item.IExtraFunction;
 import moze_intel.projecte.api.capabilities.item.IItemCharge;
 import moze_intel.projecte.api.capabilities.item.IModeChanger;
 import moze_intel.projecte.api.capabilities.item.IProjectileShooter;
-import moze_intel.projecte.api.item.ITransmutationTablet;
 import moze_intel.projecte.config.ProjectEConfig;
-import moze_intel.projecte.gameObjs.container.TransmutationContainer;
 import moze_intel.projecte.gameObjs.items.armor.GemArmorBase;
 import moze_intel.projecte.gameObjs.items.armor.GemChest;
 import moze_intel.projecte.gameObjs.items.armor.GemFeet;
 import moze_intel.projecte.gameObjs.items.armor.GemHelmet;
 import moze_intel.projecte.gameObjs.registries.PEAttachmentTypes;
 import moze_intel.projecte.gameObjs.registries.PEItems;
-import moze_intel.projecte.integration.curios.TransmutationTableCurios;
 import moze_intel.projecte.network.packets.IPEPacket;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.text.ILangEntry;
 import moze_intel.projecte.utils.text.PELang;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.capabilities.ItemCapability;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Optional;
 
 public record KeyPressPKT(PEKeybind key) implements IPEPacket {
 
@@ -69,18 +61,18 @@ public record KeyPressPKT(PEKeybind key) implements IPEPacket {
 				GemFeet.toggleStepAssist(boots, player);
 			}
 			return;
-		} else if (key == PEKeybind.TRANSMUTATION_TABLET) {
-            if (!(player instanceof ServerPlayer)) return;
-            Optional<IItemHandlerModifiable> curiosInv = TransmutationTableCurios.getCuriosInventory(player);
-            if (curiosInv.isEmpty()) return;
-            IItemHandlerModifiable curios = curiosInv.get();
-            for (int i = 0; i < curios.getSlots(); i++) {
-                ItemStack stack = curios.getStackInSlot(i);
-                if (stack.getItem() instanceof ITransmutationTablet tablet) {
-                    tablet.openContainer(player);
-                    break;
+		}
+        if (key == PEKeybind.TRANSMUTATION_TABLET) {
+            TransmutationTableCurios.getCuriosInventory(player).ifPresent(curios -> {
+                for (int i = 0; i < curios.size(); i++) {
+                    ItemStack stack = PEItemStacksHandler.getStack(curios, i);
+                    if (stack.getItem() instanceof ITransmutationTablet tablet) {
+                        tablet.openContainer(player);
+                        break;
+                    }
                 }
-            }
+            });
+            return;
         }
 		for (InteractionHand hand : InteractionHand.values()) {
 			ItemStack stack = player.getItemInHand(hand);
@@ -143,18 +135,5 @@ public record KeyPressPKT(PEKeybind key) implements IPEPacket {
 	private interface CapabilityProcessor<CAPABILITY> {
 
 		boolean process(CAPABILITY capability, Player player, ItemStack stack, InteractionHand hand);
-	}
-
-    private static class TransmutationTabletContainerProvider implements MenuProvider {
-		@Override
-		public AbstractContainerMenu createMenu(int windowId, @NotNull Inventory playerInventory, @NotNull Player player) {
-			return new TransmutationContainer(windowId, playerInventory);
-		}
-
-		@NotNull
-		@Override
-		public Component getDisplayName() {
-			return PELang.TRANSMUTATION_TRANSMUTE.translate();
-		}
 	}
 }

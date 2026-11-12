@@ -6,7 +6,7 @@ import com.google.gson.JsonParser;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import java.io.Reader;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.component.DataComponentPatch;

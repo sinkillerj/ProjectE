@@ -7,9 +7,10 @@ import moze_intel.projecte.api.proxy.IEMCProxy;
 import moze_intel.projecte.config.PEConfigTranslations;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.BannerBlock;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BannerPatternLayers;
 import net.neoforged.neoforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
@@ -47,7 +48,7 @@ public class DecoratedShieldProcessor implements IDataComponentProcessor {
 		if (info.getItem().is(Tags.Items.TOOLS_SHIELD)) {
 			DyeColor baseColor = info.getOrNull(DataComponents.BASE_COLOR);
 			if (baseColor != null) {
-				ItemStack banner = new ItemStack(BannerBlock.byColor(baseColor));
+				ItemStack banner = new ItemStack(getBannerItem(baseColor));
 				BannerPatternLayers patternLayers = info.getOrNull(DataComponents.BANNER_PATTERNS);
 				if (patternLayers != null && !patternLayers.equals(BannerPatternLayers.EMPTY)) {
 					//If there is any pattern stored, set it so that we can get the value of the banner when it has that pattern stored
@@ -62,6 +63,10 @@ public class DecoratedShieldProcessor implements IDataComponentProcessor {
 			}
 		}
 		return currentEMC;
+	}
+
+	private static Item getBannerItem(DyeColor color) {
+		return Items.BANNER.pick(color);
 	}
 
 	@Override

@@ -7,11 +7,11 @@ import java.util.function.IntSupplier;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.registries.PEItems;
+import moze_intel.projecte.api.inventory.PEItemStacksHandler;
 import moze_intel.projecte.integration.IntegrationHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
-import net.minecraft.network.protocol.game.ClientboundAnimatePacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -34,7 +34,8 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.util.BlockSnapshot;
 import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.level.BlockEvent.EntityMultiPlaceEvent;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 /**
  * Helper class for player-related methods. Notice: Please try to keep methods tidy and alphabetically ordered. Thanks!
@@ -100,7 +101,8 @@ public final class PlayerHelper {
 	}
 
 	public static ItemStack findFirstItem(Player player, Holder<Item> consumeFrom) {
-		for (ItemStack s : player.getInventory().items) {
+		for (int i = 0, slots = player.getInventory().getContainerSize(); i < slots; i++) {
+			ItemStack s = player.getInventory().getItem(i);
 			if (!s.isEmpty() && s.is(consumeFrom)) {
 				return s;
 			}
@@ -126,10 +128,10 @@ public final class PlayerHelper {
 		if (!offhand.isEmpty() && checker.test(player, offhand)) {
 			return true;
 		}
-		IItemHandler curios = player.getCapability(IntegrationHelper.CURIO_ITEM_HANDLER);
+		ResourceHandler<ItemResource> curios = IntegrationHelper.getCurioItemHandler(player);
 		if (curios != null) {
-			for (int i = 0, slots = curios.getSlots(); i < slots; i++) {
-				ItemStack stack = curios.getStackInSlot(i);
+			for (int i = 0, slots = PEItemStacksHandler.getSlotCount(curios); i < slots; i++) {
+				ItemStack stack = PEItemStacksHandler.getStack(curios, i);
 				if (!stack.isEmpty() && checker.test(player, stack)) {
 					return true;
 				}
@@ -159,7 +161,10 @@ public final class PlayerHelper {
 	}
 
 	public static boolean hasEditPermission(Player player, Level level, BlockPos pos) {
-		if (!player.mayInteract(level, pos)) {
+		if (!(level instanceof ServerLevel serverLevel)) {
+			return true;
+		}
+		if (!player.mayInteract(serverLevel, pos)) {
 			return false;
 		}
 		for (Direction e : Constants.DIRECTIONS) {
@@ -176,10 +181,7 @@ public final class PlayerHelper {
 	}
 
 	public static void swingItem(Player player, InteractionHand hand) {
-		if (player.level() instanceof ServerLevel level) {
-			int action = hand == InteractionHand.MAIN_HAND ? ClientboundAnimatePacket.SWING_MAIN_HAND : ClientboundAnimatePacket.SWING_OFF_HAND;
-			level.getChunkSource().broadcastAndSend(player, new ClientboundAnimatePacket(player, action));
-		}
+		player.swing(hand, net.minecraft.world.item.component.SwingAnimation.DEFAULT, true);
 	}
 
 	public static void updateScore(ServerPlayer player, ObjectiveCriteria objective, BigInteger value) {
@@ -187,7 +189,7 @@ public final class PlayerHelper {
 	}
 
 	public static void updateScore(ServerPlayer player, ObjectiveCriteria objective, int value) {
-		player.getScoreboard().forAllObjectives(objective, player, score -> score.set(value));
+		player.level().getScoreboard().forAllObjectives(objective, player, score -> score.set(value));
 	}
 
 	public static boolean checkFeedCooldown(Player player) {
@@ -199,15 +201,16 @@ public final class PlayerHelper {
 	}
 
 	public static boolean checkCooldown(Player player, Item item, IntSupplier cooldownSupplier) {
+		ItemStack stack = new ItemStack(item);
 		ItemCooldowns cooldowns = player.getCooldowns();
-		if (cooldowns.isOnCooldown(item)) {
+		if (cooldowns.isOnCooldown(stack)) {
 			return false;
 		}
 		int cooldown = cooldownSupplier.getAsInt();
 		if (cooldown == -1) {
 			return false;
 		} else if (cooldown > 0) {
-			cooldowns.addCooldown(item, cooldown);
+			cooldowns.addCooldown(stack, cooldown);
 		}
 		return true;
 	}

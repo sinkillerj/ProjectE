@@ -16,7 +16,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:rm_axe"
+        "recipes": "projecte:rm_axe"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

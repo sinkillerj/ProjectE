@@ -101,7 +101,7 @@ public class MapScaleProcessor implements IDataComponentProcessor {
 			//Note: This is not ideal, but because ServerLevel#getMapData, sends the map id via the overworld's data storage
 			// that means the level doesn't really matter on the server side as it will all be from the overworld anyway
 			return server.overworld();
-		} else if (FMLEnvironment.dist.isClient()) {
+		} else if (FMLEnvironment.getDist().isClient()) {
 			return ClientLevelHelper.getLevel();
 		}
 		return null;

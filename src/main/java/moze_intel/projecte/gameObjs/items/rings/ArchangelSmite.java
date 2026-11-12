@@ -18,8 +18,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
@@ -29,9 +30,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.util.FakePlayerFactory;
-import net.neoforged.neoforge.common.util.TriState;
+import net.minecraft.util.TriState;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ArchangelSmite extends PEToggleItem implements IPedestalItem {
 
@@ -52,41 +54,41 @@ public class ArchangelSmite extends PEToggleItem implements IPedestalItem {
 	}
 
 	private void leftClickBlock(PlayerInteractEvent.LeftClickBlock evt) {
-		if (!evt.getLevel().isClientSide && evt.getUseItem() != TriState.FALSE && !evt.getItemStack().isEmpty() && evt.getItemStack().is(this)) {
+		if (!evt.getLevel().isClientSide() && evt.getUseItem() != TriState.FALSE && !evt.getItemStack().isEmpty() && evt.getItemStack().is(this)) {
 			fireVolley(evt.getItemStack(), evt.getEntity());
 		}
 	}
 
 	@Override
 	public boolean onLeftClickEntity(@NotNull ItemStack stack, Player player, @NotNull Entity entity) {
-		if (!player.level().isClientSide) {
+		if (!player.level().isClientSide()) {
 			fireVolley(stack, player);
 		}
 		return super.onLeftClickEntity(stack, player, entity);
 	}
 
 	@Override
-	public void inventoryTick(@NotNull ItemStack stack, @NotNull Level level, @NotNull Entity entity, int slot, boolean isHeld) {
-		super.inventoryTick(stack, level, entity, slot, isHeld);
-		if (!level.isClientSide && getMode(stack) && entity instanceof LivingEntity living) {
+	public void inventoryTick(@NotNull ItemStack stack, @NotNull ServerLevel level, @NotNull Entity entity, @Nullable EquipmentSlot slot) {
+		super.inventoryTick(stack, level, entity, slot);
+		if (!level.isClientSide() && getMode(stack) && entity instanceof LivingEntity living) {
 			fireArrow(stack, level, living, 1F);
 		}
 	}
 
 	@NotNull
 	@Override
-	public InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand hand) {
-		if (!level.isClientSide) {
+	public InteractionResult use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand hand) {
+		if (!level.isClientSide()) {
 			fireArrow(player.getItemInHand(hand), level, player, 1F);
 		}
-		return InteractionResultHolder.success(player.getItemInHand(hand));
+		return InteractionResult.SUCCESS;
 	}
 
 	private static void fireArrow(ItemStack ring, Level level, LivingEntity shooter, float inaccuracy) {
 		EntityHomingArrow arrow = new EntityHomingArrow(level, shooter, 2.0F);
 		if (!(shooter instanceof Player player) || consumeFuel(player, ring, IEMCProxy.INSTANCE.getValue(Items.ARROW), true)) {
 			arrow.shootFromRotation(shooter, shooter.getXRot(), shooter.getYRot(), 0.0F, 3.0F, inaccuracy);
-			level.playSound(null, shooter.getX(), shooter.getY(), shooter.getZ(), SoundEvents.ARROW_SHOOT, SoundSource.PLAYERS, 1.0F, 1.0F / (level.random.nextFloat() * 0.4F + 1.2F));
+			level.playSound(null, shooter.getX(), shooter.getY(), shooter.getZ(), SoundEvents.ARROW_SHOOT, SoundSource.PLAYERS, 1.0F, 1.0F / (level.getRandom().nextFloat() * 0.4F + 1.2F));
 			level.addFreshEntity(arrow);
 		}
 	}
@@ -94,7 +96,7 @@ public class ArchangelSmite extends PEToggleItem implements IPedestalItem {
 	@Override
 	public <PEDESTAL extends BlockEntity & IDMPedestal> boolean updateInPedestal(@NotNull ItemStack stack, @NotNull Level level, @NotNull BlockPos pos,
 			@NotNull PEDESTAL pedestal) {
-		if (!level.isClientSide && ProjectEConfig.server.cooldown.pedestal.archangel.get() != -1) {
+		if (!level.isClientSide() && ProjectEConfig.server.cooldown.pedestal.archangel.get() != -1) {
 			if (pedestal.getActivityCooldown() == 0) {
 				if (!level.getEntitiesOfClass(Mob.class, pedestal.getEffectBounds()).isEmpty()) {
 					double centeredX = pos.getX() + 0.5;
@@ -104,7 +106,7 @@ public class ArchangelSmite extends PEToggleItem implements IPedestalItem {
 						EntityHomingArrow arrow = new EntityHomingArrow(level, FakePlayerFactory.get((ServerLevel) level, PECore.FAKEPLAYER_GAMEPROFILE), 2.0F);
 						arrow.setPosRaw(centeredX, centeredY + 2, centeredZ);
 						arrow.setDeltaMovement(0, 1, 0);
-						arrow.playSound(SoundEvents.ARROW_SHOOT, 1.0F, 1.0F / (level.random.nextFloat() * 0.4F + 1.2F) + 0.5F);
+						arrow.playSound(SoundEvents.ARROW_SHOOT, 1.0F, 1.0F / (level.getRandom().nextFloat() * 0.4F + 1.2F) + 0.5F);
 						level.addFreshEntity(arrow);
 					}
 				}

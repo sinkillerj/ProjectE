@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "D": {
-      "item": "projecte:dark_matter"
-    },
-    "F": {
-      "tag": "minecraft:flowers"
-    },
-    "I": {
-      "item": "projecte:iron_band"
-    },
-    "S": {
-      "tag": "minecraft:saplings"
-    }
+    "D": "projecte:dark_matter",
+    "F": "#minecraft:flowers",
+    "I": "projecte:iron_band",
+    "S": "#minecraft:saplings"
   },
   "pattern": [
     "SFS",
@@ -21,7 +13,6 @@
     "SFS"
   ],
   "result": {
-    "count": 1,
     "id": "projecte:harvest_goddess_band"
   }
 }

@@ -8,12 +8,11 @@ import moze_intel.projecte.PECore;
 import moze_intel.projecte.client.lang.FormatSplitter.Component;
 import moze_intel.projecte.config.IConfigTranslation;
 import moze_intel.projecte.config.IPEConfig;
-import moze_intel.projecte.integration.recipe_viewer.alias.IAliasedTranslation;
 import moze_intel.projecte.utils.text.IHasTranslationKey;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 import org.jetbrains.annotations.NotNull;
 
@@ -70,14 +69,8 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
 		add("fml.menu.mods.info.description." + modid, description);
 	}
 
-	protected void addAliases(IAliasedTranslation... translations) {
-		for (IAliasedTranslation translation : translations) {
-			add(translation, translation.getAlias());
-		}
-	}
-
 	protected void addAlias(String path, String translation) {
-		add(Util.makeDescriptionId("alias", ResourceLocation.fromNamespaceAndPath(modid, path)), translation);
+		add(Util.makeDescriptionId("alias", Identifier.fromNamespaceAndPath(modid, path)), translation);
 	}
 
 	@Override

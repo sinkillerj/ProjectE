@@ -3,9 +3,9 @@ package moze_intel.projecte.api.block_entity;
 import moze_intel.projecte.api.capabilities.block_entity.IEmcStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.ICapabilityProvider;
@@ -162,17 +162,17 @@ public class BaseEmcBlockEntity extends BlockEntity implements IEmcStorage {
 	}
 
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider registries) {
-		super.saveAdditional(tag, registries);
+	protected void saveAdditional(@NotNull ValueOutput output) {
+		super.saveAdditional(output);
 		if (getStoredEmc() > getMaximumEmc()) {
 			currentEMC = getMaximumEmc();
 		}
-		tag.putLong("emc", getStoredEmc());
+		output.putLong("emc", getStoredEmc());
 	}
 
 	@Override
-	public void loadAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider registries) {
-		super.loadAdditional(tag, registries);
-		currentEMC = Math.min(tag.getLong("emc"), getMaximumEmc());
+	public void loadAdditional(@NotNull ValueInput input) {
+		super.loadAdditional(input);
+		currentEMC = Math.min(input.getLongOr("emc", 0), getMaximumEmc());
 	}
 }

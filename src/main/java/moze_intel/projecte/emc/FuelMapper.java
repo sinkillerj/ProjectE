@@ -1,6 +1,7 @@
 package moze_intel.projecte.emc;
 
 import java.util.Comparator;
+import java.util.stream.StreamSupport;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.proxy.IEMCProxy;
 import moze_intel.projecte.gameObjs.PETags;
@@ -20,11 +21,9 @@ public final class FuelMapper {
 	 * Used on server to load the map based on the tag
 	 */
 	public static void loadMap() {
-		FUEL_MAP = HolderSet.direct(BuiltInRegistries.ITEM.getTag(PETags.Items.COLLECTOR_FUEL)
-				.stream()
-				.flatMap(HolderSet::stream)
-				.filter(IEMCProxy.INSTANCE::hasValue)
-				.sorted(Comparator.comparingLong(IEMCProxy.INSTANCE::getValue))
+		FUEL_MAP = HolderSet.direct(StreamSupport.stream(BuiltInRegistries.ITEM.getTagOrEmpty(PETags.Items.COLLECTOR_FUEL).spliterator(), false)
+				.filter(holder -> IEMCProxy.INSTANCE.hasValue(holder.value()))
+				.sorted(Comparator.comparingLong(holder -> IEMCProxy.INSTANCE.getValue(holder)))
 				.toList());
 	}
 
@@ -43,7 +42,7 @@ public final class FuelMapper {
 		if (stack.isEmpty()) {
 			return false;
 		}
-		return FUEL_MAP.contains(stack.getItemHolder());
+		return FUEL_MAP.contains(stack.typeHolder());
 	}
 
 	public static boolean isStackMaxFuel(ItemStack stack) {
@@ -51,7 +50,7 @@ public final class FuelMapper {
 	}
 
 	public static ItemStack getFuelUpgrade(ItemStack stack) {
-		Holder<Item> fuelUpgrade = getFuelUpgrade(stack.getItemHolder());
+		Holder<Item> fuelUpgrade = getFuelUpgrade(stack.typeHolder());
 		return fuelUpgrade == null ? ItemStack.EMPTY : new ItemStack(fuelUpgrade);
 	}
 

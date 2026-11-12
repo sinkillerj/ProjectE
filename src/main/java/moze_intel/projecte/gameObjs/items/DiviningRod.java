@@ -5,8 +5,11 @@ import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongComparators;
 import it.unimi.dsi.fastutil.longs.LongList;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.Consumer;
 import java.util.function.IntFunction;
 import moze_intel.projecte.api.proxy.IEMCProxy;
 import moze_intel.projecte.gameObjs.items.DiviningRod.DiviningMode;
@@ -27,10 +30,13 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -54,7 +60,7 @@ public class DiviningRod extends ItemPE implements IItemMode<DiviningMode> {
 			return InteractionResult.FAIL;
 		}
 		Level level = ctx.getLevel();
-		if (level.isClientSide) {
+		if (level.isClientSide()) {
 			return InteractionResult.SUCCESS;
 		}
 		LongList emcValues = new LongArrayList();
@@ -62,7 +68,7 @@ public class DiviningRod extends ItemPE implements IItemMode<DiviningMode> {
 		int numBlocks = 0;
 		int depth = getDepthFromMode(ctx.getItemInHand());
 		//Lazily retrieve the values for the furnace recipes
-		List<RecipeHolder<SmeltingRecipe>> furnaceRecipes = null;
+		Collection<RecipeHolder<SmeltingRecipe>> furnaceRecipes = null;
 		for (BlockPos digPos : WorldHelper.getPositionsInBox(WorldHelper.getDeepBox(ctx.getClickedPos(), ctx.getClickedFace(), depth))) {
 			BlockState state = level.getBlockState(digPos);
 			if (state.isAir()) {
@@ -76,12 +82,13 @@ public class DiviningRod extends ItemPE implements IItemMode<DiviningMode> {
 			long blockEmc = IEMCProxy.INSTANCE.getValue(blockStack);
 			if (blockEmc == 0) {
 				if (furnaceRecipes == null) {//Lazily init the list of furnace recipes
-					furnaceRecipes = level.getRecipeManager().getAllRecipesFor(RecipeType.SMELTING);
+					furnaceRecipes = ((RecipeManager) level.recipeAccess()).recipeMap().byType(RecipeType.SMELTING);
 				}
 				for (RecipeHolder<SmeltingRecipe> furnaceRecipeHolder : furnaceRecipes) {
 					SmeltingRecipe furnaceRecipe = furnaceRecipeHolder.value();
-					if (furnaceRecipe.getIngredients().getFirst().test(blockStack)) {
-						long currentValue = IEMCProxy.INSTANCE.getValue(furnaceRecipe.getResultItem(level.registryAccess()));
+					if (furnaceRecipe.input().test(blockStack)) {
+						ItemStack smeltResult = furnaceRecipe.assemble(new SingleRecipeInput(blockStack));
+						long currentValue = IEMCProxy.INSTANCE.getValue(smeltResult);
 						if (currentValue != 0) {
 							if (!emcValues.contains(currentValue)) {
 								emcValues.add(currentValue);
@@ -129,9 +136,9 @@ public class DiviningRod extends ItemPE implements IItemMode<DiviningMode> {
 	}
 
 	@Override
-	public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flags) {
-		super.appendHoverText(stack, context, tooltip, flags);
-		tooltip.add(getToolTip(stack));
+	public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay display, @NotNull Consumer<Component> tooltip, @NotNull TooltipFlag flags) {
+		super.appendHoverText(stack, context, display, tooltip, flags);
+		tooltip.accept(getToolTip(stack));
 	}
 
 	@Override

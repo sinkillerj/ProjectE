@@ -1,6 +1,6 @@
 package moze_intel.projecte.gameObjs.gui;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -12,13 +12,29 @@ public abstract class PEContainerScreen<T extends AbstractContainerMenu> extends
 	public boolean switchingToJEI;
 
 	public PEContainerScreen(T container, Inventory invPlayer, Component title) {
-		super(container, invPlayer, title);
+		this(container, invPlayer, title, DEFAULT_IMAGE_WIDTH, DEFAULT_IMAGE_HEIGHT);
+	}
+
+	public PEContainerScreen(T container, Inventory invPlayer, Component title, int imageWidth, int imageHeight) {
+		super(container, invPlayer, title, imageWidth, imageHeight);
 	}
 
 	@Override
-	public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
-		super.render(graphics, mouseX, mouseY, partialTicks);
-		this.renderTooltip(graphics, mouseX, mouseY);
+	public void extractBackground(@NotNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
+		super.extractBackground(graphics, mouseX, mouseY, partialTicks);
+		peExtractBackground(graphics, partialTicks, mouseX, mouseY);
+	}
+
+	protected void peExtractBackground(@NotNull GuiGraphicsExtractor graphics, float partialTicks, int mouseX, int mouseY) {
+	}
+
+	@Override
+	protected void extractLabels(@NotNull GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
+		super.extractLabels(graphics, mouseX, mouseY);
+		peExtractLabels(graphics, mouseX, mouseY);
+	}
+
+	protected void peExtractLabels(@NotNull GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
 	}
 
 	@Override

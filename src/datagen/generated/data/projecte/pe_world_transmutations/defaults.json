@@ -36,38 +36,18 @@
     },
     {
       "origin": "minecraft:ice",
-      "result": {
-        "Name": "minecraft:water",
-        "Properties": {
-          "level": "0"
-        }
-      }
+      "result": "minecraft:water"
     },
     {
-      "origin": {
-        "Name": "minecraft:water",
-        "Properties": {
-          "level": "0"
-        }
-      },
+      "origin": "minecraft:water",
       "result": "minecraft:ice"
     },
     {
       "origin": "minecraft:obsidian",
-      "result": {
-        "Name": "minecraft:lava",
-        "Properties": {
-          "level": "0"
-        }
-      }
+      "result": "minecraft:lava"
     },
     {
-      "origin": {
-        "Name": "minecraft:lava",
-        "Properties": {
-          "level": "0"
-        }
-      },
+      "origin": "minecraft:lava",
       "result": "minecraft:obsidian"
     },
     {

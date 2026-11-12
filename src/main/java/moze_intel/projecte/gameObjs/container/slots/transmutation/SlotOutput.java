@@ -51,11 +51,7 @@ public class SlotOutput extends InventoryContainerSlot {
 	}
 
 	@Override
-	public void initialize(@NotNull ItemStack stack) {
-	}
-
-	@Override
-	public void set(@NotNull ItemStack stack) {
+	protected void setStackCopy(@NotNull ItemStack stack) {
 	}
 
 	@Override

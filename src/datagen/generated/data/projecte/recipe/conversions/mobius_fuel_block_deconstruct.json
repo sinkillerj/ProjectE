@@ -1,10 +1,7 @@
 {
   "type": "minecraft:crafting_shapeless",
-  "category": "misc",
   "ingredients": [
-    {
-      "item": "projecte:mobius_fuel_block"
-    }
+    "projecte:mobius_fuel_block"
   ],
   "result": {
     "count": 9,

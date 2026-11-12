@@ -1,3 +1,6 @@
 {
-  "parent": "projecte:block/dm_pedestal"
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "projecte:item/dm_pedestal"
+  }
 }

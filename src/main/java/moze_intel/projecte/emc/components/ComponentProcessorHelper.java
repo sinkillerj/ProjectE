@@ -12,7 +12,7 @@ import moze_intel.projecte.api.components.IComponentProcessorHelper;
 import moze_intel.projecte.utils.Constants;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -70,12 +70,12 @@ public class ComponentProcessorHelper implements IComponentProcessorHelper {
 
 	private ItemStack[] getMatchingStacks(Ingredient ingredient) {
 		try {
-			return ingredient.getItems();
+			return ingredient.items().map(holder -> new ItemStack(holder.value())).toArray(ItemStack[]::new);
 		} catch (Exception e) {
 			//Note: In theory this should never throw as it is called after all the reload listeners have fired, but in case it does error: catch it
 			ICustomIngredient customIngredient = ingredient.getCustomIngredient();
 			if (customIngredient != null) {//Should basically always be the case
-				ResourceLocation name = NeoForgeRegistries.INGREDIENT_TYPES.getKey(customIngredient.getType());
+				Identifier name = NeoForgeRegistries.INGREDIENT_TYPES.getKey(customIngredient.getType());
 				if (name == null) {
 					PECore.LOGGER.error(LogUtils.FATAL_MARKER, "Ingredient of type: {} crashed when getting the matching stacks. Please report this to the ingredient's creator.",
 							customIngredient.getClass(), e);

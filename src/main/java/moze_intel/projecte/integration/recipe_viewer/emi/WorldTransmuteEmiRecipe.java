@@ -16,7 +16,7 @@ import moze_intel.projecte.integration.recipe_viewer.RecipeViewerHelper;
 import moze_intel.projecte.integration.recipe_viewer.WorldTransmuteEntry;
 import moze_intel.projecte.utils.text.PELang;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -27,7 +27,7 @@ public class WorldTransmuteEmiRecipe implements EmiRecipe {
 
 	public static final EmiRecipeCategory CATEGORY = new PEEmiCategory("world_transmutation", PEItems.PHILOSOPHERS_STONE, PELang.WORLD_TRANSMUTE);
 
-	private final ResourceLocation recipeId;
+	private final Identifier recipeId;
 	private final List<EmiIngredient> input;
 	private final List<EmiStack> outputs;
 
@@ -52,7 +52,7 @@ public class WorldTransmuteEmiRecipe implements EmiRecipe {
 
 	@Nullable
 	@Override
-	public ResourceLocation getId() {
+	public Identifier getId() {
 		return recipeId;
 	}
 

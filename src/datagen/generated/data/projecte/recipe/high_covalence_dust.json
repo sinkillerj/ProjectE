@@ -1,13 +1,8 @@
 {
   "type": "minecraft:crafting_shapeless",
-  "category": "misc",
   "ingredients": [
-    {
-      "tag": "c:gems/diamond"
-    },
-    {
-      "item": "minecraft:coal"
-    }
+    "#c:gems/diamond",
+    "minecraft:coal"
   ],
   "result": {
     "count": 40,

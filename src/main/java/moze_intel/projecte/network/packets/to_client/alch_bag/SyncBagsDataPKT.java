@@ -11,11 +11,11 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.item.DyeColor;
-import net.neoforged.neoforge.items.ItemStackHandler;
+import moze_intel.projecte.api.inventory.PEItemStacksHandler;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-public record SyncBagsDataPKT(Map<DyeColor, ItemStackHandler> handlers) implements IPEPacket {
+public record SyncBagsDataPKT(Map<DyeColor, PEItemStacksHandler> handlers) implements IPEPacket {
 
 	public static final CustomPacketPayload.Type<SyncBagsDataPKT> TYPE = new CustomPacketPayload.Type<>(PECore.rl("sync_bag_data"));
 	public static final StreamCodec<RegistryFriendlyByteBuf, SyncBagsDataPKT> STREAM_CODEC = AlchemicalBagAttachment.MAP_STREAM_CODEC.map(

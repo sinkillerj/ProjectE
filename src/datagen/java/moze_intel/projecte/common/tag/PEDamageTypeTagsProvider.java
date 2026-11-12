@@ -12,24 +12,22 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageType;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class PEDamageTypeTagsProvider extends TagsProvider<DamageType> {
 
-	public PEDamageTypeTagsProvider(PackOutput output, CompletableFuture<Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
-		super(output, Registries.DAMAGE_TYPE, lookupProvider, PECore.MODID, existingFileHelper);
+	public PEDamageTypeTagsProvider(PackOutput output, CompletableFuture<Provider> lookupProvider) {
+		super(output, Registries.DAMAGE_TYPE, lookupProvider, PECore.MODID);
 	}
 
 	@Override
 	protected void addTags(@NotNull HolderLookup.Provider provider) {
 		ResourceKey<DamageType> playerAttack = PEDamageTypes.BYPASS_ARMOR_PLAYER_ATTACK.key();
-		tag(DamageTypeTags.BYPASSES_ARMOR).add(playerAttack);
-		tag(DamageTypeTags.CAN_BREAK_ARMOR_STAND).add(playerAttack);
-		tag(DamageTypeTags.IS_PLAYER_ATTACK).add(playerAttack);
-		tag(DamageTypeTags.PANIC_CAUSES).add(playerAttack);
-		tag(Tags.DamageTypes.IS_PHYSICAL).add(playerAttack);
+		getOrCreateRawBuilder(DamageTypeTags.BYPASSES_ARMOR).addElement(playerAttack.identifier());
+		getOrCreateRawBuilder(DamageTypeTags.CAN_BREAK_ARMOR_STAND).addElement(playerAttack.identifier());
+		getOrCreateRawBuilder(DamageTypeTags.IS_PLAYER_ATTACK).addElement(playerAttack.identifier());
+		getOrCreateRawBuilder(DamageTypeTags.PANIC_CAUSES).addElement(playerAttack.identifier());
+		getOrCreateRawBuilder(Tags.DamageTypes.IS_PHYSICAL).addElement(playerAttack.identifier());
 	}
 
 	@NotNull

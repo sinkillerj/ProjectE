@@ -3,7 +3,7 @@ package moze_intel.projecte.gameObjs;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.integration.IntegrationHelper;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
@@ -48,15 +48,12 @@ public class PETags {
 		 * Items in this tag will be checked against being a BlockItem, and attempt to be placed by the harvest goddess band.
 		 */
 		public static final TagKey<Item> PLANTABLE_SEEDS = tag("plantable_seeds");
-		/**
-		 * Items in this tag will be valid for the Transmutation Tablet curios slot, and should implement {@link moze_intel.projecte.api.item.ITransmutationTablet}
-		 */
-		public static final TagKey<Item> TRANSMUTATION_TABLET = tag("transmutation_tablets");
 
 		//Curios tags
+		public static final TagKey<Item> TRANSMUTATION_TABLET = tag("transmutation_tablets");
+		public static final TagKey<Item> CURIOS_TRANSMUTATION_TABLET = curiosTag("transmutation_tablet");
 		public static final TagKey<Item> CURIOS_BELT = curiosTag("belt");
 		public static final TagKey<Item> CURIOS_KLEIN_STAR = curiosTag("klein_star");
-		public static final TagKey<Item> CURIOS_TRANSMUTATION_TABLET = curiosTag("transmutation_tablet");
 		public static final TagKey<Item> CURIOS_NECKLACE = curiosTag("necklace");
 		public static final TagKey<Item> CURIOS_RING = curiosTag("ring");
 		//Forge tools/armor tags
@@ -70,11 +67,11 @@ public class PETags {
 		}
 
 		private static TagKey<Item> curiosTag(String name) {
-			return ItemTags.create(ResourceLocation.fromNamespaceAndPath(IntegrationHelper.CURIO_MODID, name));
+			return ItemTags.create(Identifier.fromNamespaceAndPath(IntegrationHelper.CURIO_MODID, name));
 		}
 
 		private static TagKey<Item> commonTag(String name) {
-			return ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", name));
+			return ItemTags.create(Identifier.fromNamespaceAndPath("c", name));
 		}
 	}
 
@@ -126,7 +123,7 @@ public class PETags {
 		}
 
 		private static TagKey<Block> commonTag(String name) {
-			return BlockTags.create(ResourceLocation.fromNamespaceAndPath("c", name));
+			return BlockTags.create(Identifier.fromNamespaceAndPath("c", name));
 		}
 	}
 

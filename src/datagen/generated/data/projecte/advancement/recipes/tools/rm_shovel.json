@@ -16,7 +16,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:rm_shovel"
+        "recipes": "projecte:rm_shovel"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

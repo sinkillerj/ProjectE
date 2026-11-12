@@ -16,7 +16,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:conversions/iron_ingot_to_ender_pearl"
+        "recipes": "projecte:conversions/iron_ingot_to_ender_pearl"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

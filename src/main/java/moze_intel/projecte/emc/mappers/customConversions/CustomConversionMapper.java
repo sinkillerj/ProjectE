@@ -25,7 +25,7 @@ import moze_intel.projecte.impl.codec.PECodecHelper;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.RegistryOps;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.ReloadableServerResources;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -57,20 +57,20 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
 	@Override
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, ReloadableServerResources serverResources,
 			RegistryAccess registryAccess, ResourceManager resourceManager) {
-		Map<ResourceLocation, CustomConversionFile> files = load(registryAccess, resourceManager);
+		Map<Identifier, CustomConversionFile> files = load(registryAccess, resourceManager);
 		for (CustomConversionFile file : files.values()) {
 			addMappingsFromFile(file, mapper);
 		}
 	}
 
-	private static Map<ResourceLocation, CustomConversionFile> load(RegistryAccess registryAccess, ResourceManager resourceManager) {
-		Map<ResourceLocation, CustomConversionFile> loading = new HashMap<>();
+	private static Map<Identifier, CustomConversionFile> load(RegistryAccess registryAccess, ResourceManager resourceManager) {
+		Map<Identifier, CustomConversionFile> loading = new HashMap<>();
 
 		RegistryOps<JsonElement> serializationContext = registryAccess.createSerializationContext(JsonOps.INSTANCE);
 		// Find all data/<domain>/pe_custom_conversions/foo/bar.json
-		for (Map.Entry<ResourceLocation, List<Resource>> entry : CONVERSION_LISTER.listMatchingResourceStacks(resourceManager).entrySet()) {
-			ResourceLocation file = entry.getKey();//<domain>:foo/bar
-			ResourceLocation conversionId = CONVERSION_LISTER.fileToId(file);
+		for (Map.Entry<Identifier, List<Resource>> entry : CONVERSION_LISTER.listMatchingResourceStacks(resourceManager).entrySet()) {
+			Identifier file = entry.getKey();//<domain>:foo/bar
+			Identifier conversionId = CONVERSION_LISTER.fileToId(file);
 
 			PECore.debugLog("Considering file {}, ID {}", file, conversionId);
 			NSSFake.setCurrentNamespace(conversionId.toString());

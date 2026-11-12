@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:klein_star_sphere"
+        "recipes": "projecte:klein_star_sphere"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

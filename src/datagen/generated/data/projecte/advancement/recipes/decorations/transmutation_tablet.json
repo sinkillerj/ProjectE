@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:transmutation_tablet"
+        "recipes": "projecte:transmutation_tablet"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

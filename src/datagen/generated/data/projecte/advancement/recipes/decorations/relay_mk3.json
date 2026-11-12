@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:relay_mk3"
+        "recipes": "projecte:relay_mk3"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

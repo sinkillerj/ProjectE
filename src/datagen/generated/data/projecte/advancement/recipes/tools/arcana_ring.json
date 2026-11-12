@@ -43,7 +43,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:arcana_ring"
+        "recipes": "projecte:arcana_ring"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

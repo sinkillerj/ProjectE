@@ -6,23 +6,21 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import javax.annotation.ParametersAreNonnullByDefault;
 import moze_intel.projecte.api.conversion.CustomConversionFile;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.PackOutput.PathProvider;
 import net.minecraft.data.PackOutput.Target;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 /**
  * Base Data Generator Provider class for use in creating custom conversion json data files that ProjectE will read from the data pack.
  */
 @ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public abstract class CustomConversionProvider implements DataProvider {
 
-	private final Map<ResourceLocation, CustomConversionBuilder> customConversions = new LinkedHashMap<>();
+	private final Map<Identifier, CustomConversionBuilder> customConversions = new LinkedHashMap<>();
 	private final CompletableFuture<HolderLookup.Provider> lookupProvider;
 	private final PathProvider outputProvider;
 	private final String modid;
@@ -59,7 +57,7 @@ public abstract class CustomConversionProvider implements DataProvider {
 	 *
 	 * @return Builder
 	 */
-	protected CustomConversionBuilder createConversionBuilder(ResourceLocation id) {
+	protected CustomConversionBuilder createConversionBuilder(Identifier id) {
 		Objects.requireNonNull(id, "Custom Conversion Builder ID cannot be null.");
 		if (customConversions.containsKey(id)) {
 			throw new RuntimeException("Custom conversion '" + id + "' has already been registered.");

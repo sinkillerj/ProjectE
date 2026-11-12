@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "D": {
-      "item": "projecte:dark_matter"
-    },
-    "F": {
-      "item": "minecraft:flint_and_steel"
-    },
-    "I": {
-      "item": "projecte:iron_band"
-    },
-    "M": {
-      "item": "projecte:mobius_fuel"
-    }
+    "D": "projecte:dark_matter",
+    "F": "minecraft:flint_and_steel",
+    "I": "projecte:iron_band",
+    "M": "projecte:mobius_fuel"
   },
   "pattern": [
     "FMF",
@@ -21,7 +13,6 @@
     "FMF"
   ],
   "result": {
-    "count": 1,
     "id": "projecte:ignition_ring"
   }
 }

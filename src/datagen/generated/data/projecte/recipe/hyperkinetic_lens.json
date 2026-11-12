@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "D": {
-      "tag": "c:gems/diamond"
-    },
-    "M": {
-      "item": "projecte:dark_matter"
-    },
-    "N": {
-      "item": "projecte:nova_catalyst"
-    }
+    "D": "#c:gems/diamond",
+    "M": "projecte:dark_matter",
+    "N": "projecte:nova_catalyst"
   },
   "pattern": [
     "DDD",
@@ -18,7 +12,6 @@
     "DDD"
   ],
   "result": {
-    "count": 1,
     "id": "projecte:hyperkinetic_lens"
   }
 }

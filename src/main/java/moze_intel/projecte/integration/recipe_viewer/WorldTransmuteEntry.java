@@ -10,7 +10,7 @@ import moze_intel.projecte.api.world_transmutation.IWorldTransmutation;
 import moze_intel.projecte.api.world_transmutation.SimpleWorldTransmutation;
 import moze_intel.projecte.api.world_transmutation.WorldTransmutation;
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
@@ -23,14 +23,14 @@ import org.jetbrains.annotations.Nullable;
 
 public record WorldTransmuteEntry(Either<ItemStack, FluidStack> input, Either<ItemStack, FluidStack> output, @Nullable Either<ItemStack, FluidStack> altOutput) {
 
-	private static final Codec<Either<ItemStack, FluidStack>> EITHER_CODEC = Codec.either(ItemStack.SINGLE_ITEM_CODEC, FluidStack.fixedAmountCodec(FluidType.BUCKET_VOLUME));
+	private static final Codec<Either<ItemStack, FluidStack>> EITHER_CODEC = Codec.either(ItemStack.CODEC.xmap(stack -> stack.copyWithCount(1), stack -> stack.copyWithCount(1)), FluidStack.fixedAmountCodec(FluidType.BUCKET_VOLUME));
 	public static final Codec<WorldTransmuteEntry> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			EITHER_CODEC.fieldOf("input").forGetter(WorldTransmuteEntry::input),
 			EITHER_CODEC.fieldOf("output").forGetter(WorldTransmuteEntry::output),
 			EITHER_CODEC.optionalFieldOf("alt_output").forGetter(entry -> Optional.ofNullable(entry.altOutput()))
 	).apply(instance, (input, output, altOutput) -> new WorldTransmuteEntry(input, output, altOutput.orElse(null))));
 
-	public ResourceLocation syntheticId() {
+	public Identifier syntheticId() {
 		String name = stripForSynthetic(input) + "/" + stripForSynthetic(output);
 		if (altOutput != null) {
 			name += "/" + stripForSynthetic(altOutput);
@@ -39,7 +39,7 @@ public record WorldTransmuteEntry(Either<ItemStack, FluidStack> input, Either<It
 	}
 
 	private String stripForSynthetic(Either<ItemStack, FluidStack> either) {
-		return RecipeViewerHelper.stripForSynthetic(either.map(ItemStack::getItemHolder, FluidStack::getFluidHolder));
+		return RecipeViewerHelper.stripForSynthetic(either.map(ItemStack::typeHolder, FluidStack::typeHolder));
 	}
 
 	private static boolean equals(@Nullable Either<ItemStack, FluidStack> a, @Nullable Either<ItemStack, FluidStack> b) {
@@ -123,7 +123,7 @@ public record WorldTransmuteEntry(Either<ItemStack, FluidStack> input, Either<It
 	private static ItemStack itemFromBlock(BlockState state) {
 		try {
 			//We don't have a world or position, but try pick block anyways
-			return state.getCloneItemStack(null, null, null, null);
+			return state.getCloneItemStack(null, null, false, null);
 		} catch (Exception e) {
 			//It failed, probably because of the null world and pos
 			return new ItemStack(state.getBlock());

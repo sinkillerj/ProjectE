@@ -5,13 +5,11 @@ import java.util.List;
 import javax.annotation.ParametersAreNonnullByDefault;
 import moze_intel.projecte.api.conversion.ConversionGroup;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
-import net.minecraft.MethodsReturnNonnullByDefault;
 
 /**
  * Builder class to help create conversion groups.
  */
 @ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class ConversionGroupBuilder extends BaseFileBuilder<ConversionGroupBuilder> implements CustomConversionNSSHelper<ConversionBuilder<ConversionGroupBuilder>> {
 
 	private final CustomConversionBuilder customConversionBuilder;

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:mind_stone"
+        "recipes": "projecte:mind_stone"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

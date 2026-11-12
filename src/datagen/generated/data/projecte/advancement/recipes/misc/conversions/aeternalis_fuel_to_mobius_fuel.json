@@ -16,7 +16,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:conversions/aeternalis_fuel_to_mobius_fuel"
+        "recipes": "projecte:conversions/aeternalis_fuel_to_mobius_fuel"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

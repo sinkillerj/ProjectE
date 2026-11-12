@@ -1,34 +1,15 @@
 {
   "type": "minecraft:crafting_shapeless",
-  "category": "misc",
   "ingredients": [
-    {
-      "item": "minecraft:charcoal"
-    },
-    {
-      "tag": "c:cobblestones/normal"
-    },
-    {
-      "tag": "c:cobblestones/normal"
-    },
-    {
-      "tag": "c:cobblestones/normal"
-    },
-    {
-      "tag": "c:cobblestones/normal"
-    },
-    {
-      "tag": "c:cobblestones/normal"
-    },
-    {
-      "tag": "c:cobblestones/normal"
-    },
-    {
-      "tag": "c:cobblestones/normal"
-    },
-    {
-      "tag": "c:cobblestones/normal"
-    }
+    "minecraft:charcoal",
+    "#c:cobblestones/normal",
+    "#c:cobblestones/normal",
+    "#c:cobblestones/normal",
+    "#c:cobblestones/normal",
+    "#c:cobblestones/normal",
+    "#c:cobblestones/normal",
+    "#c:cobblestones/normal",
+    "#c:cobblestones/normal"
   ],
   "result": {
     "count": 40,

@@ -4,7 +4,7 @@ import java.util.Set;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.DyeColor;
 import net.neoforged.neoforge.capabilities.EntityCapability;
-import net.neoforged.neoforge.items.IItemHandler;
+import moze_intel.projecte.api.inventory.PEItemStacksHandler;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -24,7 +24,7 @@ public interface IAlchBagProvider {
 	 * @return The inventory representing this alchemical bag
 	 */
 	@NotNull
-	IItemHandler getBag(@NotNull DyeColor color);
+	PEItemStacksHandler getBag(@NotNull DyeColor color);
 
 	/**
 	 * Syncs the bag inventories associated with the provided colors to the player provided (usually the owner of this capability instance)

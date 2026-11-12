@@ -27,7 +27,7 @@ public class PEDamageTypes {
 	public record PEDamageType(ResourceKey<DamageType> key, String msgId, float exhaustion) implements IHasTranslationKey {
 
 		public PEDamageType {
-			INTERNAL_DAMAGE_TYPES.put(key.location().toString(), this);
+			INTERNAL_DAMAGE_TYPES.put(key.identifier().toString(), this);
 		}
 
 		private PEDamageType(String name, float exhaustion) {
@@ -53,7 +53,7 @@ public class PEDamageTypes {
 		}
 
 		public DamageSource source(RegistryAccess registryAccess, @Nullable LivingEntity entity) {
-			Reference<DamageType> damageTypeReference = registryAccess.registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(key());
+			Reference<DamageType> damageTypeReference = registryAccess.lookupOrThrow(Registries.DAMAGE_TYPE).get(key()).orElseThrow();
 			return new DamageSource(damageTypeReference, entity);
 		}
 	}

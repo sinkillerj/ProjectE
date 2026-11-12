@@ -2,10 +2,11 @@ package moze_intel.projecte.gameObjs.items;
 
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
-import java.util.List;
 import java.util.Locale;
+import java.util.function.Consumer;
 import java.util.function.IntFunction;
 import moze_intel.projecte.api.capabilities.item.IAlchBagItem;
+import moze_intel.projecte.api.inventory.PEItemStacksHandler;
 import moze_intel.projecte.api.capabilities.item.IAlchChestItem;
 import moze_intel.projecte.api.proxy.IEMCProxy;
 import moze_intel.projecte.components.GemData;
@@ -26,26 +27,28 @@ import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
-import net.neoforged.neoforge.items.wrapper.PlayerMainInvWrapper;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -60,17 +63,20 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	}
 
 	@Override
-	public void inventoryTick(@NotNull ItemStack stack, @NotNull Level level, @NotNull Entity entity, int slot, boolean isHeld) {
-		super.inventoryTick(stack, level, entity, slot, isHeld);
-		if (!level.isClientSide && entity instanceof Player player) {
-			condense(stack, new PlayerMainInvWrapper(player.getInventory()));
+	public void inventoryTick(@NotNull ItemStack stack, @NotNull ServerLevel level, @NotNull Entity entity, @Nullable EquipmentSlot slot) {
+		super.inventoryTick(stack, level, entity, slot);
+		if (!level.isClientSide() && entity instanceof Player player) {
+			ResourceHandler<ItemResource> playerInv = player.getCapability(Capabilities.Item.ENTITY);
+			if (playerInv != null) {
+				condense(stack, playerInv);
+			}
 		}
 	}
 
 	/**
 	 * @return Whether the inventory was changed
 	 */
-	private boolean condense(ItemStack gem, IItemHandler inv) {
+	private boolean condense(ItemStack gem, ResourceHandler<ItemResource> inv) {
 		if (!gem.getOrDefault(PEDataComponentTypes.ACTIVE, false)) {
 			return false;
 		}
@@ -87,8 +93,8 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 		}
 		long emcRoomFor = Long.MAX_VALUE - gemEmc;
 		GemData gemData = gem.getOrDefault(PEDataComponentTypes.GEM_DATA, GemData.EMPTY);
-		for (int i = 0, slots = inv.getSlots(); i < slots; i++) {
-			ItemStack stack = inv.getStackInSlot(i);
+		for (int i = 0, slots = PEItemStacksHandler.getSlotCount(inv); i < slots; i++) {
+			ItemStack stack = PEItemStacksHandler.getStack(inv, i);
 			if (stack.isEmpty()) {
 				continue;
 			}
@@ -110,7 +116,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 			long maxToAdd = emcRoomFor / emcValue;
 			int halfStack = stack.getCount() == 1 ? 1 : stack.getCount() / 2;
 			//Try to extract half the stack, clamped at the amount we have room for the emc of
-			ItemStack simulatedExtraction = inv.extractItem(i, (int) Math.min(maxToAdd, halfStack), true);
+			ItemStack simulatedExtraction = PEItemStacksHandler.extractItem(inv, i, (int) Math.min(maxToAdd, halfStack), true);
 			//If we couldn't extract anything, or for some reason the handler gave a different type of item than it says is stored in that slot
 			// don't bother processing it
 			if (!simulatedExtraction.isEmpty() || !ItemStack.isSameItemSameComponents(stack, simulatedExtraction)) {
@@ -119,7 +125,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 				}
 				if (gemData.isWhitelist() == filtered) {
 					//Extract the item from the inventory
-					ItemStack copy = inv.extractItem(i, simulatedExtraction.getCount(), false);
+					ItemStack copy = PEItemStacksHandler.extractItem(inv, i, simulatedExtraction.getCount(), false);
 					if (!copy.isEmpty()) {
 						// and add how much emc we got from it to our stored emc
 						gemEmc += emcValue * copy.getCount();
@@ -134,7 +140,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 		return condenseFromStoredEmc(inv, gem, gemEmc, target, targetEmc);
 	}
 
-	private boolean condenseFromStoredEmc(IItemHandler inv, ItemStack gem, long originalGemEmc, ItemLike target, long targetEmc) {
+	private boolean condenseFromStoredEmc(ResourceHandler<ItemResource> inv, ItemStack gem, long originalGemEmc, ItemLike target, long targetEmc) {
 		if (originalGemEmc >= targetEmc) {
 			ItemStack targetStack = new ItemStack(target);
 			int maxStackSize = targetStack.getMaxStackSize();
@@ -143,7 +149,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 			while (toInsert > 0) {
 				//Note: We know that it can fit in an int as it is <= maxStackSize
 				ItemStack stackToInsert = targetStack.copyWithCount((int) Math.min(toInsert, maxStackSize));
-				ItemStack remaining = ItemHandlerHelper.insertItemStacked(inv, stackToInsert, false);
+				ItemStack remaining = PEItemStacksHandler.insertStackedRemainder(inv, stackToInsert, false);
 				if (remaining.getCount() == stackToInsert.getCount()) {
 					//Nothing fit, we can't insert any of this item into the inventory
 					break;
@@ -171,9 +177,9 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 
 	@NotNull
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level level, Player player, @NotNull InteractionHand hand) {
+	public InteractionResult use(Level level, Player player, @NotNull InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
-		if (!level.isClientSide) {
+		if (!level.isClientSide()) {
 			if (player.isSecondaryUseActive()) {
 				if (stack.getOrDefault(PEDataComponentTypes.ACTIVE, false)) {
 					GemData oldData = stack.update(PEDataComponentTypes.GEM_DATA, GemData.EMPTY, GemData::clearConsumed);
@@ -186,14 +192,14 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 					stack.set(PEDataComponentTypes.ACTIVE, true);
 				}
 			} else {
-				int selected = player.getInventory().selected;
+				int selected = player.getInventory().getSelectedSlot();
 				player.openMenu(new ContainerProvider(hand, selected), buf -> {
 					buf.writeEnum(hand);
 					buf.writeByte(selected);
 				});
 			}
 		}
-		return InteractionResultHolder.success(stack);
+		return InteractionResult.SUCCESS.heldItemTransformedTo(stack);
 	}
 
 	@Override
@@ -212,28 +218,28 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 	}
 
 	@Override
-	public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flags) {
-		super.appendHoverText(stack, context, tooltip, flags);
+	public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay display, @NotNull Consumer<Component> tooltip, @NotNull TooltipFlag flags) {
+		super.appendHoverText(stack, context, display, tooltip, flags);
 		Component interact = Component.keybind("key.use");
-		tooltip.add(PELang.TOOLTIP_GEM_DENSITY_1.translate());
-		tooltip.add(PELang.TOOLTIP_GEM_DENSITY_2.translate(getMode(stack)));
-		tooltip.add(PELang.TOOLTIP_GEM_DENSITY_3.translate(ClientKeyHelper.getKeyName(PEKeybind.MODE)));
-		tooltip.add(PELang.TOOLTIP_GEM_DENSITY_4.translate(interact));
-		tooltip.add(PELang.TOOLTIP_GEM_DENSITY_5.translate(Component.keybind("key.sneak"), interact));
+		tooltip.accept(PELang.TOOLTIP_GEM_DENSITY_1.translate());
+		tooltip.accept(PELang.TOOLTIP_GEM_DENSITY_2.translate(getMode(stack)));
+		tooltip.accept(PELang.TOOLTIP_GEM_DENSITY_3.translate(ClientKeyHelper.getKeyName(PEKeybind.MODE)));
+		tooltip.accept(PELang.TOOLTIP_GEM_DENSITY_4.translate(interact));
+		tooltip.accept(PELang.TOOLTIP_GEM_DENSITY_5.translate(Component.keybind("key.sneak"), interact));
 	}
 
 	@Override
 	public boolean updateInAlchChest(@NotNull Level level, @NotNull BlockPos pos, @NotNull ItemStack stack) {
-		if (!level.isClientSide && stack.getOrDefault(PEDataComponentTypes.ACTIVE, false)) {
-			IItemHandler handler = WorldHelper.getCapability(level, ItemHandler.BLOCK, pos, null);
+		if (!level.isClientSide() && stack.getOrDefault(PEDataComponentTypes.ACTIVE, false)) {
+			ResourceHandler<ItemResource> handler = WorldHelper.getItemHandler(level, pos, null);
 			return handler != null && condense(stack, handler);
 		}
 		return false;
 	}
 
 	@Override
-	public boolean updateInAlchBag(@NotNull IItemHandler inv, @NotNull Player player, @NotNull ItemStack stack) {
-		return !player.level().isClientSide && condense(stack, inv);
+	public boolean updateInAlchBag(@NotNull PEItemStacksHandler inv, @NotNull Player player, @NotNull ItemStack stack) {
+		return !player.level().isClientSide() && condense(stack, inv);
 	}
 
 	@Override
@@ -247,7 +253,7 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 		@Override
 		public AbstractContainerMenu createMenu(int windowId, @NotNull Inventory playerInventory, @NotNull Player player) {
 			if (PEHandContainer.getStack(playerInventory, hand, selected).getItem() instanceof GemEternalDensity) {
-				return new EternalDensityContainer(windowId, playerInventory, hand, playerInventory.selected);
+				return new EternalDensityContainer(windowId, playerInventory, hand, playerInventory.getSelectedSlot());
 			}
 			return null;
 		}

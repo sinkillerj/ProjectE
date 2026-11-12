@@ -33,7 +33,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:rm_morning_star"
+        "recipes": "projecte:rm_morning_star"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

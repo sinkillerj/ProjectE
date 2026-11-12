@@ -6,13 +6,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import moze_intel.projecte.api.conversion.CustomConversion;
 import moze_intel.projecte.api.nss.NSSTag;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
-import net.minecraft.MethodsReturnNonnullByDefault;
 
 /**
  * Builder class to help create conversions.
  */
 @ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class ConversionBuilder<PARENT> implements ConversionBuilderNSSHelper<PARENT> {
 
 	private final PARENT parent;

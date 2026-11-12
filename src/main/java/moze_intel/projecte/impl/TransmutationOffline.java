@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import moze_intel.projecte.PECore;
@@ -32,8 +33,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.LevelResource;
 import net.neoforged.fml.util.thread.EffectiveSide;
 import net.neoforged.neoforge.attachment.AttachmentHolder;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import moze_intel.projecte.api.inventory.PEItemStacksHandler;
 import org.jetbrains.annotations.NotNull;
 
 public class TransmutationOffline {
@@ -68,9 +70,11 @@ public class TransmutationOffline {
 		if (Files.exists(player) && Files.isRegularFile(player)) {
 			try (InputStream in = Files.newInputStream(player)) {
 				CompoundTag playerDat = NbtIo.readCompressed(in, NbtAccounter.unlimitedHeap()); // No need to create buffered stream, that call does it for us
-				if (playerDat.contains(AttachmentHolder.ATTACHMENTS_NBT_KEY, Tag.TAG_COMPOUND)) {
-					CompoundTag attachmentData = playerDat.getCompound(AttachmentHolder.ATTACHMENTS_NBT_KEY);
-					CompoundTag knowledgeData = attachmentData.getCompound(PEAttachmentTypes.KNOWLEDGE.getId().toString());
+				Optional<CompoundTag> attachmentDataOpt = playerDat.getCompound(AttachmentHolder.ATTACHMENTS_NBT_KEY);
+				if (attachmentDataOpt.isPresent()) {
+					Optional<CompoundTag> knowledgeDataOpt = attachmentDataOpt.get().getCompound(PEAttachmentTypes.KNOWLEDGE.getId().toString());
+					if (knowledgeDataOpt.isPresent()) {
+						CompoundTag knowledgeData = knowledgeDataOpt.get();
 					RegistryOps<Tag> serializationContext = server.registryAccess().createSerializationContext(NbtOps.INSTANCE);
 					DataResult<KnowledgeAttachment> result = KnowledgeAttachment.CODEC.parse(serializationContext, knowledgeData);
 					if (result.isSuccess()) {
@@ -79,6 +83,7 @@ public class TransmutationOffline {
 						return true;
 					} else {
 						result.ifError(error -> PECore.LOGGER.warn("Failed to cache offline data for API calls for UUID: {}. {}", playerUUID, error.message()));
+					}
 					}
 				}
 			} catch (IOException e) {
@@ -92,7 +97,7 @@ public class TransmutationOffline {
 		final IKnowledgeProvider toCopy = KnowledgeImpl.wrapAttachment(attachment);
 		return new IKnowledgeProvider() {
 			final Set<ItemInfo> immutableKnowledge = Collections.unmodifiableSet(toCopy.getKnowledge());
-			final IItemHandlerModifiable immutableInputLocks = ItemHelper.immutableCopy(toCopy.getInputAndLocks());
+			final PEItemStacksHandler immutableInputLocks = ItemHelper.immutableCopy(toCopy.getInputAndLocks());
 
 			@Override
 			public boolean hasFullKnowledge() {
@@ -130,7 +135,7 @@ public class TransmutationOffline {
 
 			@NotNull
 			@Override
-			public IItemHandler getInputAndLocks() {
+			public PEItemStacksHandler getInputAndLocks() {
 				return immutableInputLocks;
 			}
 

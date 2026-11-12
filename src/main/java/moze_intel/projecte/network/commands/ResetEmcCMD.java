@@ -31,7 +31,7 @@ public class ResetEmcCMD {
 				.then(Commands.argument("item", ItemArgument.item(context))
 						.executes(ctx -> {
 							ItemInput itemInput = ItemArgument.getItem(ctx, "item");
-							return resetEmc(ctx, NSSItem.createItem(itemInput.createItemStack(1, false)));
+							return resetEmc(ctx, NSSItem.createItem(itemInput.createItemStack(1)));
 						}))
 				.then(Commands.argument("tag", ResourceOrTagKeyArgument.resourceOrTagKey(Registries.ITEM))
 						.executes(ctx -> {

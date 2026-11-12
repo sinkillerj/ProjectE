@@ -21,7 +21,7 @@ public record GemData(boolean isWhitelist, Set<ItemStack> whitelist, List<ItemSt
 
 	public static final Codec<GemData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			Codec.BOOL.fieldOf("isWhitelist").forGetter(GemData::isWhitelist),
-			ItemStack.SINGLE_ITEM_CODEC.sizeLimitedListOf(9).promotePartial(error -> PECore.LOGGER.error("Failed to load gem whitelist: {}", error)).<Set<ItemStack>>xmap(list -> {
+			ItemStack.CODEC.sizeLimitedListOf(9).promotePartial(error -> PECore.LOGGER.error("Failed to load gem whitelist: {}", error)).<Set<ItemStack>>xmap(list -> {
 				if (list.isEmpty()) {
 					return Collections.emptySet();
 				}
@@ -40,7 +40,7 @@ public record GemData(boolean isWhitelist, Set<ItemStack> whitelist, List<ItemSt
 					//Like ItemStackLinkedSet.createTypeAndComponentsSet() except makes use of the expected size
 					ByteBufCodecs.collection(size -> new ObjectLinkedOpenCustomHashSet<>(size, ItemStackLinkedSet.TYPE_AND_TAG))
 			), GemData::whitelist,
-			ItemStack.LIST_STREAM_CODEC, GemData::consumed,
+			ItemStack.OPTIONAL_LIST_STREAM_CODEC, GemData::consumed,
 			GemData::new
 	);
 

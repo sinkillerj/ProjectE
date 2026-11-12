@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:archangel_smite"
+        "recipes": "projecte:archangel_smite"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

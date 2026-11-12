@@ -39,6 +39,6 @@ public class ContainerProcessor extends SimpleContainerProcessor<ItemContainerCo
 
 	@Override
 	protected Iterable<ItemStack> getStoredItems(ItemContainerContents component) {
-		return component.nonEmptyItems();
+		return component.nonEmptyItemCopyStream().toList();
 	}
 }

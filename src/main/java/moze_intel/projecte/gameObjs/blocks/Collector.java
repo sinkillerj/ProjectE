@@ -1,6 +1,7 @@
 package moze_intel.projecte.gameObjs.blocks;
 
 import java.util.List;
+import java.util.function.Consumer;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.api.capabilities.item.IItemEmcHolder;
 import moze_intel.projecte.config.ProjectEConfig;
@@ -20,12 +21,15 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
-import net.neoforged.neoforge.items.IItemHandler;
+import moze_intel.projecte.api.inventory.PEItemStacksHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -46,7 +50,7 @@ public class Collector extends BlockDirection implements PEEntityBlock<Collector
 	@Override
 	@Deprecated
 	protected InteractionResult useWithoutItem(@NotNull BlockState state, Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hit) {
-		if (level.isClientSide) {
+		if (level.isClientSide()) {
 			return InteractionResult.SUCCESS;
 		}
 		CollectorMK1BlockEntity collector = WorldHelper.getBlockEntity(CollectorMK1BlockEntity.class, level, pos, true);
@@ -56,12 +60,10 @@ public class Collector extends BlockDirection implements PEEntityBlock<Collector
 		return InteractionResult.CONSUME;
 	}
 
-	@Override
-	public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flags) {
-		super.appendHoverText(stack, context, tooltip, flags);
+	public void addTooltip(ItemStack stack, Consumer<Component> tooltip) {
 		if (ProjectEConfig.client.statToolTips.get()) {
-			tooltip.add(PELang.EMC_MAX_GEN_RATE.translateColored(ChatFormatting.DARK_PURPLE, ChatFormatting.BLUE, EMCHelper.formatEmc(tier.getGenRate())));
-			tooltip.add(PELang.EMC_MAX_STORAGE.translateColored(ChatFormatting.DARK_PURPLE, ChatFormatting.BLUE, EMCHelper.formatEmc(tier.getStorage())));
+			tooltip.accept(PELang.EMC_MAX_GEN_RATE.translateColored(ChatFormatting.DARK_PURPLE, ChatFormatting.BLUE, EMCHelper.formatEmc(tier.getGenRate())));
+			tooltip.accept(PELang.EMC_MAX_STORAGE.translateColored(ChatFormatting.DARK_PURPLE, ChatFormatting.BLUE, EMCHelper.formatEmc(tier.getStorage())));
 		}
 	}
 
@@ -88,20 +90,17 @@ public class Collector extends BlockDirection implements PEEntityBlock<Collector
 		return true;
 	}
 
-	@Override
 	@Deprecated
-	public int getAnalogOutputSignal(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos) {
+	public int getAnalogOutputSignal(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Direction direction) {
 		CollectorMK1BlockEntity collector = WorldHelper.getBlockEntity(CollectorMK1BlockEntity.class, level, pos, true);
 		if (collector == null) {
-			//If something went wrong fallback to default implementation
-			return super.getAnalogOutputSignal(state, level, pos);
+			return 0;
 		}
-		IItemHandler handler = WorldHelper.getCapability(level, ItemHandler.BLOCK, pos, state, collector, Direction.UP);
+		ResourceHandler<ItemResource> handler = WorldHelper.getItemHandler(level, pos, state, collector, Direction.UP);
 		if (handler == null) {
-			//If something went wrong fallback to default implementation
-			return super.getAnalogOutputSignal(state, level, pos);
+			return 0;
 		}
-		ItemStack charging = handler.getStackInSlot(CollectorMK1BlockEntity.UPGRADING_SLOT);
+		ItemStack charging = PEItemStacksHandler.getStack(handler, CollectorMK1BlockEntity.UPGRADING_SLOT);
 		if (charging.isEmpty()) {
 			return MathUtils.scaleToRedstone(collector.getStoredEmc(), collector.getMaximumEmc());
 		}
@@ -113,15 +112,13 @@ public class Collector extends BlockDirection implements PEEntityBlock<Collector
 	}
 
 	@Override
-	@Deprecated
-	public void onRemove(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState newState, boolean isMoving) {
-		if (state.getBlock() != newState.getBlock()) {
-			CollectorMK1BlockEntity ent = WorldHelper.getBlockEntity(CollectorMK1BlockEntity.class, level, pos);
+	public void onBlockStateChange(LevelReader level, BlockPos pos, BlockState oldState, BlockState newState) {
+		if (oldState.getBlock() != newState.getBlock() && level instanceof Level world) {
+			CollectorMK1BlockEntity ent = WorldHelper.getBlockEntity(CollectorMK1BlockEntity.class, world, pos);
 			if (ent != null) {
-				//Clear the ghost slot so calling super doesn't drop the item in it
 				ent.clearLocked();
 			}
-			super.onRemove(state, level, pos, newState, isMoving);
 		}
+		super.onBlockStateChange(level, pos, oldState, newState);
 	}
 }

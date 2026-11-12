@@ -6,7 +6,8 @@ import moze_intel.projecte.gameObjs.container.slots.SlotPredicates;
 import moze_intel.projecte.gameObjs.container.slots.ValidatedSlot;
 import moze_intel.projecte.gameObjs.registries.PEContainerTypes;
 import net.minecraft.world.entity.player.Inventory;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 public class CollectorMK3Container extends CollectorMK1Container {
 
@@ -16,8 +17,8 @@ public class CollectorMK3Container extends CollectorMK1Container {
 
 	@Override
 	void initSlots() {
-		IItemHandler aux = collector.getAux();
-		IItemHandler main = collector.getInput();
+		ResourceHandler<ItemResource> aux = collector.getAux();
+		ResourceHandler<ItemResource> main = collector.getInput();
 
 		//Klein Star Slot
 		this.addSlot(new ValidatedSlot(aux, CollectorMK3BlockEntity.UPGRADING_SLOT, 158, 58, SlotPredicates.COLLECTOR_INV));

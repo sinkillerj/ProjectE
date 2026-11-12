@@ -5,7 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Objects;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentPatch;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.common.util.NeoForgeExtraCodecs;
 import org.jetbrains.annotations.NotNull;
 
@@ -27,7 +27,7 @@ public abstract class AbstractDataComponentHolderNSSTag<TYPE> extends AbstractNS
 	private boolean hasCachedHash;
 	private int cachedHashCode;
 
-	protected AbstractDataComponentHolderNSSTag(@NotNull ResourceLocation resourceLocation, boolean isTag, @NotNull DataComponentPatch componentsPatch) {
+	protected AbstractDataComponentHolderNSSTag(@NotNull Identifier resourceLocation, boolean isTag, @NotNull DataComponentPatch componentsPatch) {
 		super(resourceLocation, isTag);
 		this.componentsPatch = Objects.requireNonNull(componentsPatch, "Components patch must not be null");
 	}
@@ -91,14 +91,14 @@ public abstract class AbstractDataComponentHolderNSSTag<TYPE> extends AbstractNS
 	@FunctionalInterface
 	protected interface DataComponentHolderNSSConstructor<TYPE, NSS extends AbstractDataComponentHolderNSSTag<TYPE>> extends NSSTagConstructor<TYPE, NSS> {
 
-		NSS create(ResourceLocation rl, boolean isTag, @NotNull DataComponentPatch componentsPatch);
+		NSS create(Identifier rl, boolean isTag, @NotNull DataComponentPatch componentsPatch);
 
 		@Override
-		default NSS create(ResourceLocation rl, boolean isTag) {
+		default NSS create(Identifier rl, boolean isTag) {
 			return create(rl, isTag, DataComponentPatch.EMPTY);
 		}
 
-		default NSS create(ResourceLocation rl, @NotNull DataComponentPatch componentsPatch) {
+		default NSS create(Identifier rl, @NotNull DataComponentPatch componentsPatch) {
 			return create(rl, false, componentsPatch);
 		}
 	}

@@ -2,29 +2,23 @@
   "type": "minecraft:block",
   "pools": [
     {
-      "bonus_rolls": 0.0,
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
-      ],
+      "condition": {
+        "type": "minecraft:survives_explosion"
+      },
       "entries": [
         {
           "type": "minecraft:item",
-          "conditions": [
-            {
-              "block": "projecte:nova_catalyst",
-              "condition": "minecraft:block_state_property",
-              "properties": {
-                "unstable": "false"
-              }
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "projecte:nova_catalyst",
+            "state": {
+              "unstable": "false"
             }
-          ],
+          },
           "name": "projecte:nova_catalyst"
         }
       ],
-      "name": "main",
-      "rolls": 1.0
+      "rolls": 1
     }
   ],
   "random_sequence": "projecte:blocks/nova_catalyst"

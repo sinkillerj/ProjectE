@@ -3,7 +3,7 @@ package moze_intel.projecte.utils;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.utils.text.PELang;
 import moze_intel.projecte.utils.text.TextComponentUtil;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.network.chat.Component;
 
 public class TransmutationEMCFormatter {

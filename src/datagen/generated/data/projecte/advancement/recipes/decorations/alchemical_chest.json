@@ -19,7 +19,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:alchemical_chest"
+        "recipes": "projecte:alchemical_chest"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

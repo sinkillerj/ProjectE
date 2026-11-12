@@ -1,7 +1,7 @@
 package moze_intel.projecte.utils.text;
 
 import moze_intel.projecte.PECore;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 
 public enum PELang implements ILangEntry {
 	//Vanilla
@@ -77,7 +77,6 @@ public enum PELang implements ILangEntry {
 	WORLD_TRANSMUTE_DESCRIPTION("jei", "world_transmute.description"),
 	//Curios
 	CURIOS_KLEIN_STAR("curios.identifier.klein_star"),
-    CURIOS_TRANSMUTATION_TABLET("curios.identifier.transmutation_tablet"),
 	//Gem armor
 	GEM_ENABLED("gem", "enabled"),
 	GEM_DISABLED("gem", "disabled"),

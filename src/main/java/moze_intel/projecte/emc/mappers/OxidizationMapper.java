@@ -25,11 +25,11 @@ public class OxidizationMapper implements IEMCMapper<NormalizedSimpleStack, Long
 	@Override
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, ReloadableServerResources serverResources,
 			RegistryAccess registryAccess, ResourceManager resourceManager) {
-		Registry<Block> blocks = registryAccess.registryOrThrow(Registries.BLOCK);
+		Registry<Block> blocks = registryAccess.lookupOrThrow(Registries.BLOCK);
 		int recipeCount = 0;
 		for (Map.Entry<ResourceKey<Block>, Oxidizable> entry : blocks.getDataMap(NeoForgeDataMaps.OXIDIZABLES).entrySet()) {
 			//Add conversions both directions due to scraping
-			Block block = blocks.get(entry.getKey());
+			Block block = blocks.getValue(entry.getKey());
 			if (block != null) {
 				NSSItem unweathered = NSSItem.createItem(block);
 				NSSItem weathered = NSSItem.createItem(entry.getValue().nextOxidationStage());

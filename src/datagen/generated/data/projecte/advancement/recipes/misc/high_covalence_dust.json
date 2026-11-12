@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:high_covalence_dust"
+        "recipes": "projecte:high_covalence_dust"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

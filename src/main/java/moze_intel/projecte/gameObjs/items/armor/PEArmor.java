@@ -3,27 +3,32 @@ package moze_intel.projecte.gameObjs.items.armor;
 import java.util.function.Consumer;
 import net.minecraft.core.Holder;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.equipment.ArmorType;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public abstract class PEArmor extends ArmorItem {
+public abstract class PEArmor extends Item {
 
-	protected PEArmor(Holder<ArmorMaterial> material, ArmorItem.Type armorPiece, Properties props) {
-		super(material, armorPiece, props);
+	private final ArmorType armorType;
+
+	protected PEArmor(ArmorType armorType, Properties props) {
+		super(props);
+		this.armorType = armorType;
 	}
 
-	@Override
+	protected ArmorType getArmorType() {
+		return armorType;
+	}
+
 	public boolean isEnchantable(@NotNull ItemStack stack) {
 		return false;
 	}
 
-	@Override
 	public boolean isBookEnchantable(@NotNull ItemStack stack, @NotNull ItemStack book) {
 		return false;
 	}
@@ -39,7 +44,7 @@ public abstract class PEArmor extends ArmorItem {
 	}
 
 	@Override
-	public <T extends LivingEntity> int damageItem(@NotNull ItemStack stack, int amount, T entity, @NotNull Consumer<Item> onBroken) {
+	public <T extends LivingEntity> int damageItem(@NotNull ItemStack stack, int amount, T entity, @NotNull Consumer<ItemStack> onBroken) {
 		return 0;
 	}
 
@@ -54,13 +59,13 @@ public abstract class PEArmor extends ArmorItem {
 	 * @apiNote A value of zero means that there is no special bonus blocking powers for that damage type, and the piece's base reduction will be get used instead by the
 	 * damage calculation event.
 	 */
-	public abstract float getMaxDamageAbsorb(ArmorItem.Type type, DamageSource source);
+	public abstract float getMaxDamageAbsorb(ArmorType type, DamageSource source);
 
 	public ReductionInfo getReductionInfo(DamageSource source) {
-		float maxDamageAbsorb = getMaxDamageAbsorb(type, source);
+		float maxDamageAbsorb = getMaxDamageAbsorb(armorType, source);
 		float fullSetReduction = getFullSetBaseReduction();
 		if (maxDamageAbsorb > 0 && fullSetReduction > 0) {
-			float pieceEffectiveness = getPieceEffectiveness(type);
+			float pieceEffectiveness = getPieceEffectiveness(armorType);
 			return new ReductionInfo(fullSetReduction * pieceEffectiveness, maxDamageAbsorb * pieceEffectiveness);
 		}
 		return ReductionInfo.ZERO;
@@ -69,17 +74,17 @@ public abstract class PEArmor extends ArmorItem {
 	/**
 	 * Gets the overall effectiveness of a given slots piece.
 	 */
-	public float getPieceEffectiveness(ArmorItem.Type type) {
-		if (type == ArmorItem.Type.BOOTS || type == ArmorItem.Type.HELMET) {
+	public float getPieceEffectiveness(ArmorType type) {
+		if (type == ArmorType.BOOTS || type == ArmorType.HELMET) {
 			return 0.2F;
-		} else if (type == ArmorItem.Type.CHESTPLATE || type == ArmorItem.Type.LEGGINGS) {
+		} else if (type == ArmorType.CHESTPLATE || type == ArmorType.LEGGINGS) {
 			return 0.3F;
 		}
 		return 0;
 	}
 
-	protected static boolean isArmorSlot(int slot) {
-		return slot >= Inventory.INVENTORY_SIZE && slot < Inventory.INVENTORY_SIZE + 4;
+	protected static boolean isArmorSlot(@Nullable EquipmentSlot slot) {
+		return slot != null && slot.isArmor();
 	}
 
 	public record ReductionInfo(float percentReduced, float maxDamagedAbsorbed) {

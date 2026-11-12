@@ -11,9 +11,8 @@ import moze_intel.projecte.utils.Constants;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.tags.IntrinsicHolderTagsProvider;
-import net.minecraft.data.tags.ItemTagsProvider;
-import net.minecraft.data.tags.TagsProvider;
+import moze_intel.projecte.common.datagen.RegistryKeyTagAppender;
+import net.neoforged.neoforge.common.data.ItemTagsProvider;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.BlockItem;
@@ -27,15 +26,17 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HugeMushroomBlock;
 import net.minecraft.world.level.block.InfestedBlock;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class PEItemTagsProvider extends ItemTagsProvider {
 
-	public PEItemTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, CompletableFuture<TagsProvider.TagLookup<Block>> blockTags,
-			@Nullable ExistingFileHelper existingFileHelper) {
-		super(output, lookupProvider, blockTags, PECore.MODID, existingFileHelper);
+	public PEItemTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+		super(output, lookupProvider, PECore.MODID);
+	}
+
+	@Override
+	protected RegistryKeyTagAppender<Item> tag(TagKey<Item> tagKey) {
+		return RegistryKeyTagAppender.wrap(super.tag(tagKey), BuiltInRegistries.ITEM);
 	}
 
 	@Override
@@ -72,9 +73,8 @@ public class PEItemTagsProvider extends ItemTagsProvider {
 				PEItems.REPAIR_TALISMAN.get(),
 				PEItems.WATCH_OF_FLOWING_TIME.get()
 		);
-        tag(PETags.Items.TRANSMUTATION_TABLET).add(
-                PEItems.TRANSMUTATION_TABLET.get()
-        );
+		tag(PETags.Items.TRANSMUTATION_TABLET).add(PEItems.TRANSMUTATION_TABLET.get());
+		tag(PETags.Items.CURIOS_TRANSMUTATION_TABLET).addTag(PETags.Items.TRANSMUTATION_TABLET);
 		tag(PETags.Items.RELAYS).add(
 				PEBlocks.RELAY.asItem(),
 				PEBlocks.RELAY_MK2.asItem(),
@@ -89,12 +89,11 @@ public class PEItemTagsProvider extends ItemTagsProvider {
 				PEBlocks.DARK_MATTER_FURNACE.asItem(),
 				PEBlocks.RED_MATTER_FURNACE.asItem()
 		);
-		IntrinsicHolderTagsProvider.IntrinsicTagAppender<Item> kleinStarBuilder = tag(PETags.Items.KLEIN_STARS);
+		RegistryKeyTagAppender<Item> kleinStarBuilder = tag(PETags.Items.KLEIN_STARS);
 		for (KleinTier tier : KleinTier.values()) {
 			kleinStarBuilder.add(PEItems.getStar(tier).value());
 		}
 		tag(PETags.Items.CURIOS_KLEIN_STAR).addTag(PETags.Items.KLEIN_STARS);
-		tag(PETags.Items.CURIOS_TRANSMUTATION_TABLET).addTag(PETags.Items.TRANSMUTATION_TABLET);
 		tag(PETags.Items.CURIOS_NECKLACE).add(
 				PEItems.BODY_STONE.get(),
 				PEItems.EVERTIDE_AMULET.get(),
@@ -136,7 +135,8 @@ public class PEItemTagsProvider extends ItemTagsProvider {
 	}
 
 	private void addIgnoreMissing() {
-		IntrinsicTagAppender<Item> ignoreMissingEMC = tag(PETags.Items.IGNORE_MISSING_EMC).add(
+		RegistryKeyTagAppender<Item> ignoreMissingEMC = tag(PETags.Items.IGNORE_MISSING_EMC);
+		ignoreMissingEMC.add(
 				Items.DEBUG_STICK, Items.KNOWLEDGE_BOOK, Items.STRUCTURE_VOID, Items.FROGSPAWN, Items.PETRIFIED_OAK_SLAB, Items.REINFORCED_DEEPSLATE,
 				Items.SPAWNER, Items.TRIAL_SPAWNER, Items.VAULT, Items.TRIAL_KEY, Items.OMINOUS_TRIAL_KEY,
 				Items.ELYTRA, Items.TOTEM_OF_UNDYING,
@@ -147,8 +147,9 @@ public class PEItemTagsProvider extends ItemTagsProvider {
 				Items.BUDDING_AMETHYST, Items.SMALL_AMETHYST_BUD, Items.MEDIUM_AMETHYST_BUD, Items.LARGE_AMETHYST_BUD,
 				//Blocks that have no emc because it is less than one:
 				Items.STONE_SLAB, Items.COBBLESTONE_SLAB, Items.SMOOTH_STONE_SLAB, Items.STONE_BRICK_SLAB, Items.END_STONE_BRICK_SLAB,
-				Items.GLASS_PANE, Items.CYAN_STAINED_GLASS_PANE, Items.GREEN_STAINED_GLASS_PANE, Items.LIME_STAINED_GLASS_PANE, Items.MAGENTA_STAINED_GLASS_PANE,
-				Items.PINK_STAINED_GLASS_PANE
+				Items.GLASS_PANE,
+				Items.STAINED_GLASS_PANE.cyan(), Items.STAINED_GLASS_PANE.green(), Items.STAINED_GLASS_PANE.lime(),
+				Items.STAINED_GLASS_PANE.magenta(), Items.STAINED_GLASS_PANE.pink()
 		).addTags(Tags.Items.CLUSTERS, Tags.Items.HIDDEN_FROM_RECIPE_VIEWERS);
 		for (Item item : BuiltInRegistries.ITEM) {
 			if (item instanceof SpawnEggItem || item instanceof MobBucketItem) {
@@ -163,7 +164,7 @@ public class PEItemTagsProvider extends ItemTagsProvider {
 	}
 
 	private void addBags() {
-		IntrinsicHolderTagsProvider.IntrinsicTagAppender<Item> alchemicalBags = tag(PETags.Items.ALCHEMICAL_BAGS);
+		RegistryKeyTagAppender<Item> alchemicalBags = tag(PETags.Items.ALCHEMICAL_BAGS);
 		for (DyeColor color : Constants.COLORS) {
 			AlchemicalBag bag = PEItems.getBag(color);
 			alchemicalBags.add(bag);
@@ -182,7 +183,7 @@ public class PEItemTagsProvider extends ItemTagsProvider {
 		addTool(ItemTags.SWORDS, new ItemLike[]{
 				PEItems.DARK_MATTER_SWORD,
 				PEItems.RED_MATTER_SWORD
-		}, ItemTags.SWORD_ENCHANTABLE, ItemTags.SHARP_WEAPON_ENCHANTABLE, ItemTags.DURABILITY_ENCHANTABLE);
+		}, ItemTags.MELEE_WEAPON_ENCHANTABLE, ItemTags.SHARP_WEAPON_ENCHANTABLE, ItemTags.DURABILITY_ENCHANTABLE);
 		addTool(ItemTags.AXES, new ItemLike[]{
 				PEItems.DARK_MATTER_AXE,
 				PEItems.RED_MATTER_AXE
@@ -207,7 +208,7 @@ public class PEItemTagsProvider extends ItemTagsProvider {
 		}, ItemTags.MINING_ENCHANTABLE, ItemTags.MINING_LOOT_ENCHANTABLE, ItemTags.DURABILITY_ENCHANTABLE);
 		addTool(PETags.Items.TOOLS_KATARS, new ItemLike[]{
 				PEItems.RED_MATTER_KATAR
-		}, ItemTags.SWORD_ENCHANTABLE, ItemTags.SHARP_WEAPON_ENCHANTABLE, ItemTags.MINING_ENCHANTABLE, ItemTags.MINING_LOOT_ENCHANTABLE, ItemTags.DURABILITY_ENCHANTABLE);
+		}, ItemTags.MELEE_WEAPON_ENCHANTABLE, ItemTags.SHARP_WEAPON_ENCHANTABLE, ItemTags.MINING_ENCHANTABLE, ItemTags.MINING_LOOT_ENCHANTABLE, ItemTags.DURABILITY_ENCHANTABLE);
 		addTool(PETags.Items.TOOLS_MORNING_STARS, new ItemLike[]{
 				PEItems.RED_MATTER_MORNING_STAR
 		}, ItemTags.MINING_ENCHANTABLE, ItemTags.MINING_LOOT_ENCHANTABLE, ItemTags.DURABILITY_ENCHANTABLE);
@@ -249,7 +250,7 @@ public class PEItemTagsProvider extends ItemTagsProvider {
 
 	@SafeVarargs
 	private void addTool(TagKey<Item> toolTag, ItemLike[] items, TagKey<Item>... enchantableTags) {
-		IntrinsicTagAppender<Item> toolBuilder = tag(toolTag);
+		RegistryKeyTagAppender<Item> toolBuilder = tag(toolTag);
 		for (ItemLike itemLike : items) {
 			Item item = itemLike.asItem();
 			toolBuilder.add(item);
@@ -261,10 +262,10 @@ public class PEItemTagsProvider extends ItemTagsProvider {
 	}
 
 	private void addArmor(TagKey<Item> armorTag, TagKey<Item> armorTagEnchantable, ItemLike... items) {
-		IntrinsicTagAppender<Item> armorBuilder = tag(armorTag);
-		IntrinsicTagAppender<Item> enchantableBuilder = tag(armorTagEnchantable);
-		IntrinsicTagAppender<Item> durabilityEnchantable = tag(ItemTags.DURABILITY_ENCHANTABLE);
-		IntrinsicTagAppender<Item> equippableEnchantable = tag(ItemTags.EQUIPPABLE_ENCHANTABLE);
+		RegistryKeyTagAppender<Item> armorBuilder = tag(armorTag);
+		RegistryKeyTagAppender<Item> enchantableBuilder = tag(armorTagEnchantable);
+		RegistryKeyTagAppender<Item> durabilityEnchantable = tag(ItemTags.DURABILITY_ENCHANTABLE);
+		RegistryKeyTagAppender<Item> equippableEnchantable = tag(ItemTags.EQUIPPABLE_ENCHANTABLE);
 		for (ItemLike itemLike : items) {
 			Item item = itemLike.asItem();
 			armorBuilder.add(item);

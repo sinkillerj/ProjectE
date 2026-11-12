@@ -16,7 +16,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:rm_helmet"
+        "recipes": "projecte:rm_helmet"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

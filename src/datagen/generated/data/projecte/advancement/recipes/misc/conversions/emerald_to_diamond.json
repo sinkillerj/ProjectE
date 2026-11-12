@@ -16,7 +16,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:conversions/emerald_to_diamond"
+        "recipes": "projecte:conversions/emerald_to_diamond"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -26,12 +26,12 @@ public class WaxableMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 	@Override
 	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, ReloadableServerResources serverResources,
 			RegistryAccess registryAccess, ResourceManager resourceManager) {
-		Registry<Block> blocks = registryAccess.registryOrThrow(Registries.BLOCK);
+		Registry<Block> blocks = registryAccess.lookupOrThrow(Registries.BLOCK);
 		NSSItem wax = NSSItem.createItem(Items.HONEYCOMB);
 		int recipeCount = 0;
 		for (Map.Entry<ResourceKey<Block>, Waxable> entry : blocks.getDataMap(NeoForgeDataMaps.WAXABLES).entrySet()) {
 			//Add conversions both directions due to scraping
-			Block block = blocks.get(entry.getKey());
+			Block block = blocks.getValue(entry.getKey());
 			if (block != null) {
 				NSSItem base = NSSItem.createItem(block);
 				NSSItem waxed = NSSItem.createItem(entry.getValue().waxed());

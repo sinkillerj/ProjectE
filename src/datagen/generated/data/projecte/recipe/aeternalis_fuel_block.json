@@ -2,36 +2,17 @@
   "type": "minecraft:crafting_shapeless",
   "category": "building",
   "ingredients": [
-    {
-      "item": "projecte:aeternalis_fuel"
-    },
-    {
-      "item": "projecte:aeternalis_fuel"
-    },
-    {
-      "item": "projecte:aeternalis_fuel"
-    },
-    {
-      "item": "projecte:aeternalis_fuel"
-    },
-    {
-      "item": "projecte:aeternalis_fuel"
-    },
-    {
-      "item": "projecte:aeternalis_fuel"
-    },
-    {
-      "item": "projecte:aeternalis_fuel"
-    },
-    {
-      "item": "projecte:aeternalis_fuel"
-    },
-    {
-      "item": "projecte:aeternalis_fuel"
-    }
+    "projecte:aeternalis_fuel",
+    "projecte:aeternalis_fuel",
+    "projecte:aeternalis_fuel",
+    "projecte:aeternalis_fuel",
+    "projecte:aeternalis_fuel",
+    "projecte:aeternalis_fuel",
+    "projecte:aeternalis_fuel",
+    "projecte:aeternalis_fuel",
+    "projecte:aeternalis_fuel"
   ],
   "result": {
-    "count": 1,
     "id": "projecte:aeternalis_fuel_block"
   }
 }

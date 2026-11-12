@@ -16,7 +16,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:klein_star_ein"
+        "recipes": "projecte:klein_star_ein"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

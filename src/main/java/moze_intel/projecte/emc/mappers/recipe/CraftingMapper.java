@@ -32,7 +32,7 @@ import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.ReloadableServerResources;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -96,7 +96,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 							//Note: The unchecked cast is needed as while the IDE doesn't have a warning without it,
 							// it will not actually compile due to IRecipeType's generic only having to be of IRecipe<?>
 							// so no information is stored about the type of inventory for the recipe
-							recipes = recipeManager.getAllRecipesFor((RecipeType) recipeType);
+							recipes = new ArrayList<>(recipeManager.recipeMap().byType((RecipeType) recipeType));
 						}
 						int numHandled = 0;
 						for (RecipeHolder<?> recipeHolder : recipes) {
@@ -107,8 +107,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 									unhandled.add(recipeHolder);
 								}
 							} catch (Exception e) {
-								PECore.LOGGER.error(LogUtils.FATAL_MARKER, "A fatal error occurred while trying to map the recipe: {}", recipeHolder.id());
-								throw e;
+								PECore.LOGGER.error(LogUtils.FATAL_MARKER, "Exception during mapping recipe {}. Skipping recipe.", recipeHolder.id(), e);
 							}
 						}
 						if (numHandled > 0 || recipes.isEmpty()) {
@@ -142,7 +141,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 
 		for (Iterator<Reference2ObjectMap.Entry<ResourceKey<RecipeType<?>>, RecipeCountInfo>> iterator = Reference2ObjectMaps.fastIterator(recipeCount); iterator.hasNext(); ) {
 			Reference2ObjectMap.Entry<ResourceKey<RecipeType<?>>, RecipeCountInfo> entry = iterator.next();
-			ResourceLocation typeRegistryName = entry.getKey().location();
+			Identifier typeRegistryName = entry.getKey().identifier();
 			RecipeCountInfo countInfo = entry.getValue();
 			int total = countInfo.getTotalRecipes();
 			List<RecipeHolder<?>> unhandled = countInfo.getUnhandled();
@@ -155,7 +154,7 @@ public class CraftingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 			}
 		}
 		for (ResourceKey<RecipeType<?>> typeRegistryKey : canNotMap) {
-			PECore.debugLog("Could not map any Recipes of Type: {}", typeRegistryKey.location());
+			PECore.debugLog("Could not map any Recipes of Type: {}", typeRegistryKey.identifier());
 		}
 		NSSFake.resetNamespace();
 	}

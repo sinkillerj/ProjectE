@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "projecte:evertide_amulet"
+        "recipes": "projecte:evertide_amulet"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

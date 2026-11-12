@@ -4,7 +4,8 @@ import moze_intel.projecte.gameObjs.items.HyperkineticLens.ExplosiveLensCharge;
 import moze_intel.projecte.gameObjs.registries.PEEntityTypes;
 import moze_intel.projecte.utils.WorldHelper;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.FluidTags;
@@ -31,7 +32,7 @@ public class EntityLensProjectile extends NoGravityThrowableProjectile {
 
 	@Override
 	protected void onInsideBlock(@NotNull BlockState state) {
-		if (!level().isClientSide && state.getFluidState().is(FluidTags.WATER)) {
+		if (!level().isClientSide() && state.getFluidState().is(FluidTags.WATER)) {
 			playSound(SoundEvents.GENERIC_BURN, 0.7F, 1.6F + (random.nextFloat() - random.nextFloat()) * 0.4F);
 			((ServerLevel) level()).sendParticles(ParticleTypes.LARGE_SMOKE, getX(), getY(), getZ(), 2, 0, 0, 0, 0);
 			discard();
@@ -41,20 +42,20 @@ public class EntityLensProjectile extends NoGravityThrowableProjectile {
 	@Override
 	protected void onHit(@NotNull HitResult result) {
 		super.onHit(result);
-		if (!level().isClientSide) {
+		if (!level().isClientSide()) {
 			WorldHelper.createNovaExplosion(level(), getOwner(), getX(), getY(), getZ(), charge.radius());
 		}
 	}
 
 	@Override
-	public void addAdditionalSaveData(@NotNull CompoundTag nbt) {
-		super.addAdditionalSaveData(nbt);
-		nbt.putInt("charge", charge.ordinal());
+	protected void addAdditionalSaveData(@NotNull ValueOutput output) {
+		super.addAdditionalSaveData(output);
+		output.putInt("charge", charge.ordinal());
 	}
 
 	@Override
-	public void readAdditionalSaveData(@NotNull CompoundTag nbt) {
-		super.readAdditionalSaveData(nbt);
-		charge = ExplosiveLensCharge.BY_ID.apply(nbt.getInt("charge"));
+	protected void readAdditionalSaveData(@NotNull ValueInput input) {
+		super.readAdditionalSaveData(input);
+		charge = ExplosiveLensCharge.BY_ID.apply(input.getIntOr("charge", 0));
 	}
 }

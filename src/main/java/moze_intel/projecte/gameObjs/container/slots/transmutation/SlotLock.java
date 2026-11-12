@@ -40,14 +40,8 @@ public class SlotLock extends InventoryContainerSlot {
 	}
 
 	@Override
-	public void initialize(@NotNull ItemStack stack) {
-		//Note: We don't need to copy any of the logic from set as initialize is only ever called on the client
-		super.initialize(stack);
-	}
-
-	@Override
-	public void set(@NotNull ItemStack stack) {
-		super.set(stack);
+	protected void setStackCopy(@NotNull ItemStack stack) {
+		super.setStackCopy(stack);
 		if (inv.isServer()) {
 			if (stack.isEmpty()) {
 				inv.syncChangedSlots(IntList.of(getSlotIndex()), TargetUpdateType.ALL);

@@ -14,10 +14,8 @@ import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.conversion.CustomConversionFile;
 import moze_intel.projecte.api.conversion.FixedValues;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
-import net.minecraft.MethodsReturnNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class CustomConversionBuilder extends BaseFileBuilder<CustomConversionBuilder> implements CustomConversionBuilderNSSHelper {
 
 	private final Map<String, ConversionGroupBuilder> groups = new LinkedHashMap<>();
